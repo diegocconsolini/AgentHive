@@ -12,7 +12,7 @@ import { TagsPage } from './pages/TagsPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import AgentsPage from './pages/AgentsPage';
-import { GraphiQLPage } from './pages/GraphiQLPage';
+import { StandaloneGraphiQLPage } from './pages/StandaloneGraphiQLPage';
 
 // Admin components
 import { AdminLayout } from './components/admin/AdminLayout';
@@ -40,6 +40,16 @@ function App() {
           } 
         />
         
+        {/* Standalone GraphiQL Route - bypasses main layout */}
+        <Route 
+          path="/graphiql" 
+          element={
+            <AuthGuard>
+              <StandaloneGraphiQLPage />
+            </AuthGuard>
+          } 
+        />
+        
         {/* Protected Routes with Main Layout */}
         <Route 
           path="/" 
@@ -56,7 +66,6 @@ function App() {
           <Route path="tags" element={<TagsPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="agents" element={<AgentsPage />} />
-          <Route path="graphiql" element={<GraphiQLPage />} />
           <Route path="settings" element={<SettingsPage />} />
           
           {/* Legacy route redirect */}
