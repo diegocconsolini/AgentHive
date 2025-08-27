@@ -1,5 +1,5 @@
 {
-  "name": "@memory-manager/web",
+  "name": "@epic/web",
   "version": "1.0.0",
   "description": "Memory Manager Web Dashboard",
   "type": "module",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.17",
-    "@memory-manager/shared": "*",
+    "@epic/shared": "*",
     "chart.js": "^4.5.0",
     "clsx": "^2.0.0",
     "date-fns": "^4.1.0",
