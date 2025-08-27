@@ -1,5 +1,5 @@
 {
-  "name": "@memory-manager/shared",
+  "name": "@epic/shared",
   "version": "1.0.0",
   "description": "Shared types and utilities for Memory Manager",
   "type": "module",
