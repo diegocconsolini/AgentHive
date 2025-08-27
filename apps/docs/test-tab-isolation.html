@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Isolation Test</title>
+</head>
+<body>
+  <h1>Tab System Test Results</h1>
+  <div id="test-results"></div>
+  
+  <script>
+    // Load the main page in an iframe and test tab isolation
+    function runTabIsolationTests() {
+      console.log('Starting tab isolation tests...');
+      
+      const iframe = document.createElement('iframe');
+      iframe.src = 'index-v3-clean.html';
+      iframe.style.width = '100%';
+      iframe.style.height = '600px';
+      iframe.style.border = '1px solid #ccc';
+      
+      iframe.onload = function() {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const resultsDiv = document.getElementById('test-results');
+        
+        try {
+          // Test 1: Check initial state
+          const fundamentalsTab = iframeDoc.getElementById('fundamentals');
+          const workflowsTab = iframeDoc.getElementById('workflows');
+          
+          let test1Result = 'PASS';
+          if (!fundamentalsTab.classList.contains('active')) {
+            test1Result = 'FAIL - fundamentals tab not active on load';
+          }
+          if (workflowsTab.classList.contains('active')) {
+            test1Result = 'FAIL - workflows tab incorrectly active on load';
+          }
+          
+          // Test 2: Check defensive CSS
+          const fundamentalsStyle = iframeDoc.defaultView.getComputedStyle(fundamentalsTab);
+          const workflowsStyle = iframeDoc.defaultView.getComputedStyle(workflowsTab);
+          
+          let test2Result = 'PASS';
+          if (fundamentalsStyle.display === 'none') {
+            test2Result = 'FAIL - active tab is hidden';
+          }
+          if (workflowsStyle.display !== 'none') {
+            test2Result = 'FAIL - inactive tab is visible';
+          }
+          
+          resultsDiv.innerHTML = `
+            <h2>Test Results:</h2>
+            <p><strong>Test 1 - Initial State:</strong> ${test1Result}</p>
+            <p><strong>Test 2 - CSS Isolation:</strong> ${test2Result}</p>
+            <p><strong>Fundamentals Active Class:</strong> ${fundamentalsTab.classList.contains('active') ? 'YES' : 'NO'}</p>
+            <p><strong>Workflows Active Class:</strong> ${workflowsTab.classList.contains('active') ? 'YES' : 'NO'}</p>
+            <p><strong>Fundamentals Display:</strong> ${fundamentalsStyle.display}</p>
+            <p><strong>Workflows Display:</strong> ${workflowsStyle.display}</p>
+          `;
+          
+          console.log('Tab isolation tests completed');
+          
+        } catch (error) {
+          resultsDiv.innerHTML = `<p style="color: red;"><strong>Test Error:</strong> ${error.message}</p>`;
+        }
+      };
+      
+      document.body.appendChild(iframe);
+    }
+    
+    // Run tests when page loads
+    document.addEventListener('DOMContentLoaded', runTabIsolationTests);
+  </script>
+</body>
+</html>

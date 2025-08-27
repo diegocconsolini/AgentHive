@@ -1,0 +1,64 @@
+{
+  "name": "@epic/memory-manager",
+  "version": "1.0.0",
+  "description": "Epic Memory Manager - Unified AI-assisted productivity platform",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:user-api\" \"npm run dev:system-api\" \"npm run dev:web\"",
+    "dev:web": "npm run dev --workspace=packages/web",
+    "dev:cli": "npm run dev --workspace=packages/cli", 
+    "dev:user-api": "npm run dev --workspace=packages/user-api",
+    "dev:system-api": "npm run dev --workspace=packages/system-api",
+    "dev:docs": "npm run dev --workspace=apps/docs",
+    
+    "build": "npm run build:shared && npm run build:apis && npm run build:frontend",
+    "build:shared": "npm run build --workspace=packages/shared",
+    "build:apis": "concurrently \"npm run build --workspace=packages/user-api\" \"npm run build --workspace=packages/system-api\"",
+    "build:frontend": "concurrently \"npm run build --workspace=packages/web\" \"npm run build --workspace=packages/cli\"",
+    "build:docs": "npm run build --workspace=apps/docs",
+    
+    "test": "npm run test --workspaces --if-present",
+    "test:unit": "npm run test:unit --workspaces --if-present",
+    "test:integration": "npm run test:integration --workspaces --if-present",
+    "test:e2e": "npm run test:e2e --workspaces --if-present",
+    
+    "lint": "npm run lint --workspaces --if-present",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    
+    "deploy:staging": "npm run build && ./tools/scripts/deploy-staging.sh",
+    "deploy:production": "npm run build && ./tools/scripts/deploy-production.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "tsx": "^3.12.7",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "memory-manager",
+    "ai-agents",
+    "productivity",
+    "graphql",
+    "typescript",
+    "monorepo"
+  ],
+  "author": "Epic Memory Manager Team",
+  "license": "MIT"
+}

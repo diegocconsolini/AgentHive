@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # Frontend React Application
+  web:
+    build: 
+      context: .
+      dockerfile: packages/web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_USER_API_URL=http://localhost:4000/graphql
+      - VITE_SYSTEM_API_URL=http://localhost:4001/graphql
+    volumes:
+      - ./packages/web/src:/app/src:cached
+      - ./packages/shared:/app/shared:cached
+    depends_on:
+      - user-api
+      - system-api
+    networks:
+      - epic-network
+
+  # User-facing API (Memory Management)
+  user-api:
+    build:
+      context: .
+      dockerfile: packages/user-api/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=file:./data/user.db
+      - JWT_SECRET=dev-secret-key
+      - SYSTEM_API_URL=http://system-api:4001
+    volumes:
+      - ./packages/user-api/src:/app/src:cached
+      - ./packages/shared:/app/shared:cached
+      - user_data:/app/data
+    networks:
+      - epic-network
+
+  # System orchestration API (Agent Management)  
+  system-api:
+    build:
+      context: .
+      dockerfile: packages/system-api/Dockerfile
+    ports:
+      - "4001:4001"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=file:./data/system.db
+      - STORAGE_PATH=/app/storage
+      - USER_API_URL=http://user-api:4000
+    volumes:
+      - ./packages/system-api/src:/app/src:cached
+      - ./packages/shared:/app/shared:cached
+      - system_data:/app/data
+      - system_storage:/app/storage
+    networks:
+      - epic-network
+
+  # Documentation site
+  docs:
+    build:
+      context: .
+      dockerfile: apps/docs/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./apps/docs:/app:cached
+    networks:
+      - epic-network
+
+  # CLI (for testing and development)
+  cli:
+    build:
+      context: .
+      dockerfile: packages/cli/Dockerfile
+    environment:
+      - USER_API_URL=http://user-api:4000/graphql
+      - SYSTEM_API_URL=http://system-api:4001/graphql
+    volumes:
+      - ./packages/cli/src:/app/src:cached
+      - ./packages/shared:/app/shared:cached
+    networks:
+      - epic-network
+    profiles: ["cli"]  # Only start when explicitly requested
+
+networks:
+  epic-network:
+    driver: bridge
+
+volumes:
+  user_data:
+    driver: local
+  system_data:
+    driver: local
+  system_storage:
+    driver: local

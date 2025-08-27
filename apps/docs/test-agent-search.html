@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agent Search Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-container { max-width: 800px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        button { margin: 5px; padding: 8px 15px; cursor: pointer; }
+        iframe { width: 100%; height: 500px; border: 1px solid #ccc; margin-top: 10px; }
+        .test-log { background-color: #f8f9fa; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 AgentsReview Search Functionality Test</h1>
+        
+        <div class="test-section">
+            <h3>🧪 Test Agent Search Functions</h3>
+            <button onclick="testSearchFunctions()">Test Search Functions</button>
+            <button onclick="testSearchClear()">Test Search Clear</button>
+            <button onclick="testAgentVisibility()">Test Agent Visibility</button>
+            <button onclick="runAllTests()">Run All Tests</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Test Results</h3>
+            <div id="testResults">Click a test button to see results...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>🖼️ AgentsReview Preview</h3>
+            <iframe id="agentsFrame" src="index.html" onload="onFrameLoad()"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let agentsFrame;
+        let frameWindow;
+        let frameDocument;
+
+        function onFrameLoad() {
+            agentsFrame = document.getElementById('agentsFrame');
+            frameWindow = agentsFrame.contentWindow;
+            frameDocument = agentsFrame.contentDocument || frameWindow.document;
+            
+            log('✅ AgentsReview loaded in iframe');
+            
+            // Wait for initialization, then test
+            setTimeout(() => {
+                testSearchFunctions();
+            }, 3000);
+        }
+
+        function log(message, type = 'info') {
+            const resultsDiv = document.getElementById('testResults');
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function testSearchFunctions() {
+            log('🔍 Testing search functions availability...');
+
+            try {
+                // Test if filterAgents function exists
+                if (typeof frameWindow.filterAgents === 'function') {
+                    log('✅ window.filterAgents function found', 'success');
+                } else {
+                    log('❌ window.filterAgents function missing', 'error');
+                    return;
+                }
+
+                // Test if search input exists
+                const searchInput = frameDocument.getElementById('agent-search');
+                if (searchInput) {
+                    log('✅ Agent search input found', 'success');
+                } else {
+                    log('❌ Agent search input not found', 'error');
+                    return;
+                }
+
+                // Test if agent cards exist
+                const agentCards = frameDocument.querySelectorAll('.agent-card');
+                log(`✅ Found ${agentCards.length} agent cards`, 'success');
+
+                if (agentCards.length === 0) {
+                    log('⚠️ No agent cards found - may need to switch to Library tab first', 'error');
+                    
+                    // Try to switch to Library tab
+                    if (typeof frameWindow.showTab === 'function') {
+                        frameWindow.showTab('library');
+                        setTimeout(() => {
+                            testSearchFunctions();
+                        }, 1000);
+                        return;
+                    }
+                }
+
+            } catch (error) {
+                log(`❌ Error during function test: ${error.message}`, 'error');
+            }
+        }
+
+        function testSearchClear() {
+            log('🧹 Testing search clear functionality...');
+
+            try {
+                // Switch to library tab first
+                if (typeof frameWindow.showTab === 'function') {
+                    frameWindow.showTab('library');
+                }
+
+                setTimeout(() => {
+                    const searchInput = frameDocument.getElementById('agent-search');
+                    if (!searchInput) {
+                        log('❌ Search input not found', 'error');
+                        return;
+                    }
+
+                    // Set search value and filter
+                    searchInput.value = 'python';
+                    frameWindow.filterAgents();
+                    
+                    setTimeout(() => {
+                        let visibleAfterSearch = frameDocument.querySelectorAll('.agent-card:not([style*="none"])');
+                        log(`📊 After search 'python': ${visibleAfterSearch.length} agents visible`);
+
+                        // Clear search
+                        searchInput.value = '';
+                        frameWindow.filterAgents();
+                        
+                        setTimeout(() => {
+                            let visibleAfterClear = frameDocument.querySelectorAll('.agent-card:not([style*="none"])');
+                            log(`📊 After clear: ${visibleAfterClear.length} agents visible`);
+
+                            if (visibleAfterClear.length > 0) {
+                                log('✅ Search clear working - agents are visible after clear', 'success');
+                            } else {
+                                log('❌ Search clear not working - no agents visible after clear', 'error');
+                                
+                                // Debug: check all agent cards
+                                const allCards = frameDocument.querySelectorAll('.agent-card');
+                                log(`🔍 Debug: Total agent cards found: ${allCards.length}`);
+                                
+                                // Check their styles
+                                allCards.forEach((card, index) => {
+                                    if (index < 3) { // Log first 3 cards
+                                        const style = card.getAttribute('style') || 'no style';
+                                        log(`🔍 Card ${index + 1} style: ${style}`);
+                                    }
+                                });
+                            }
+                        }, 500);
+                    }, 500);
+                }, 1000);
+
+            } catch (error) {
+                log(`❌ Error during search clear test: ${error.message}`, 'error');
+            }
+        }
+
+        function testAgentVisibility() {
+            log('👁️ Testing agent visibility...');
+
+            try {
+                // Make sure we're on the library tab
+                if (typeof frameWindow.showTab === 'function') {
+                    frameWindow.showTab('library');
+                }
+
+                setTimeout(() => {
+                    const allCards = frameDocument.querySelectorAll('.agent-card');
+                    const visibleCards = frameDocument.querySelectorAll('.agent-card:not([style*="none"])');
+                    const hiddenCards = frameDocument.querySelectorAll('.agent-card[style*="none"]');
+
+                    log(`📊 Total agent cards: ${allCards.length}`);
+                    log(`📊 Visible agent cards: ${visibleCards.length}`);
+                    log(`📊 Hidden agent cards: ${hiddenCards.length}`);
+
+                    // Check if agents array exists
+                    if (frameWindow.agents) {
+                        log(`📊 window.agents array length: ${frameWindow.agents.length}`);
+                    } else {
+                        log('⚠️ window.agents array not found');
+                    }
+
+                    if (visibleCards.length > 0) {
+                        log('✅ Agent visibility test passed', 'success');
+                    } else {
+                        log('❌ Agent visibility test failed - no visible cards', 'error');
+                    }
+                }, 1000);
+
+            } catch (error) {
+                log(`❌ Error during visibility test: ${error.message}`, 'error');
+            }
+        }
+
+        function runAllTests() {
+            log('🚀 Running all tests...');
+            
+            testSearchFunctions();
+            
+            setTimeout(() => {
+                testAgentVisibility();
+            }, 2000);
+            
+            setTimeout(() => {
+                testSearchClear();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

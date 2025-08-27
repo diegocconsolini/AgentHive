@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+# Bash completion for Memory Manager CLI
+
+_memory_completion() {
+    local cur prev words cword
+    _init_completion || return
+
+    # Define all main commands
+    local main_commands="auth config memory system --help --version"
+    
+    # Define subcommands for each main command
+    local auth_commands="login logout whoami"
+    local config_commands="get set delete list reset"
+    local memory_commands="list create show update delete"
+    local system_commands="status version doctor"
+
+    # Handle completion based on command position
+    if [[ $cword == 1 ]]; then
+        # Complete main commands
+        COMPREPLY=($(compgen -W "$main_commands" -- "$cur"))
+        return 0
+    fi
+
+    # Handle subcommand completion
+    case "${words[1]}" in
+        auth)
+            if [[ $cword == 2 ]]; then
+                COMPREPLY=($(compgen -W "$auth_commands" -- "$cur"))
+                return 0
+            fi
+            case "${words[2]}" in
+                login)
+                    COMPREPLY=($(compgen -W "--email --password --interactive --json --help" -- "$cur"))
+                    ;;
+                logout)
+                    COMPREPLY=($(compgen -W "--help" -- "$cur"))
+                    ;;
+                whoami)
+                    COMPREPLY=($(compgen -W "--json --help" -- "$cur"))
+                    ;;
+            esac
+            ;;
+        config)
+            if [[ $cword == 2 ]]; then
+                COMPREPLY=($(compgen -W "$config_commands" -- "$cur"))
+                return 0
+            fi
+            case "${words[2]}" in
+                get)
+                    # Could add config key completion here
+                    COMPREPLY=($(compgen -W "--help" -- "$cur"))
+                    ;;
+                set)
+                    # Could add config key completion here
+                    COMPREPLY=($(compgen -W "--help" -- "$cur"))
+                    ;;
+                delete|del)
+                    COMPREPLY=($(compgen -W "--help" -- "$cur"))
+                    ;;
+                list|ls)
+                    COMPREPLY=($(compgen -W "--help" -- "$cur"))
+                    ;;
+                reset)
+                    COMPREPLY=($(compgen -W "--force --help" -- "$cur"))
+                    ;;
+            esac
+            ;;
+        memory)
+            if [[ $cword == 2 ]]; then
+                COMPREPLY=($(compgen -W "$memory_commands" -- "$cur"))
+                return 0
+            fi
+            case "${words[2]}" in
+                list|ls)
+                    COMPREPLY=($(compgen -W "--limit --search --tags --json --help" -- "$cur"))
+                    ;;
+                create|new)
+                    COMPREPLY=($(compgen -W "--title --content --tags --json --help" -- "$cur"))
+                    ;;
+                show)
+                    COMPREPLY=($(compgen -W "--json --help" -- "$cur"))
+                    ;;
+                update)
+                    COMPREPLY=($(compgen -W "--title --content --tags --json --help" -- "$cur"))
+                    ;;
+                delete|rm)
+                    COMPREPLY=($(compgen -W "--force --json --help" -- "$cur"))
+                    ;;
+            esac
+            ;;
+        system)
+            if [[ $cword == 2 ]]; then
+                COMPREPLY=($(compgen -W "$system_commands" -- "$cur"))
+                return 0
+            fi
+            case "${words[2]}" in
+                status|version|doctor)
+                    COMPREPLY=($(compgen -W "--json --help" -- "$cur"))
+                    ;;
+            esac
+            ;;
+    esac
+
+    return 0
+}
+
+# Register the completion function
+complete -F _memory_completion memory

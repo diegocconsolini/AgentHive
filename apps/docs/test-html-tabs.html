@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AgentsReview Tab Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-container { max-width: 800px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .warning { background-color: #fff3cd; border-color: #ffeeba; color: #856404; }
+        button { margin: 5px; padding: 8px 15px; cursor: pointer; }
+        iframe { width: 100%; height: 400px; border: 1px solid #ccc; margin-top: 10px; }
+        .test-log { background-color: #f8f9fa; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 AgentsReview HTML Tab Testing</h1>
+        
+        <div class="test-section">
+            <h3>📋 Test Results</h3>
+            <div id="testResults">Running tests...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎮 Manual Tab Testing</h3>
+            <p>Test the tab switching functionality:</p>
+            <button onclick="openMainApp()">Open AgentsReview in New Window</button>
+            <button onclick="testTabSwitching()">Test Tab Functions</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 JavaScript Console Output</h3>
+            <div id="consoleLog" class="test-log">Console output will appear here...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>🖼️ Live Preview</h3>
+            <iframe id="previewFrame" src="index.html" onload="onFrameLoad()"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let originalConsoleLog = console.log;
+        let originalConsoleError = console.error;
+        let originalConsoleWarn = console.warn;
+        let logOutput = [];
+
+        // Capture console output
+        function captureConsole() {
+            console.log = function(...args) {
+                logOutput.push(`[LOG] ${args.join(' ')}`);
+                updateConsoleDisplay();
+                originalConsoleLog.apply(console, args);
+            };
+            
+            console.error = function(...args) {
+                logOutput.push(`[ERROR] ${args.join(' ')}`);
+                updateConsoleDisplay();
+                originalConsoleError.apply(console, args);
+            };
+
+            console.warn = function(...args) {
+                logOutput.push(`[WARN] ${args.join(' ')}`);
+                updateConsoleDisplay();
+                originalConsoleWarn.apply(console, args);
+            };
+        }
+
+        function updateConsoleDisplay() {
+            const consoleDiv = document.getElementById('consoleLog');
+            consoleDiv.textContent = logOutput.slice(-20).join('\n'); // Show last 20 logs
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        function onFrameLoad() {
+            console.log('✅ AgentsReview iframe loaded successfully');
+            
+            setTimeout(() => {
+                try {
+                    const frame = document.getElementById('previewFrame');
+                    const frameDoc = frame.contentDocument || frame.contentWindow.document;
+                    
+                    // Test if basic elements exist
+                    const tabButtons = frameDoc.querySelectorAll('.tab-button');
+                    const tabContents = frameDoc.querySelectorAll('[id^="tab-"]');
+                    
+                    console.log(`Found ${tabButtons.length} tab buttons`);
+                    console.log(`Found ${tabContents.length} tab content areas`);
+                    
+                    if (tabButtons.length > 0 && tabContents.length > 0) {
+                        showTestResult('✅ HTML Structure Test PASSED', 'success');
+                    } else {
+                        showTestResult('❌ HTML Structure Test FAILED', 'error');
+                    }
+                    
+                    // Test showTab function
+                    const frameWindow = frame.contentWindow;
+                    if (typeof frameWindow.showTab === 'function') {
+                        console.log('✅ window.showTab function exists');
+                        showTestResult('✅ showTab Function Test PASSED', 'success');
+                    } else {
+                        console.log('❌ window.showTab function missing');
+                        showTestResult('❌ showTab Function Test FAILED', 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error testing iframe:', error);
+                    showTestResult('⚠️ Cross-frame testing limited due to security restrictions', 'warning');
+                }
+            }, 2000);
+        }
+
+        function showTestResult(message, type) {
+            const resultsDiv = document.getElementById('testResults');
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            div.textContent = message;
+            resultsDiv.appendChild(div);
+        }
+
+        function openMainApp() {
+            window.open('index.html', '_blank', 'width=1200,height=800');
+            console.log('🚀 Opened AgentsReview in new window');
+        }
+
+        function testTabSwitching() {
+            try {
+                const frame = document.getElementById('previewFrame');
+                const frameWindow = frame.contentWindow;
+                
+                if (typeof frameWindow.showTab === 'function') {
+                    console.log('🧪 Testing tab switching...');
+                    
+                    // Test switching to different tabs
+                    const tabs = ['fundamentals', 'workflows', 'guide', 'library', 'project'];
+                    let testIndex = 0;
+                    
+                    function testNextTab() {
+                        if (testIndex < tabs.length) {
+                            const tabName = tabs[testIndex];
+                            console.log(`Testing switch to: ${tabName}`);
+                            
+                            try {
+                                const result = frameWindow.showTab(tabName);
+                                if (result) {
+                                    console.log(`✅ Successfully switched to ${tabName}`);
+                                } else {
+                                    console.log(`❌ Failed to switch to ${tabName}`);
+                                }
+                            } catch (error) {
+                                console.log(`❌ Error switching to ${tabName}: ${error.message}`);
+                            }
+                            
+                            testIndex++;
+                            setTimeout(testNextTab, 1000);
+                        } else {
+                            console.log('🎉 Tab switching test completed!');
+                            showTestResult('🧪 Tab Switching Test COMPLETED - Check console for details', 'success');
+                        }
+                    }
+                    
+                    testNextTab();
+                } else {
+                    console.log('❌ Cannot test: showTab function not available');
+                    showTestResult('❌ Cannot test tab switching: showTab function missing', 'error');
+                }
+            } catch (error) {
+                console.error('Error during tab switching test:', error);
+                showTestResult('❌ Tab switching test failed with error', 'error');
+            }
+        }
+
+        // Initialize
+        captureConsole();
+        
+        // Initial test
+        setTimeout(() => {
+            console.log('🧪 AgentsReview Tab Tester initialized');
+            console.log('📋 Testing HTML structure and JavaScript functionality...');
+            
+            showTestResult('🚀 Tab Tester Initialized', 'success');
+        }, 100);
+    </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+#compdef memory
+
+# Zsh completion for Memory Manager CLI
+
+_memory() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :_memory_commands' \
+        '*::arg:->args'
+
+    case $state in
+        args)
+            case $words[1] in
+                auth)
+                    _memory_auth
+                    ;;
+                config)
+                    _memory_config
+                    ;;
+                memory)
+                    _memory_memory
+                    ;;
+                system)
+                    _memory_system
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_memory_commands() {
+    local commands
+    commands=(
+        'auth:Authentication commands'
+        'config:Configuration management'
+        'memory:Memory management commands'
+        'system:System utilities and diagnostics'
+        '--help:Show help information'
+        '--version:Show version information'
+    )
+    _describe 'commands' commands
+}
+
+_memory_auth() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :_memory_auth_commands' \
+        '*::arg:->args'
+
+    case $state in
+        args)
+            case $words[1] in
+                login)
+                    _arguments \
+                        '--email[Email address]:email:' \
+                        '--password[Password]:password:' \
+                        '--interactive[Interactive login]' \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]'
+                    ;;
+                logout)
+                    _arguments \
+                        '--help[Show help]'
+                    ;;
+                whoami)
+                    _arguments \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_memory_auth_commands() {
+    local commands
+    commands=(
+        'login:Login to Memory Manager'
+        'logout:Logout from Memory Manager'
+        'whoami:Show current authenticated user'
+    )
+    _describe 'auth commands' commands
+}
+
+_memory_config() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :_memory_config_commands' \
+        '*::arg:->args'
+
+    case $state in
+        args)
+            case $words[1] in
+                get)
+                    _arguments \
+                        '--help[Show help]' \
+                        '1:key:_memory_config_keys'
+                    ;;
+                set)
+                    _arguments \
+                        '--help[Show help]' \
+                        '1:key:_memory_config_keys' \
+                        '2:value:'
+                    ;;
+                delete|del)
+                    _arguments \
+                        '--help[Show help]' \
+                        '1:key:_memory_config_keys'
+                    ;;
+                list|ls)
+                    _arguments \
+                        '--help[Show help]'
+                    ;;
+                reset)
+                    _arguments \
+                        '--force[Skip confirmation]' \
+                        '--help[Show help]'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_memory_config_commands() {
+    local commands
+    commands=(
+        'get:Get configuration value'
+        'set:Set configuration value'
+        'delete:Delete configuration value'
+        'list:List all configuration'
+        'reset:Reset all configuration'
+    )
+    _describe 'config commands' commands
+}
+
+_memory_config_keys() {
+    local keys
+    keys=(
+        'api.url:API base URL'
+        'api.graphqlUrl:GraphQL endpoint URL'
+        'preferences.editor:Default editor'
+        'preferences.pager:Default pager'
+        'preferences.outputFormat:Output format'
+    )
+    _describe 'config keys' keys
+}
+
+_memory_memory() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :_memory_memory_commands' \
+        '*::arg:->args'
+
+    case $state in
+        args)
+            case $words[1] in
+                list|ls)
+                    _arguments \
+                        '--limit[Limit results]:limit:' \
+                        '--search[Search query]:query:' \
+                        '--tags[Filter by tags]:tags:' \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]'
+                    ;;
+                create|new)
+                    _arguments \
+                        '--title[Memory title]:title:' \
+                        '--content[Memory content]:content:' \
+                        '--tags[Tags (comma-separated)]:tags:' \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]'
+                    ;;
+                show)
+                    _arguments \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]' \
+                        '1:id:'
+                    ;;
+                update)
+                    _arguments \
+                        '--title[New title]:title:' \
+                        '--content[New content]:content:' \
+                        '--tags[New tags]:tags:' \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]' \
+                        '1:id:'
+                    ;;
+                delete|rm)
+                    _arguments \
+                        '--force[Skip confirmation]' \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]' \
+                        '1:id:'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_memory_memory_commands() {
+    local commands
+    commands=(
+        'list:List memories'
+        'create:Create a new memory'
+        'show:Show a specific memory'
+        'update:Update a memory'
+        'delete:Delete a memory'
+    )
+    _describe 'memory commands' commands
+}
+
+_memory_system() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :_memory_system_commands' \
+        '*::arg:->args'
+
+    case $state in
+        args)
+            case $words[1] in
+                status|version|doctor)
+                    _arguments \
+                        '--json[Output in JSON format]' \
+                        '--help[Show help]'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_memory_system_commands() {
+    local commands
+    commands=(
+        'status:Check system connectivity and API status'
+        'version:Show detailed version information'
+        'doctor:Run system diagnostics and health checks'
+    )
+    _describe 'system commands' commands
+}
+
+_memory "$@"
