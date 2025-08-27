@@ -1,28 +1,19 @@
 export function EmbeddedGraphiQLPage() {
   return (
-    <div 
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 1000,
-        background: 'white'
-      }}
-    >
-      {/* Embedded GraphiQL iframe - full viewport */}
+    <div className="h-full w-full overflow-hidden">
+      {/* Embedded GraphiQL iframe - takes full content area */}
       <iframe
         src="http://localhost:4000/graphql"
+        className="w-full h-full border-0"
         style={{
-          width: '100%',
-          height: '100%',
+          minHeight: '80vh',
+          height: 'calc(100vh - 120px)', // Account for header space
           border: 'none',
-          background: 'white',
-          display: 'block'
+          background: 'white'
         }}
         title="GraphiQL API Explorer"
         allow="same-origin"
+        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
       />
     </div>
   );
