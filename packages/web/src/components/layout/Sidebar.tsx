@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Bot,
   Database,
+  Terminal,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useQuery, gql } from '@apollo/client';
@@ -98,6 +99,12 @@ const useNavigationItems = () => {
       icon: 'Bot',
       badge: agentsCount > 0 ? agentsCount.toString() : undefined,
     },
+    {
+      id: 'graphiql',
+      label: 'GraphiQL Explorer',
+      path: '/graphiql',
+      icon: 'Terminal',
+    },
   ];
 };
 
@@ -126,6 +133,7 @@ const iconMap = {
   Users,
   Bot,
   Database,
+  Terminal,
 };
 
 interface NavItemComponentProps {

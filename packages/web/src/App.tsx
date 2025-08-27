@@ -12,6 +12,7 @@ import { TagsPage } from './pages/TagsPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import AgentsPage from './pages/AgentsPage';
+import { GraphiQLPage } from './pages/GraphiQLPage';
 
 // Admin components
 import { AdminLayout } from './components/admin/AdminLayout';
@@ -55,6 +56,7 @@ function App() {
           <Route path="tags" element={<TagsPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="agents" element={<AgentsPage />} />
+          <Route path="graphiql" element={<GraphiQLPage />} />
           <Route path="settings" element={<SettingsPage />} />
           
           {/* Legacy route redirect */}
