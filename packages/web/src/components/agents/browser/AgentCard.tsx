@@ -7,6 +7,8 @@ interface AgentCardProps {
   isSelected?: boolean;
   onSelect?: (agent: Agent) => void;
   onToggleStatus?: (agentId: string, currentStatus: string) => void;
+  onConfigure?: (agent: Agent) => void;
+  onViewLogs?: (agent: Agent) => void;
   compact?: boolean;
   showControls?: boolean;
 }
@@ -16,6 +18,8 @@ export const AgentCard: React.FC<AgentCardProps> = ({
   isSelected = false,
   onSelect,
   onToggleStatus,
+  onConfigure,
+  onViewLogs,
   compact = false,
   showControls = true,
 }) => {
@@ -26,6 +30,16 @@ export const AgentCard: React.FC<AgentCardProps> = ({
   const handleToggleStatus = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggleStatus?.(agent.id, agent.status);
+  };
+
+  const handleConfigure = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onConfigure?.(agent);
+  };
+
+  const handleViewLogs = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onViewLogs?.(agent);
   };
 
   if (compact) {
@@ -175,20 +189,26 @@ export const AgentCard: React.FC<AgentCardProps> = ({
                 onClick={handleToggleStatus}
                 className={`
                   px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-                  ${agent.status === 'running'
+                  ${agent.status === 'active'
                     ? 'bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400'
                     : 'bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-900/30 dark:hover:bg-green-900/50 dark:text-green-400'
                   }
                 `}
               >
-                {agent.status === 'running' ? 'Stop' : 'Start'}
+                {agent.status === 'active' ? 'Stop' : 'Start'}
               </button>
               
-              <button className="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors">
+              <button 
+                onClick={handleConfigure}
+                className="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+              >
                 Configure
               </button>
               
-              <button className="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors">
+              <button 
+                onClick={handleViewLogs}
+                className="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+              >
                 Logs
               </button>
 

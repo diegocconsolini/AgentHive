@@ -186,7 +186,7 @@ export const AgentManagement: React.FC<AgentManagementProps> = ({
   };
 
   const handleAgentToggleStatus = async (agentId: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'running' ? 'stopped' : 'running';
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     
     try {
       const agent = agents.find(a => a.id === agentId);
@@ -196,8 +196,7 @@ export const AgentManagement: React.FC<AgentManagementProps> = ({
         variables: {
           id: agentId,
           input: {
-            // Note: status update may need to be added to UpdateAgentInput schema
-            name: agent.name
+            status: newStatus
           }
         }
       });
@@ -207,6 +206,18 @@ export const AgentManagement: React.FC<AgentManagementProps> = ({
     } catch (err) {
       console.error('Failed to toggle agent status:', err);
     }
+  };
+
+  const handleAgentConfigure = (agent: Agent) => {
+    console.log('Opening configuration for agent:', agent.name);
+    // TODO: Implement agent configuration modal/page
+    alert(`Configuration panel for ${agent.name} is not yet implemented.`);
+  };
+
+  const handleAgentViewLogs = (agent: Agent) => {
+    console.log('Opening logs for agent:', agent.name);
+    // TODO: Implement agent logs modal/page
+    alert(`Logs viewer for ${agent.name} is not yet implemented.`);
   };
 
   const registryActions = useMemo(() => ({
@@ -279,6 +290,8 @@ export const AgentManagement: React.FC<AgentManagementProps> = ({
             selectedAgent={registryState.selectedAgent}
             onAgentSelect={handleAgentSelect}
             onAgentToggleStatus={handleAgentToggleStatus}
+            onAgentConfigure={handleAgentConfigure}
+            onAgentViewLogs={handleAgentViewLogs}
           />
         )}
         

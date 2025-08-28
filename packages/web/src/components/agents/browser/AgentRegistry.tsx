@@ -12,6 +12,8 @@ interface AgentRegistryProps {
   selectedAgent?: Agent | null;
   onAgentSelect?: (agent: Agent) => void;
   onAgentToggleStatus?: (agentId: string, currentStatus: string) => void;
+  onAgentConfigure?: (agent: Agent) => void;
+  onAgentViewLogs?: (agent: Agent) => void;
   showCategories?: boolean;
   compact?: boolean;
   className?: string;
@@ -151,6 +153,8 @@ export const AgentRegistry: React.FC<AgentRegistryProps> = ({
   selectedAgent,
   onAgentSelect,
   onAgentToggleStatus,
+  onAgentConfigure,
+  onAgentViewLogs,
   showCategories = true,
   compact = false,
   className = '',
@@ -386,6 +390,8 @@ export const AgentRegistry: React.FC<AgentRegistryProps> = ({
                 isSelected={selectedAgent?.id === agent.id}
                 onSelect={onAgentSelect}
                 onToggleStatus={onAgentToggleStatus}
+                onConfigure={onAgentConfigure}
+                onViewLogs={onAgentViewLogs}
                 compact={viewMode === 'grid' || compact}
               />
             ))}
