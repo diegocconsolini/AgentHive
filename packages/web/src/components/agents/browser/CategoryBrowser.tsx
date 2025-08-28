@@ -9,46 +9,28 @@ interface CategoryBrowserProps {
   className?: string;
 }
 
-const categoryInfo: Record<AgentCategory, {
-  label: string;
-  description: string;
-  color: string;
-}> = {
-  development: {
-    label: 'Development',
-    description: 'Code generation, architecture, and development tools',
-    color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  },
-  infrastructure: {
-    label: 'Infrastructure',
-    description: 'DevOps, cloud services, and system administration',
-    color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  },
-  'ai-ml': {
-    label: 'AI/ML',
-    description: 'Machine learning, AI research, and data science',
-    color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-  },
-  security: {
-    label: 'Security',
-    description: 'Security auditing, vulnerability scanning, and compliance',
-    color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  },
-  data: {
-    label: 'Data',
-    description: 'Data analysis, visualization, and database management',
-    color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  },
-  business: {
-    label: 'Business',
-    description: 'Business analysis, marketing, and process automation',
-    color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
-  },
-  general: {
-    label: 'General',
-    description: 'General purpose and utility agents',
-    color: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-  },
+// Dynamic category info based on actual data
+const getCategoryInfo = (category: string) => {
+  const colors = [
+    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+    'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
+    'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+    'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400',
+    'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
+    'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
+  ];
+  
+  const colorIndex = category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+  
+  return {
+    label: category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+    description: `${category.charAt(0).toUpperCase() + category.slice(1)} agents and tools`,
+    color: colors[colorIndex],
+  };
 };
 
 export const CategoryBrowser: React.FC<CategoryBrowserProps> = ({
@@ -63,16 +45,15 @@ export const CategoryBrowser: React.FC<CategoryBrowserProps> = ({
     return acc;
   }, {} as Record<AgentCategory, number>);
 
-  // Get running agents count by category
-  const runningCounts = agents
-    .filter(agent => agent.status === 'running')
+  // Get active agents count by category
+  const activeCounts = agents
+    .filter(agent => agent.status === 'active')
     .reduce((acc, agent) => {
       acc[agent.category] = (acc[agent.category] || 0) + 1;
       return acc;
     }, {} as Record<AgentCategory, number>);
 
-  const categories = Object.keys(categoryInfo) as AgentCategory[];
-  const availableCategories = categories.filter(cat => categoryCounts[cat] > 0);
+  const availableCategories = Object.keys(categoryCounts).sort();
 
   return (
     <div className={`${className} space-y-3`}>
@@ -94,9 +75,9 @@ export const CategoryBrowser: React.FC<CategoryBrowserProps> = ({
 
       <div className="space-y-2">
         {availableCategories.map((category) => {
-          const info = categoryInfo[category];
+          const info = getCategoryInfo(category);
           const count = categoryCounts[category] || 0;
-          const runningCount = runningCounts[category] || 0;
+          const activeCount = activeCounts[category] || 0;
           const isSelected = selectedCategory === category;
 
           return (
@@ -129,9 +110,9 @@ export const CategoryBrowser: React.FC<CategoryBrowserProps> = ({
                       `}>
                         {count}
                       </span>
-                      {runningCount > 0 && (
+                      {activeCount > 0 && (
                         <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium">
-                          {runningCount} running
+                          {activeCount} active
                         </span>
                       )}
                     </div>
@@ -160,10 +141,10 @@ export const CategoryBrowser: React.FC<CategoryBrowserProps> = ({
           </div>
           <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
             <div className="text-2xl font-bold text-green-700 dark:text-green-400">
-              {agents.filter(a => a.status === 'running').length}
+              {agents.filter(a => a.status === 'active').length}
             </div>
             <div className="text-xs text-gray-600 dark:text-gray-400">
-              Running
+              Active
             </div>
           </div>
         </div>
@@ -194,7 +175,7 @@ export const CategoryBrowser: React.FC<CategoryBrowserProps> = ({
               Popular Tags
               {selectedCategory && (
                 <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                  in {categoryInfo[selectedCategory].label}
+                  in {getCategoryInfo(selectedCategory).label}
                 </span>
               )}
             </h4>
