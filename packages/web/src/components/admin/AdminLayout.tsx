@@ -35,7 +35,7 @@ const adminNavItems: NavItem[] = [
   },
   {
     id: 'users',
-    label: 'Admin Panel',
+    label: 'User Management',
     path: '/admin/users',
     icon: 'Users'
   },
