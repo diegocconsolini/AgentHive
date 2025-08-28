@@ -241,9 +241,13 @@ export const AgentRegistry: React.FC<AgentRegistryProps> = ({
     return filtered;
   }, [agents, searchParams]);
 
-  // Extract available categories and tags
+  // Extract available categories, statuses, and tags
   const availableCategories = useMemo(() => {
     return Array.from(new Set(agents.map(a => a.category)));
+  }, [agents]);
+
+  const availableStatuses = useMemo(() => {
+    return Array.from(new Set(agents.map(a => a.status)));
   }, [agents]);
 
   const availableTags = useMemo(() => {
@@ -303,6 +307,7 @@ export const AgentRegistry: React.FC<AgentRegistryProps> = ({
               searchParams={searchParams}
               onSearchParamsChange={handleSearchParamsChange}
               availableCategories={availableCategories}
+              availableStatuses={availableStatuses}
               availableTags={availableTags}
               agentCount={filteredAgents.length}
             />
@@ -357,6 +362,7 @@ export const AgentRegistry: React.FC<AgentRegistryProps> = ({
               searchParams={searchParams}
               onSearchParamsChange={handleSearchParamsChange}
               availableCategories={availableCategories}
+              availableStatuses={availableStatuses}
               availableTags={availableTags}
               agentCount={filteredAgents.length}
             />

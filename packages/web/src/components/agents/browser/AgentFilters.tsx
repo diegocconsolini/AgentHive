@@ -5,28 +5,19 @@ interface AgentFiltersProps {
   searchParams: AgentSearchParams;
   onSearchParamsChange: (params: Partial<AgentSearchParams>) => void;
   availableCategories: AgentCategory[];
+  availableStatuses: AgentStatus[];
   availableTags: string[];
   agentCount: number;
   className?: string;
 }
 
-const categoryLabels: Record<AgentCategory, string> = {
-  development: 'Development',
-  infrastructure: 'Infrastructure', 
-  'ai-ml': 'AI/ML',
-  security: 'Security',
-  data: 'Data',
-  business: 'Business',
-  general: 'General',
+// Dynamic label generation
+const getCategoryLabel = (category: string) => {
+  return category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
 
-const statusLabels: Record<AgentStatus, string> = {
-  stopped: 'Stopped',
-  starting: 'Starting',
-  running: 'Running',
-  stopping: 'Stopping',
-  error: 'Error',
-  unknown: 'Unknown',
+const getStatusLabel = (status: string) => {
+  return status.charAt(0).toUpperCase() + status.slice(1);
 };
 
 const sortOptions = [
@@ -40,6 +31,7 @@ export const AgentFilters: React.FC<AgentFiltersProps> = ({
   searchParams,
   onSearchParamsChange,
   availableCategories,
+  availableStatuses,
   availableTags,
   agentCount,
   className = '',
@@ -169,7 +161,7 @@ export const AgentFilters: React.FC<AgentFiltersProps> = ({
                   : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
-              {categoryLabels[category]}
+              {getCategoryLabel(category)}
             </button>
           ))}
         </div>
@@ -191,7 +183,7 @@ export const AgentFilters: React.FC<AgentFiltersProps> = ({
           >
             All
           </button>
-          {(Object.keys(statusLabels) as AgentStatus[]).map((status) => (
+          {availableStatuses.map((status) => (
             <button
               key={status}
               onClick={() => handleStatusChange(status)}
@@ -201,7 +193,7 @@ export const AgentFilters: React.FC<AgentFiltersProps> = ({
                   : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
-              {statusLabels[status]}
+              {getStatusLabel(status)}
             </button>
           ))}
         </div>
