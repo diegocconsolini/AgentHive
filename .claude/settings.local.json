@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/home/diegocc/AgentsReview/AgentsReview/**)",
+      "Read(/home/diegocc/AgentsReview/AgentsReview/**)",
+      "Bash(node:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
