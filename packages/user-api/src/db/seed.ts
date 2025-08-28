@@ -306,7 +306,7 @@ Simple but delicious!`,
       rating: agent.rating,
       systemPrompt: agent.systemPrompt,
       isPublic: agent.isPublic ? 'true' : 'false',
-      authorId: agent.authorId || 'user_dev_2',
+      authorId: agent.authorId === 'admin' ? 'user_dev_2' : 'user_dev_1',
       createdAt: agent.createdAt,
       updatedAt: agent.updatedAt,
     }));
