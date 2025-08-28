@@ -1,8 +1,12 @@
+import dotenv from 'dotenv';
 import { createYoga } from 'graphql-yoga';
 import { createServer } from 'http';
 import { schema } from './schema/index.js';
 import { createContext } from './context.js';
 import { EnvUtils } from '@memory-manager/shared';
+
+// Load environment variables from project root
+dotenv.config({ path: '../../../.env' });
 
 const port = EnvUtils.getNumber('SERVER_PORT', 4000);
 

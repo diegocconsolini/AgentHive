@@ -12,42 +12,41 @@ export async function seedDatabase() {
   await db.delete(memories);
   await db.delete(users);
 
-  // Create demo password hash
-  const demoPasswordHash = bcrypt.hashSync('password123', 10);
+  // Only seed data in development environment
+  if (process.env.NODE_ENV === 'production') {
+    console.log('⚠️  Skipping user seeding in production environment');
+    console.log('✅ Database seeded successfully!');
+    return;
+  }
 
-  // Insert users
+  // Development-only: Create demo users with environment-controlled password
+  const defaultPassword = process.env.SEED_PASSWORD || 'development-only-password';
+  const demoPasswordHash = bcrypt.hashSync(defaultPassword, 10);
+
+  // Insert development users only
   const seedUsers = [
     {
-      id: 'user_1',
-      email: 'demo@example.com',
-      name: 'Demo User',
+      id: 'user_dev_1',
+      email: process.env.SEED_USER_EMAIL || 'dev@localhost',
+      name: 'Development User',
       role: UserRole.USER,
       passwordHash: demoPasswordHash,
       createdAt: new Date('2024-01-15T10:00:00Z').toISOString(),
       updatedAt: new Date('2024-01-15T10:00:00Z').toISOString(),
     },
     {
-      id: 'user_2',
-      email: 'admin@example.com',
-      name: 'Admin User',
+      id: 'user_dev_2',
+      email: process.env.SEED_ADMIN_EMAIL || 'admin@localhost',
+      name: 'Development Admin',
       role: UserRole.ADMIN,
       passwordHash: demoPasswordHash,
       createdAt: new Date('2024-01-10T09:00:00Z').toISOString(),
       updatedAt: new Date('2024-01-10T09:00:00Z').toISOString(),
     },
-    {
-      id: 'user_3',
-      email: 'jane@example.com',
-      name: 'Jane Smith',
-      role: UserRole.USER,
-      passwordHash: demoPasswordHash,
-      createdAt: new Date('2024-02-01T14:30:00Z').toISOString(),
-      updatedAt: new Date('2024-02-01T14:30:00Z').toISOString(),
-    },
   ];
 
   await db.insert(users).values(seedUsers);
-  console.log('👤 Users created');
+  console.log('👤 Development users created');
 
   // Insert memories
   const seedMemories = [
@@ -64,7 +63,7 @@ export async function seedDatabase() {
 
 Remember to always validate input data and sanitize outputs to prevent security vulnerabilities.`,
       tags: JSON.stringify(['graphql', 'api', 'best-practices', 'web-development']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
       createdAt: new Date('2024-08-20T10:30:00Z').toISOString(),
       updatedAt: new Date('2024-08-20T10:30:00Z').toISOString(),
     },
@@ -81,7 +80,7 @@ Remember to always validate input data and sanitize outputs to prevent security 
 
 Type safety is crucial for maintaining large codebases and reducing runtime errors.`,
       tags: JSON.stringify(['typescript', 'javascript', 'programming', 'type-safety']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
     },
     {
       id: 'memory_3',
@@ -96,7 +95,7 @@ Type safety is crucial for maintaining large codebases and reducing runtime erro
 
 Remember that premature optimization is the root of all evil - measure first, optimize second.`,
       tags: JSON.stringify(['react', 'performance', 'optimization', 'javascript']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
     },
     {
       id: 'memory_4',
@@ -113,7 +112,7 @@ Remember that premature optimization is the root of all evil - measure first, op
 
 Tools like Commander.js, Inquirer.js, and Chalk can help build better CLIs.`,
       tags: JSON.stringify(['cli', 'ux', 'design', 'commandline']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
     },
     {
       id: 'memory_5',
@@ -133,7 +132,7 @@ Indexing Strategy:
 
 Always consider the query patterns when designing schemas.`,
       tags: JSON.stringify(['database', 'schema', 'sql', 'design']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
     },
     {
       id: 'memory_6',
@@ -159,7 +158,7 @@ Next Steps:
 
 Timeline: 2-3 weeks for MVP`,
       tags: JSON.stringify(['meeting', 'project', 'kickoff', 'planning']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
     },
     {
       id: 'memory_7',
@@ -177,7 +176,7 @@ Timeline: 2-3 weeks for MVP`,
 
 Automation is key - script as much as possible!`,
       tags: JSON.stringify(['sysadmin', 'maintenance', 'checklist', 'operations']),
-      userId: 'user_2',
+      userId: 'user_dev_2',
     },
     {
       id: 'memory_8',
@@ -202,7 +201,7 @@ Instructions:
 
 Simple but delicious!`,
       tags: JSON.stringify(['recipe', 'cooking', 'pasta', 'italian']),
-      userId: 'user_3',
+      userId: 'user_dev_1',
     },
   ];
 
@@ -242,7 +241,7 @@ Simple but delicious!`,
         isLocked: false
       }),
       tags: JSON.stringify(['api', 'guidelines', 'rest', 'graphql', 'documentation']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
     },
     {
       id: 'context_2',
@@ -275,7 +274,7 @@ Simple but delicious!`,
         isLocked: false
       }),
       tags: JSON.stringify(['meeting', 'template', 'productivity', 'organization']),
-      userId: 'user_1',
+      userId: 'user_dev_1',
     },
   ];
 
@@ -306,7 +305,7 @@ Simple but delicious!`,
       rating: '4.8',
       systemPrompt: 'You are a Python expert with deep knowledge of Python frameworks, best practices, and performance optimization. Help users write clean, efficient, and maintainable Python code.',
       isPublic: 'true',
-      authorId: 'user_2',
+      authorId: 'user_dev_2',
     },
     {
       id: 'agent_2',
@@ -330,7 +329,7 @@ Simple but delicious!`,
       rating: '4.6',
       systemPrompt: 'You are a frontend development expert specializing in React, TypeScript, and modern web technologies. Help users build responsive, accessible, and performant web applications.',
       isPublic: 'true',
-      authorId: 'user_2',
+      authorId: 'user_dev_2',
     },
     {
       id: 'agent_3',
@@ -354,7 +353,7 @@ Simple but delicious!`,
       rating: '4.9',
       systemPrompt: 'You are a code review expert focused on identifying issues, security vulnerabilities, and opportunities for improvement. Provide constructive feedback and actionable suggestions.',
       isPublic: 'true',
-      authorId: 'user_2',
+      authorId: 'user_dev_2',
     },
   ];
 
