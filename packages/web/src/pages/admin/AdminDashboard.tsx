@@ -327,8 +327,8 @@ export const AdminDashboard: React.FC = () => {
 
       {/* System Health Checks */}
       <div className="card">
-        <div>
-          <h3 className="flex items-center">
+        <div className="card-header">
+          <h3 className="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100">
             <ShieldIcon className="h-5 w-5 mr-2" />
             System Health Checks
           </h3>
@@ -336,7 +336,7 @@ export const AdminDashboard: React.FC = () => {
             Detailed health status for all system components
           </p>
         </div>
-        <div>
+        <div className="card-content">
           <div className="space-y-2">
             {dashboardData.systemHealth.checks.map(renderHealthCheck)}
           </div>
@@ -347,7 +347,7 @@ export const AdminDashboard: React.FC = () => {
       {dashboardData.alerts.filter(alert => alert.isActive).length > 0 && (
         <div className="card">
           <div className="card-header">
-            <h3 className="flex items-center">
+            <h3 className="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100">
               <AlertCircle className="h-5 w-5 mr-2" />
               Active Alerts ({dashboardData.alerts.filter(alert => alert.isActive).length})
             </h3>
@@ -368,8 +368,8 @@ export const AdminDashboard: React.FC = () => {
 
       {/* Recent Activity */}
       <div className="card">
-        <div>
-          <h3 className="flex items-center">
+        <div className="card-header">
+          <h3 className="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100">
             <Activity className="h-5 w-5 mr-2" />
             Recent Activity
           </h3>
@@ -377,7 +377,7 @@ export const AdminDashboard: React.FC = () => {
             Latest system events and user activities
           </p>
         </div>
-        <div>
+        <div className="card-content">
           <div className="space-y-3">
             {dashboardData.recentActivity.slice(0, 10).map((activity) => (
               <div key={activity.id} className="flex items-start space-x-3 p-3 border rounded">
