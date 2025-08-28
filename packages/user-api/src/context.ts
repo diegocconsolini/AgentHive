@@ -6,7 +6,11 @@ import { users, sessions } from './db/schema.js';
 import { eq, and, gt } from 'drizzle-orm';
 
 const config = EnvUtils.getConfig();
-const JWT_SECRET = config.JWT_SECRET || 'mock-secret-key';
+const JWT_SECRET = config.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 
 export interface GraphQLContext {
   user?: {
