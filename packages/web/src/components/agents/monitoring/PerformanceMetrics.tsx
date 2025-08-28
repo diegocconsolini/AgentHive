@@ -157,16 +157,20 @@ export const PerformanceMetrics: React.FC<PerformanceMetricsProps> = ({
 
     if (activeAgents.some(a => a.performance)) {
       // If we have real performance data, use it
-
-    return {
-      avgCpuUsage: runningAgents.reduce((sum, a) => sum + a.performance!.metrics.cpuUsage, 0) / runningAgents.length,
-      avgMemoryUsage: runningAgents.reduce((sum, a) => sum + a.performance!.metrics.memoryUsage, 0) / runningAgents.length,
-      totalApiCalls: runningAgents.reduce((sum, a) => sum + a.performance!.metrics.apiCalls, 0),
-      avgSuccessRate: runningAgents.reduce((sum, a) => sum + a.performance!.metrics.successRate, 0) / runningAgents.length,
-      avgResponseTime: runningAgents.reduce((sum, a) => sum + a.performance!.metrics.avgResponseTime, 0) / runningAgents.length,
-      avgHealthScore: runningAgents.reduce((sum, a) => sum + a.performance!.healthScore, 0) / runningAgents.length,
-      totalErrors: runningAgents.reduce((sum, a) => sum + a.performance!.metrics.errorCount, 0),
-    };
+      const agentsWithPerf = activeAgents.filter(a => a.performance);
+      return {
+        avgCpuUsage: agentsWithPerf.reduce((sum, a) => sum + a.performance!.metrics.cpuUsage, 0) / agentsWithPerf.length,
+        avgMemoryUsage: agentsWithPerf.reduce((sum, a) => sum + a.performance!.metrics.memoryUsage, 0) / agentsWithPerf.length,
+        totalApiCalls: agentsWithPerf.reduce((sum, a) => sum + a.performance!.metrics.apiCalls, 0),
+        avgSuccessRate: agentsWithPerf.reduce((sum, a) => sum + a.performance!.metrics.successRate, 0) / agentsWithPerf.length,
+        avgResponseTime: agentsWithPerf.reduce((sum, a) => sum + a.performance!.metrics.avgResponseTime, 0) / agentsWithPerf.length,
+        avgHealthScore: agentsWithPerf.reduce((sum, a) => sum + a.performance!.healthScore, 0) / agentsWithPerf.length,
+        totalErrors: agentsWithPerf.reduce((sum, a) => sum + a.performance!.metrics.errorCount, 0),
+      };
+    } else {
+      // Use mock data for demonstration
+      return mockMetrics;
+    }
   }, [agents]);
 
   // Mock trend data for demo
