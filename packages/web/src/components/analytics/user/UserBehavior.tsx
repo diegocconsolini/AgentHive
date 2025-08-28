@@ -11,7 +11,8 @@ import {
   Calendar,
   Target,
   UserCheck,
-  Repeat
+  Repeat,
+  AlertTriangle
 } from 'lucide-react';
 import { subDays, subHours, subWeeks } from 'date-fns';
 
