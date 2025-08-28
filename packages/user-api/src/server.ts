@@ -6,7 +6,10 @@ import { createContext } from './context.js';
 import { EnvUtils } from '@memory-manager/shared';
 
 // Load environment variables from project root
-dotenv.config({ path: '../../../.env' });
+import { resolve } from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = resolve(fileURLToPath(import.meta.url), '..');
+dotenv.config({ path: resolve(__dirname, '../../../.env') });
 
 const port = EnvUtils.getNumber('SERVER_PORT', 4000);
 
