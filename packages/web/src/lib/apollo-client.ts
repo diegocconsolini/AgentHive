@@ -24,23 +24,40 @@ const authLink = setContext((_, { headers }) => {
 });
 
 // Error Link - handles GraphQL and network errors
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
   if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, locations, path }) => {
+    graphQLErrors.forEach(({ message, locations, path, extensions }) => {
       console.error(
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
       );
+      
+      // Handle authentication errors from GraphQL
+      if (extensions?.code === 'UNAUTHENTICATED' || message.includes('Not authenticated')) {
+        localStorage.removeItem('auth-token');
+        localStorage.removeItem('refresh-token');
+        console.log('Authentication expired, clearing tokens');
+        
+        // Only redirect if not already on login page
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+      }
     });
   }
 
   if (networkError) {
     console.error(`[Network error]: ${networkError}`);
     
-    // Handle authentication errors
-    if (networkError.message.includes('401')) {
-      // Clear auth tokens and redirect to login
+    // Handle authentication errors from network
+    if (networkError.message.includes('401') || 
+        (networkError as any)?.statusCode === 401) {
       localStorage.removeItem('auth-token');
-      window.location.href = '/login';
+      localStorage.removeItem('refresh-token');
+      console.log('Network authentication error, clearing tokens');
+      
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
     }
   }
 });

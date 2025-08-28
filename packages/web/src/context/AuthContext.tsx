@@ -110,7 +110,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (loginData?.login?.tokens?.accessToken) {
+        // Store both access and refresh tokens
         localStorage.setItem('auth-token', loginData.login.tokens.accessToken);
+        if (loginData.login.tokens.refreshToken) {
+          localStorage.setItem('refresh-token', loginData.login.tokens.refreshToken);
+        }
+        
+        console.log('Login successful, tokens stored');
+        
         setAuthState({
           isAuthenticated: true,
           user: loginData.login.user,
@@ -131,6 +138,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('auth-token');
+    localStorage.removeItem('refresh-token');
+    console.log('Logout completed, tokens cleared');
+    
     setAuthState({
       isAuthenticated: false,
       user: null,
