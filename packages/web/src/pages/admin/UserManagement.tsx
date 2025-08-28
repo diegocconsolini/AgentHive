@@ -266,7 +266,7 @@ export const UserManagement: React.FC = () => {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">User Management</h1>
+          <h1 className="text-2xl font-bold">Admin Panel</h1>
           <p className="text-gray-600">Manage users, roles, and permissions</p>
         </div>
         <div className="flex space-x-2">
