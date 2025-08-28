@@ -147,8 +147,8 @@ export const AgentLifecycle: React.FC<AgentLifecycleProps> = ({
     return () => clearInterval(interval);
   }, [realTimeUpdates]);
 
-  const runningCount = agents.filter(a => a.status === 'running').length;
-  const stoppedCount = agents.filter(a => a.status === 'stopped').length;
+  const activeCount = agents.filter(a => a.status === 'active').length;
+  const inactiveCount = agents.filter(a => a.status === 'inactive').length;
   const errorCount = agents.filter(a => a.status === 'error').length;
 
   return (
@@ -238,10 +238,10 @@ export const AgentLifecycle: React.FC<AgentLifecycleProps> = ({
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             <div>
               <div className="text-2xl font-bold text-green-700 dark:text-green-400">
-                {runningCount}
+                {activeCount}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                Running
+                Active
               </div>
             </div>
           </div>
@@ -252,10 +252,10 @@ export const AgentLifecycle: React.FC<AgentLifecycleProps> = ({
             <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
             <div>
               <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
-                {stoppedCount}
+                {inactiveCount}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                Stopped
+                Inactive
               </div>
             </div>
           </div>

@@ -8,20 +8,31 @@ interface AgentIconProps {
   className?: string;
 }
 
-const categoryIcons: Record<AgentCategory, string> = {
-  development: '💻',
-  infrastructure: '🏗️',
-  'ai-ml': '🧠',
-  security: '🔒',
-  data: '📊',
-  business: '💼',
-  general: '⚙️',
+// Dynamic icon mapping based on category name
+const getCategoryIcon = (category: string): string => {
+  const iconMap: Record<string, string> = {
+    'development': '💻',
+    'devops': '🏗️',
+    'ai-ml': '🧠', 
+    'security': '🔒',
+    'data': '📊',
+    'business': '💼',
+    'general': '⚙️',
+    'content': '✍️',
+    'design': '🎨',
+    'specialized': '🔧',
+    'testing': '🧪',
+  };
+  
+  return iconMap[category] || '📦'; // Default icon if category not found
 };
 
-const modelColors: Record<ClaudeModel, string> = {
-  haiku: 'text-emerald-500',
-  sonnet: 'text-blue-500', 
-  opus: 'text-purple-500',
+// Dynamic model color mapping
+const getModelColor = (model: string): string => {
+  if (model.includes('haiku')) return 'text-emerald-500';
+  if (model.includes('sonnet')) return 'text-blue-500';
+  if (model.includes('opus')) return 'text-purple-500';
+  return 'text-gray-500'; // Default color
 };
 
 const sizeClasses = {
@@ -37,8 +48,8 @@ export const AgentIcon: React.FC<AgentIconProps> = ({
   size = 'md',
   className = '' 
 }) => {
-  const icon = categoryIcons[category];
-  const modelColor = model ? modelColors[model] : '';
+  const icon = getCategoryIcon(category);
+  const modelColor = model ? getModelColor(model) : '';
   
   return (
     <div className={`

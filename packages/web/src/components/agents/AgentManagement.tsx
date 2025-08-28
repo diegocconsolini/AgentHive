@@ -297,16 +297,18 @@ export const AgentManagement: React.FC<AgentManagementProps> = ({
         
         {activeTab === 'lifecycle' && (
           <AgentLifecycle
-            state={managementState}
             agents={agents}
-            onStateChange={setManagementState}
+            selectedAgent={registryState.selectedAgent}
+            selectedAgents={managementState.selectedAgents}
+            onAgentSelect={handleAgentSelect}
+            onSelectionChange={handleSelectionChange}
           />
         )}
         
         {activeTab === 'monitoring' && (
           <PerformanceMetrics
             agents={agents}
-            selectedAgents={managementState.selectedAgents}
+            selectedAgent={registryState.selectedAgent}
           />
         )}
       </div>
