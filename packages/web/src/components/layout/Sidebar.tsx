@@ -111,13 +111,13 @@ const useNavigationItems = () => {
 const adminItems: NavItem[] = [
   {
     id: 'users',
-    label: 'Users',
-    path: '/admin/users',
+    label: 'Admin Panel',
+    path: '/admin',
     icon: 'Users',
   },
   {
     id: 'settings',
-    label: 'Settings',
+    label: 'App Settings',
     path: '/settings',
     icon: 'Settings',
   },
