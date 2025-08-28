@@ -273,8 +273,12 @@ export const AgentManagement: React.FC<AgentManagementProps> = ({
       <div className="flex-1 overflow-hidden">
         {activeTab === 'registry' && (
           <AgentRegistry
-            state={registryState}
-            actions={registryActions}
+            agents={agents}
+            loading={loading}
+            error={error?.message || null}
+            selectedAgent={registryState.selectedAgent}
+            onAgentSelect={handleAgentSelect}
+            onAgentToggleStatus={handleAgentToggleStatus}
           />
         )}
         
