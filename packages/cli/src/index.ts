@@ -16,50 +16,50 @@ import { EnhancedConfigCommand, EnvironmentCommand } from './commands/config/ind
 const program = new Command();
 
 program
-  .name('memory')
-  .description('Memory Manager CLI - Comprehensive agent and memory management platform')
+  .name('hive')
+  .description('AgentHive CLI - Command your AI agent swarm 🐝')
   .version('1.0.0')
   .addHelpText('after', `
 Examples:
   # Authentication
-  $ memory auth login                         # Authenticate with the service
-  $ memory auth whoami                        # Show current user
+  $ hive auth login                           # Authenticate with the hive
+  $ hive auth whoami                          # Show current user
 
-  # Agent Management  
-  $ memory agent create my-agent              # Create a new agent
-  $ memory agent list --format=table         # List all agents
-  $ memory agent run agent-id "Hello"        # Run an agent
-  $ memory agent benchmark agent-id          # Benchmark agent performance
+  # Agent Swarm Management  
+  $ hive agent create my-agent                # Create a new agent
+  $ hive agent list --format=table           # List all agents in the hive
+  $ hive agent run agent-id "Hello"          # Run an agent
+  $ hive agent benchmark agent-id            # Benchmark agent performance
 
   # Context Management
-  $ memory context create "Project Context"  # Create a new context
-  $ memory context analyze ctx-id             # Analyze context patterns
-  $ memory context merge source target        # Merge two contexts
+  $ hive context create "Project Context"    # Create a new context
+  $ hive context analyze ctx-id              # Analyze context patterns
+  $ hive context merge source target         # Merge two contexts
 
   # Enhanced Memory Management
-  $ memory memory search "AI agents"         # Search memories with filters
-  $ memory memory cluster --method=semantic  # Cluster memories by similarity
-  $ memory memory graph --output=svg         # Generate memory relationship graph
+  $ hive memory search "AI agents"           # Search memories with filters
+  $ hive memory cluster --method=semantic    # Cluster memories by similarity
+  $ hive memory graph --output=svg           # Generate memory relationship graph
 
   # Performance & Monitoring
-  $ memory perf analyze --duration=24h       # Analyze system performance
-  $ memory monitor status --detailed         # Check detailed system status
-  $ memory perf benchmark --suite=full       # Run comprehensive benchmarks
+  $ hive perf analyze --duration=24h         # Analyze swarm performance
+  $ hive monitor status --detailed           # Check detailed hive status
+  $ hive perf benchmark --suite=full         # Run comprehensive benchmarks
 
   # Development Tools
-  $ memory dev scaffold agent my-bot         # Generate agent template
-  $ memory dev test --type=unit --coverage   # Run tests with coverage
-  $ memory dev backup --compress             # Create compressed backup
+  $ hive dev scaffold agent my-bot           # Generate agent template
+  $ hive dev test --type=unit --coverage     # Run tests with coverage
+  $ hive dev backup --compress               # Create compressed backup
 
   # Configuration & Environments
-  $ memory config get api.url                # Get configuration value
-  $ memory config set api.url <url>          # Set configuration value
-  $ memory env create development             # Create development environment
-  $ memory env switch production             # Switch to production environment
+  $ hive config get api.url                  # Get configuration value
+  $ hive config set api.url <url>            # Set configuration value
+  $ hive env create development               # Create development environment
+  $ hive env switch production               # Switch to production environment
 
 For more information on a specific command:
-  $ memory <command> --help
-  $ memory <command> <subcommand> --help
+  $ hive <command> --help
+  $ hive <command> <subcommand> --help
 `);
 
 // Add all comprehensive commands

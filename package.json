@@ -1,7 +1,7 @@
 {
-  "name": "@epic/memory-manager",
+  "name": "@agenthive/platform",
   "version": "1.0.0",
-  "description": "Epic Memory Manager - Unified AI-assisted productivity platform",
+  "description": "AgentHive - The Hive Mind for AI Agents. Orchestrate 88+ specialized AI agents for maximum productivity.",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -47,14 +47,18 @@
     "npm": ">=9.0.0"
   },
   "keywords": [
-    "memory-manager",
     "ai-agents",
+    "agent-orchestration",
     "productivity",
+    "claude",
+    "gpt",
     "graphql",
     "typescript",
-    "monorepo"
+    "monorepo",
+    "agent-management",
+    "hive-mind"
   ],
-  "author": "Epic Memory Manager Team",
+  "author": "Diego Consolini",
   "license": "MIT",
   "dependencies": {
     "chartjs-adapter-date-fns": "^3.0.0"

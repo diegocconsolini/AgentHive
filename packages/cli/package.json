@@ -1,9 +1,10 @@
 {
-  "name": "@memory-manager/cli",
+  "name": "@agenthive/cli",
   "version": "1.0.0",
-  "description": "Memory Manager Command Line Interface",
+  "description": "AgentHive Command Line Interface - Control your AI agent swarm from the terminal",
   "type": "module",
   "bin": {
+    "hive": "./bin/hive",
     "memory": "./bin/memory"
   },
   "scripts": {
