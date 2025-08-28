@@ -94,7 +94,7 @@ export const AgentManagement: React.FC<AgentManagementProps> = ({
   const { data, loading, error, refetch } = useQuery(GET_AGENTS, {
     variables: {
       filter: {
-        limit: 20,
+        limit: 100, // Increased to show all agents
         offset: 0,
       }
     },
