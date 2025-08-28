@@ -104,18 +104,18 @@ export const AdminDashboard: React.FC = () => {
   );
 
   const renderAlert = (alert: AlertType) => (
-    <div key={alert.id} className={`p-4 border rounded-lg ${
-      alert.level === 'critical' ? 'border-red-200 bg-red-50' :
-      alert.level === 'warning' ? 'border-yellow-200 bg-yellow-50' :
-      'border-blue-200 bg-blue-50'
+    <div key={alert.id} className={`alert ${
+      alert.level === 'critical' ? 'alert-critical' :
+      alert.level === 'warning' ? 'alert-warning' :
+      'alert-info'
     }`}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-2 mb-1">
             <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
-              alert.level === 'critical' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200' :
-              alert.level === 'warning' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200' :
-              'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200'
+              alert.level === 'critical' ? 'badge-critical' :
+              alert.level === 'warning' ? 'badge-warning' :
+              'badge-info'
             }`}>
               {alert.level}
             </span>
@@ -124,7 +124,7 @@ export const AdminDashboard: React.FC = () => {
             </span>
           </div>
           <h4 className="font-medium">{alert.title}</h4>
-          <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{alert.message}</p>
         </div>
         {alert.isActive && (
           <button
