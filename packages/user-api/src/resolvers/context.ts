@@ -50,8 +50,11 @@ export const contextResolvers = {
     async contexts(_: any, { filter }: { filter?: any }, context: GraphQLContext) {
       const user = requireAuth(context);
       
-      // Build where clause
-      const whereConditions = [eq(contexts.userId, user.id)];
+      // Build where clause - admins see all contexts, users see only their own
+      const whereConditions = [];
+      if (user.role !== 'ADMIN') {
+        whereConditions.push(eq(contexts.userId, user.id));
+      }
       
       if (filter?.search) {
         const searchTerm = `%${filter.search}%`;
@@ -68,7 +71,10 @@ export const contextResolvers = {
       }
 
       // Query database
-      let query = db.select().from(contexts).where(and(...whereConditions));
+      let query = db.select().from(contexts);
+      if (whereConditions.length > 0) {
+        query = query.where(and(...whereConditions));
+      }
       
       // Sort by creation date (newest first)
       query = query.orderBy(desc(contexts.createdAt));
@@ -112,9 +118,13 @@ export const contextResolvers = {
     async context(_: any, { id }: { id: string }, context: GraphQLContext) {
       const user = requireAuth(context);
       
-      const contextResults = await db.select().from(contexts).where(
-        and(eq(contexts.id, id), eq(contexts.userId, user.id))
-      );
+      // Build where clause - admins can access any context, users only their own
+      const whereConditions = [eq(contexts.id, id)];
+      if (user.role !== 'ADMIN') {
+        whereConditions.push(eq(contexts.userId, user.id));
+      }
+      
+      const contextResults = await db.select().from(contexts).where(and(...whereConditions));
       
       const contextItem = contextResults[0];
       if (!contextItem) {
