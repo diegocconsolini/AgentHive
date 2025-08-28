@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../db/config.js';
 import { analytics, users, memories, contexts, agents } from '../db/schema.js';
-import { eq, desc, gte, count, sql } from 'drizzle-orm';
+import { eq, desc, gte, count, sql, and } from 'drizzle-orm';
 import type { GraphQLContext } from '../context.js';
 
 function requireAuth(context: GraphQLContext) {
@@ -35,22 +35,46 @@ export const analyticsResolvers = {
     async analyticsOverview(_: any, __: any, context: GraphQLContext) {
       const user = requireAuth(context);
       
-      // Get total counts
+      // Get counts - user-specific for regular users, global for admins
+      const isAdmin = user.role === 'ADMIN';
+      
       const [totalUsersResult] = await db.select({ count: count() }).from(users);
-      const [totalMemoriesResult] = await db.select({ count: count() }).from(memories);
-      const [totalContextsResult] = await db.select({ count: count() }).from(contexts);
+      
+      // Memories: user-specific unless admin
+      const [totalMemoriesResult] = isAdmin
+        ? await db.select({ count: count() }).from(memories)
+        : await db.select({ count: count() }).from(memories).where(eq(memories.userId, user.id));
+      
+      // Contexts: user-specific unless admin  
+      const [totalContextsResult] = isAdmin
+        ? await db.select({ count: count() }).from(contexts)
+        : await db.select({ count: count() }).from(contexts).where(eq(contexts.userId, user.id));
+        
+      // Agents: always global (public agents)
       const [totalAgentsResult] = await db.select({ count: count() }).from(agents);
       
       // Get active users (users who have created content in last 30 days)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       
-      const activeUsersQuery = await db
-        .selectDistinct({ userId: memories.userId })
-        .from(memories)
-        .where(gte(memories.createdAt, thirtyDaysAgo.toISOString()));
-      
-      const activeUsers = activeUsersQuery.length;
+      let activeUsers;
+      if (isAdmin) {
+        const activeUsersQuery = await db
+          .selectDistinct({ userId: memories.userId })
+          .from(memories)
+          .where(gte(memories.createdAt, thirtyDaysAgo.toISOString()));
+        activeUsers = activeUsersQuery.length;
+      } else {
+        // For non-admin users, show if current user was active
+        const userActiveQuery = await db
+          .select({ count: count() })
+          .from(memories)
+          .where(and(
+            eq(memories.userId, user.id),
+            gte(memories.createdAt, thirtyDaysAgo.toISOString())
+          ));
+        activeUsers = userActiveQuery[0].count > 0 ? 1 : 0;
+      }
       
       // Generate growth data
       const endDate = new Date();

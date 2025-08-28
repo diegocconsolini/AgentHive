@@ -18,8 +18,11 @@ export const memoryResolvers = {
     async memories(_: any, { filter }: { filter?: any }, context: GraphQLContext) {
       const user = requireAuth(context);
       
-      // Build where clause
-      const whereConditions = [eq(memories.userId, user.id)];
+      // Build where clause - admins see all memories, users see only their own
+      const whereConditions = [];
+      if (user.role !== 'ADMIN') {
+        whereConditions.push(eq(memories.userId, user.id));
+      }
       
       if (filter?.search) {
         const searchTerm = `%${filter.search}%`;
@@ -32,7 +35,10 @@ export const memoryResolvers = {
       }
 
       // Query database
-      let query = db.select().from(memories).where(and(...whereConditions));
+      let query = db.select().from(memories);
+      if (whereConditions.length > 0) {
+        query = query.where(and(...whereConditions));
+      }
       
       // Sort by creation date (newest first)
       query = query.orderBy(desc(memories.createdAt));
