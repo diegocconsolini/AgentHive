@@ -281,81 +281,70 @@ Simple but delicious!`,
   await db.insert(contexts).values(seedContexts);
   console.log('📁 Contexts created');
 
-  // Insert agents
-  const seedAgents = [
-    {
-      id: 'agent_1',
-      name: 'python-pro',
-      description: 'Expert Python developer with deep knowledge of frameworks, best practices, and performance optimization.',
-      version: '2.1.0',
-      category: 'development',
-      model: 'sonnet',
-      tags: JSON.stringify(['python', 'django', 'flask', 'async', 'testing']),
-      capabilities: JSON.stringify(['Code generation', 'Debugging', 'Performance optimization', 'Testing']),
-      dependencies: JSON.stringify(['code-formatter', 'test-runner']),
-      config: JSON.stringify({
-        temperature: 0.7,
-        maxTokens: 4000,
-        timeout: 30000,
-        retries: 3,
-        customSettings: ''
-      }),
-      status: 'active',
-      popularity: '15420',
-      rating: '4.8',
-      systemPrompt: 'You are a Python expert with deep knowledge of Python frameworks, best practices, and performance optimization. Help users write clean, efficient, and maintainable Python code.',
-      isPublic: 'true',
-      authorId: 'user_dev_2',
-    },
-    {
-      id: 'agent_2',
-      name: 'frontend-developer',
-      description: 'Build React components, implement responsive layouts, and handle client-side state management. Optimizes frontend performance and ensures accessibility.',
-      version: '1.5.0',
-      category: 'development',
-      model: 'sonnet',
-      tags: JSON.stringify(['react', 'typescript', 'css', 'ui', 'accessibility']),
-      capabilities: JSON.stringify(['React development', 'State management', 'UI/UX design', 'Performance optimization']),
-      dependencies: JSON.stringify(['react-dev-tools', 'typescript']),
-      config: JSON.stringify({
-        temperature: 0.6,
-        maxTokens: 3500,
-        timeout: 25000,
-        retries: 2,
-        customSettings: ''
-      }),
-      status: 'active',
-      popularity: '12890',
-      rating: '4.6',
-      systemPrompt: 'You are a frontend development expert specializing in React, TypeScript, and modern web technologies. Help users build responsive, accessible, and performant web applications.',
-      isPublic: 'true',
-      authorId: 'user_dev_2',
-    },
-    {
-      id: 'agent_3',
-      name: 'code-reviewer',
-      description: 'Expert code review specialist. Proactively reviews code for quality, security, and maintainability.',
-      version: '1.2.0',
-      category: 'quality',
-      model: 'sonnet',
-      tags: JSON.stringify(['code-review', 'security', 'best-practices', 'quality']),
-      capabilities: JSON.stringify(['Code analysis', 'Security review', 'Best practices', 'Refactoring suggestions']),
-      dependencies: JSON.stringify(['static-analyzer', 'security-scanner']),
-      config: JSON.stringify({
-        temperature: 0.3,
-        maxTokens: 3000,
-        timeout: 20000,
-        retries: 1,
-        customSettings: ''
-      }),
-      status: 'active',
-      popularity: '8950',
-      rating: '4.9',
-      systemPrompt: 'You are a code review expert focused on identifying issues, security vulnerabilities, and opportunities for improvement. Provide constructive feedback and actionable suggestions.',
-      isPublic: 'true',
-      authorId: 'user_dev_2',
-    },
-  ];
+  // Load real agents data
+  let seedAgents = [];
+  try {
+    const fs = await import('fs');
+    const path = await import('path');
+    const agentsDataPath = path.resolve(process.cwd(), '../../agents-data.json');
+    const agentsData = JSON.parse(fs.readFileSync(agentsDataPath, 'utf-8'));
+    
+    // Convert to database format
+    seedAgents = agentsData.map((agent: any) => ({
+      id: agent.id,
+      name: agent.name,
+      description: agent.description,
+      version: agent.version,
+      category: agent.category,
+      model: agent.model,
+      tags: JSON.stringify(agent.tags),
+      capabilities: JSON.stringify(agent.capabilities),
+      dependencies: JSON.stringify(agent.dependencies),
+      config: JSON.stringify(agent.config),
+      status: agent.status,
+      popularity: agent.popularity.toString(),
+      rating: agent.rating,
+      systemPrompt: agent.systemPrompt,
+      isPublic: agent.isPublic ? 'true' : 'false',
+      authorId: agent.authorId || 'user_dev_2',
+      createdAt: agent.createdAt,
+      updatedAt: agent.updatedAt,
+    }));
+    
+    console.log(`📦 Loaded ${seedAgents.length} agents from AgentsReview`);
+  } catch (error) {
+    console.warn('⚠️  Could not load agents data, using fallback agents');
+    
+    // Fallback agents if file not found
+    seedAgents = [
+      {
+        id: 'agent_1',
+        name: 'Python Pro',
+        description: 'Expert Python developer with deep knowledge of frameworks, best practices, and performance optimization.',
+        version: '2.1.0',
+        category: 'development',
+        model: 'claude-3-sonnet',
+        tags: JSON.stringify(['python', 'django', 'flask', 'async', 'testing']),
+        capabilities: JSON.stringify(['Code generation', 'Debugging', 'Performance optimization', 'Testing']),
+        dependencies: JSON.stringify(['code-formatter', 'test-runner']),
+        config: JSON.stringify({
+          temperature: 0.7,
+          maxTokens: 4000,
+          timeout: 30000,
+          retries: 3,
+          customSettings: ''
+        }),
+        status: 'active',
+        popularity: '15420',
+        rating: '4.8',
+        systemPrompt: 'You are a Python expert with deep knowledge of Python frameworks, best practices, and performance optimization. Help users write clean, efficient, and maintainable Python code.',
+        isPublic: 'true',
+        authorId: 'user_dev_2',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ];
+  }
 
   await db.insert(agents).values(seedAgents);
   console.log('🤖 Agents created');
