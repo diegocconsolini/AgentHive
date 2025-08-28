@@ -1,0 +1,54 @@
+{
+  "name": "memory-manager-monorepo",
+  "version": "1.0.0",
+  "description": "Memory Manager Frontend and CLI - A comprehensive memory management system",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:server\"",
+    "dev:web": "npm run dev --workspace=packages/web",
+    "dev:cli": "npm run dev --workspace=packages/cli",
+    "dev:server": "npm run dev --workspace=packages/server",
+    "build": "npm run build:shared && npm run build:web && npm run build:cli && npm run build:server",
+    "build:web": "npm run build --workspace=packages/web",
+    "build:cli": "npm run build --workspace=packages/cli",
+    "build:shared": "npm run build --workspace=packages/shared",
+    "build:server": "npm run build --workspace=packages/server",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    "install:all": "npm install"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "memory-manager",
+    "cli",
+    "web-dashboard",
+    "graphql",
+    "typescript",
+    "react",
+    "monorepo"
+  ],
+  "author": "Memory Manager Team",
+  "license": "MIT",
+  "dependencies": {
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-switch": "^1.2.6",
+    "chartjs-adapter-date-fns": "^3.0.0"
+  }
+}
