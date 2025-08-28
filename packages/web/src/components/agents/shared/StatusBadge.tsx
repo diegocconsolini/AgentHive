@@ -50,6 +50,20 @@ const statusConfig: Record<AgentStatus, {
     borderColor: 'border-red-200 dark:border-red-800',
     icon: '❌',
   },
+  active: {
+    label: 'Active',
+    color: 'text-green-600 dark:text-green-400',
+    bgColor: 'bg-green-50 dark:bg-green-900/20',
+    borderColor: 'border-green-200 dark:border-green-800',
+    icon: '✅',
+  },
+  inactive: {
+    label: 'Inactive',
+    color: 'text-gray-600 dark:text-gray-400',
+    bgColor: 'bg-gray-100 dark:bg-gray-800',
+    borderColor: 'border-gray-300 dark:border-gray-600',
+    icon: '⏸️',
+  },
   unknown: {
     label: 'Unknown',
     color: 'text-gray-500 dark:text-gray-400',
@@ -71,7 +85,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   size = 'md',
   className = '',
 }) => {
-  const config = statusConfig[status];
+  const config = statusConfig[status] || statusConfig.unknown;
   
   return (
     <div className={`
@@ -98,7 +112,7 @@ export const StatusDot: React.FC<Omit<StatusBadgeProps, 'showText'>> = ({
   size = 'md',
   className = '',
 }) => {
-  const config = statusConfig[status];
+  const config = statusConfig[status] || statusConfig.unknown;
   
   const dotSizes = {
     sm: 'w-2 h-2',
