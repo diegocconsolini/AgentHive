@@ -302,7 +302,7 @@ export const agentResolvers = {
       };
     },
 
-    async executeAgent(
+    // async executeAgent(
       _: any,
       { 
         input: { agentId, prompt, context } 
