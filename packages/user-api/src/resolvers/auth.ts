@@ -6,6 +6,20 @@ import { db } from '../db/config.js';
 import { users, sessions } from '../db/schema.js';
 import { eq, and, gt } from 'drizzle-orm';
 
+// Ensure environment is loaded
+import dotenv from 'dotenv';
+import { resolve } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = resolve(fileURLToPath(import.meta.url), '..');
+dotenv.config({ path: resolve(__dirname, '../../../.env') });
+
+// Fallback: Set JWT_SECRET if not set
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'dev-jwt-secret-key-change-in-production';
+  console.log('⚠️  Using fallback JWT_SECRET for development');
+}
+
 const config = EnvUtils.getConfig();
 const JWT_SECRET = config.JWT_SECRET;
 

@@ -9,7 +9,34 @@ import { EnvUtils } from '@memory-manager/shared';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = resolve(fileURLToPath(import.meta.url), '..');
-dotenv.config({ path: resolve(__dirname, '../../../.env') });
+
+// Try multiple possible paths for .env file
+const possibleEnvPaths = [
+  resolve(__dirname, '../../../.env'),
+  resolve(__dirname, '../../.env'),
+  resolve(__dirname, '../.env'),
+  resolve(process.cwd(), '.env'),
+  '/home/diegocc/epic-memory-manager-unified/.env'
+];
+
+let envLoaded = false;
+for (const envPath of possibleEnvPaths) {
+  try {
+    const result = dotenv.config({ path: envPath });
+    if (!result.error) {
+      console.log(`✅ Loaded .env from: ${envPath}`);
+      envLoaded = true;
+      break;
+    }
+  } catch (error) {
+    // Continue to next path
+  }
+}
+
+if (!envLoaded) {
+  console.error('❌ Failed to load .env file from any location');
+  console.log('Tried paths:', possibleEnvPaths);
+}
 
 const port = EnvUtils.getNumber('SERVER_PORT', 4000);
 
