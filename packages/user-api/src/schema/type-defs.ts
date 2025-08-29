@@ -74,6 +74,27 @@ export const typeDefs = `
     end: DateTime!
   }
 
+  type Agent {
+    id: ID!
+    name: String!
+    description: String!
+    version: String!
+    category: String!
+    model: String!
+    tags: [String!]!
+    capabilities: [String!]!
+    dependencies: [String!]!
+    systemPrompt: String!
+    status: String!
+    popularity: String!
+    rating: String!
+    isPublic: Boolean!
+    authorId: ID
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    author: User
+  }
+
   type AgentExecutionResult {
     success: Boolean!
     output: String!

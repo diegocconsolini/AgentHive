@@ -3,7 +3,7 @@ import { db } from '../db/config.js';
 import { agents, users, analytics } from '../db/schema.js';
 import { eq, and, like, desc, or } from 'drizzle-orm';
 import type { GraphQLContext } from '../context.js';
-import { agentExecutor, AgentExecutionRequest } from '@memory-manager/shared/services/agent-executor.js';
+// import { agentExecutor, AgentExecutionRequest } from '@memory-manager/shared/services/agent-executor.js';
 import { v4 as uuidv4 } from 'uuid';
 
 function requireAuth(context: GraphQLContext) {
@@ -301,9 +301,7 @@ export const agentResolvers = {
         updatedAt: user.updatedAt,
       };
     },
-  },
 
-  Mutation: {
     async executeAgent(
       _: any,
       { 
@@ -320,18 +318,45 @@ export const agentResolvers = {
       const user = requireAuth(graphqlContext);
 
       try {
-        // Create execution request
-        const executionRequest: AgentExecutionRequest = {
-          agentId,
-          input: prompt,
-          context,
-          userId: user.id,
-          sessionId: uuidv4()
-        };
-
-        // Execute agent
         console.log(`🤖 Executing agent ${agentId} for user ${user.email}`);
-        const result = await agentExecutor.executeAgent(executionRequest);
+
+        // PHASE 1: Simple Ollama integration
+        const startTime = Date.now();
+        
+        // Get agent info from database
+        const agentInfo = await db.select().from(agents).where(eq(agents.name, agentId)).limit(1);
+        const agent = agentInfo[0];
+        
+        if (!agent) {
+          throw new Error(`Agent ${agentId} not found`);
+        }
+
+        // Build prompt for Ollama
+        const systemPrompt = agent.systemPrompt || `You are ${agent.name}. ${agent.description}`;
+        const fullPrompt = `${systemPrompt}\n\nUser: ${prompt}`;
+
+        // Call Ollama directly
+        const ollamaResponse = await fetch('http://172.28.96.1:11434/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'mistral:7b-instruct',
+            prompt: fullPrompt,
+            stream: false
+          })
+        });
+
+        if (!ollamaResponse.ok) {
+          throw new Error(`Ollama API error: ${ollamaResponse.status}`);
+        }
+
+        const ollamaData = await ollamaResponse.json();
+        const duration = Date.now() - startTime;
+        const tokens = {
+          prompt: ollamaData.prompt_eval_count || 0,
+          completion: ollamaData.eval_count || 0,
+          total: (ollamaData.prompt_eval_count || 0) + (ollamaData.eval_count || 0)
+        };
 
         // Log analytics
         await db.insert(analytics).values({
@@ -339,31 +364,30 @@ export const agentResolvers = {
           userId: user.id,
           eventType: 'agent_execution',
           eventData: JSON.stringify({
-            agentId: result.agentId,
-            agentName: result.agentName,
-            provider: result.provider,
-            model: result.model,
-            tokens: result.tokens,
-            duration: result.duration,
-            cost: result.cost,
-            success: result.success,
-            error: result.error
+            agentId,
+            agentName: agent.name,
+            provider: 'ollama',
+            model: 'mistral:7b-instruct',
+            tokens,
+            duration,
+            cost: 0,
+            success: true
           }),
-          sessionId: result.sessionId
+          sessionId: uuidv4()
         });
 
-        console.log(`✅ Agent ${agentId} executed successfully. Tokens: ${result.tokens.total}, Duration: ${result.duration}ms`);
+        console.log(`✅ Agent ${agentId} executed successfully. Tokens: ${tokens.total}, Duration: ${duration}ms`);
 
         return {
-          success: result.success,
-          output: result.output,
-          agentName: result.agentName,
-          provider: result.provider,
-          model: result.model,
-          tokens: result.tokens,
-          duration: result.duration,
-          cost: result.cost,
-          error: result.error
+          success: true,
+          output: ollamaData.response,
+          agentName: agent.name,
+          provider: 'ollama',
+          model: 'mistral:7b-instruct',
+          tokens,
+          duration,
+          cost: 0,
+          error: null
         };
 
       } catch (error) {
@@ -383,5 +407,5 @@ export const agentResolvers = {
         throw new GraphQLError(`Agent execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     }
-  }
+  },
 };
