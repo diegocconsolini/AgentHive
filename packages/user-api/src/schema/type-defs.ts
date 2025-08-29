@@ -74,6 +74,30 @@ export const typeDefs = `
     end: DateTime!
   }
 
+  type AgentExecutionResult {
+    success: Boolean!
+    output: String!
+    agentName: String!
+    provider: String!
+    model: String!
+    tokens: TokenUsage!
+    duration: Int!
+    cost: Float!
+    error: String
+  }
+
+  type TokenUsage {
+    prompt: Int!
+    completion: Int!
+    total: Int!
+  }
+
+  input AgentExecutionInput {
+    agentId: String!
+    prompt: String!
+    context: String
+  }
+
   type Query {
     # User queries
     me: User
@@ -81,6 +105,10 @@ export const typeDefs = `
     # Memory queries
     memories(filter: MemoryFilter): [Memory!]!
     memory(id: ID!): Memory
+
+    # Agent queries  
+    agents(filter: AgentFilter): [Agent!]!
+    agent(id: ID!): Agent
   }
 
   type Context {
@@ -294,6 +322,9 @@ export const typeDefs = `
     createAgent(input: CreateAgentInput!): Agent!
     updateAgent(id: ID!, input: UpdateAgentInput!): Agent!
     deleteAgent(id: ID!): Boolean!
+
+    # Agent execution
+    executeAgent(input: AgentExecutionInput!): AgentExecutionResult!
 
     # Analytics
     trackEvent(eventType: String!, eventData: String!): Boolean!

@@ -1,8 +1,10 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../db/config.js';
-import { agents, users } from '../db/schema.js';
+import { agents, users, analytics } from '../db/schema.js';
 import { eq, and, like, desc, or } from 'drizzle-orm';
 import type { GraphQLContext } from '../context.js';
+import { agentExecutor, AgentExecutionRequest } from '@memory-manager/shared/services/agent-executor.js';
+import { v4 as uuidv4 } from 'uuid';
 
 function requireAuth(context: GraphQLContext) {
   if (!context.isAuthenticated || !context.user) {
@@ -300,4 +302,86 @@ export const agentResolvers = {
       };
     },
   },
+
+  Mutation: {
+    async executeAgent(
+      _: any,
+      { 
+        input: { agentId, prompt, context } 
+      }: { 
+        input: { 
+          agentId: string;
+          prompt: string;
+          context?: string;
+        } 
+      },
+      graphqlContext: GraphQLContext
+    ) {
+      const user = requireAuth(graphqlContext);
+
+      try {
+        // Create execution request
+        const executionRequest: AgentExecutionRequest = {
+          agentId,
+          input: prompt,
+          context,
+          userId: user.id,
+          sessionId: uuidv4()
+        };
+
+        // Execute agent
+        console.log(`🤖 Executing agent ${agentId} for user ${user.email}`);
+        const result = await agentExecutor.executeAgent(executionRequest);
+
+        // Log analytics
+        await db.insert(analytics).values({
+          id: uuidv4(),
+          userId: user.id,
+          eventType: 'agent_execution',
+          eventData: JSON.stringify({
+            agentId: result.agentId,
+            agentName: result.agentName,
+            provider: result.provider,
+            model: result.model,
+            tokens: result.tokens,
+            duration: result.duration,
+            cost: result.cost,
+            success: result.success,
+            error: result.error
+          }),
+          sessionId: result.sessionId
+        });
+
+        console.log(`✅ Agent ${agentId} executed successfully. Tokens: ${result.tokens.total}, Duration: ${result.duration}ms`);
+
+        return {
+          success: result.success,
+          output: result.output,
+          agentName: result.agentName,
+          provider: result.provider,
+          model: result.model,
+          tokens: result.tokens,
+          duration: result.duration,
+          cost: result.cost,
+          error: result.error
+        };
+
+      } catch (error) {
+        console.error(`❌ Agent execution failed for ${agentId}:`, error);
+        
+        // Log failed execution
+        await db.insert(analytics).values({
+          id: uuidv4(),
+          userId: user.id,
+          eventType: 'agent_execution_failed',
+          eventData: JSON.stringify({
+            agentId,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          })
+        });
+
+        throw new GraphQLError(`Agent execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+  }
 };
