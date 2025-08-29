@@ -318,13 +318,114 @@ export class Validator {
   }
 
   static model(value: string, fieldName = 'model'): void {
-    const validModels = ['haiku', 'sonnet', 'opus'];
-    this.string(value, fieldName, { choices: validModels });
+    const validModels = [
+      // Anthropic models
+      'haiku', 'sonnet', 'opus',
+      // Ollama models
+      'mistral:7b-instruct', 'qwen2.5:14b-instruct', 'qwen2.5:32b-instruct',
+      'llama3.2:3b-instruct', 'phi3:14b', 'codellama:7b-instruct',
+      // OpenAI models
+      'gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo',
+      // Generic model patterns
+      'auto', 'simple', 'medium', 'complex'
+    ];
+    
+    // Allow Ollama model patterns like "model:version"
+    const ollamaPattern = /^[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+$/;
+    
+    if (!validModels.includes(value) && !ollamaPattern.test(value)) {
+      throw new CLIError(
+        `${fieldName} must be a valid model identifier`,
+        ErrorCode.VALIDATION_ERROR,
+        { field: fieldName, value, validModels },
+        [
+          'Use predefined models: ' + validModels.slice(0, 8).join(', ') + '...',
+          'Or Ollama format: model:version (e.g., mistral:7b-instruct)',
+          'Use "auto" for automatic model selection'
+        ]
+      );
+    }
   }
 
   static outputFormat(value: string, fieldName = 'output format'): void {
     const validFormats = ['json', 'table', 'tree', 'yaml', 'csv'];
     this.string(value, fieldName, { choices: validFormats });
+  }
+
+  static aiProvider(value: string, fieldName = 'AI provider'): void {
+    const validProviders = ['ollama', 'openai', 'anthropic', 'auto'];
+    this.string(value, fieldName, { choices: validProviders });
+  }
+
+  static agentId(value: string, fieldName = 'agent ID'): void {
+    // Accept both UUID format and agent name format
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const agentNamePattern = /^[a-zA-Z0-9_-]+$/;
+    
+    if (!uuidPattern.test(value) && !agentNamePattern.test(value)) {
+      throw new CLIError(
+        `${fieldName} must be a valid UUID or agent name`,
+        ErrorCode.VALIDATION_ERROR,
+        { field: fieldName, value },
+        [
+          'Use UUID format: 12345678-1234-1234-1234-123456789012',
+          'Or agent name: security-auditor, code-reviewer, python-pro'
+        ]
+      );
+    }
+  }
+
+  static complexity(value: string, fieldName = 'complexity'): void {
+    const validComplexities = ['simple', 'medium', 'complex', 'auto'];
+    this.string(value, fieldName, { choices: validComplexities });
+  }
+
+  static promptInput(value: string, fieldName = 'prompt'): void {
+    this.required(value, fieldName);
+    this.string(value, fieldName, { minLength: 1, maxLength: 50000 });
+    
+    // Check for potentially sensitive data patterns
+    const sensitivePatterns = [
+      /password\s*[:=]\s*[\w\d]+/i,
+      /api[_\s]*key\s*[:=]\s*[\w\d-]+/i,
+      /secret\s*[:=]\s*[\w\d]+/i,
+      /token\s*[:=]\s*[\w\d.-]+/i
+    ];
+    
+    for (const pattern of sensitivePatterns) {
+      if (pattern.test(value)) {
+        console.warn(`⚠️  Warning: ${fieldName} may contain sensitive information`);
+        break;
+      }
+    }
+  }
+
+  static ollamaModel(value: string, fieldName = 'Ollama model'): void {
+    const ollamaPattern = /^[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+$/;
+    
+    if (!ollamaPattern.test(value)) {
+      throw new CLIError(
+        `${fieldName} must follow Ollama format: model:version`,
+        ErrorCode.VALIDATION_ERROR,
+        { field: fieldName, value },
+        [
+          'Use format: model:version',
+          'Examples: mistral:7b-instruct, qwen2.5:14b-instruct, llama3.2:3b-instruct'
+        ]
+      );
+    }
+  }
+
+  static temperature(value: any, fieldName = 'temperature'): void {
+    this.number(value, fieldName, { min: 0, max: 2 });
+  }
+
+  static maxTokens(value: any, fieldName = 'max tokens'): void {
+    this.number(value, fieldName, { min: 1, max: 100000, integer: true });
+  }
+
+  static timeout(value: any, fieldName = 'timeout'): void {
+    this.number(value, fieldName, { min: 1000, max: 300000, integer: true });
   }
 }
 
@@ -332,10 +433,25 @@ export class Validator {
 export const AgentCreateSchema = z.object({
   name: z.string().min(1).max(255).regex(/^[a-zA-Z0-9_-]+$/, 'Name can only contain letters, numbers, hyphens and underscores'),
   description: z.string().min(1).max(1000).optional(),
-  model: z.enum(['haiku', 'sonnet', 'opus']).default('sonnet'),
-  systemPrompt: z.string().min(1).optional(),
+  model: z.string().min(1).refine(
+    (val) => {
+      const validModels = ['haiku', 'sonnet', 'opus', 'auto', 'simple', 'medium', 'complex'];
+      const ollamaPattern = /^[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+$/;
+      return validModels.includes(val) || ollamaPattern.test(val);
+    },
+    { message: 'Must be a valid model identifier or Ollama format (model:version)' }
+  ).default('auto'),
+  systemPrompt: z.string().min(1).max(10000).optional(),
   tools: z.array(z.string()).default([]),
-  metadata: z.record(z.any()).default({})
+  metadata: z.record(z.any()).default({}),
+  category: z.string().min(1).max(100).optional(),
+  complexity: z.enum(['simple', 'medium', 'complex']).optional(),
+  provider: z.enum(['ollama', 'openai', 'anthropic', 'auto']).default('auto'),
+  config: z.object({
+    temperature: z.number().min(0).max(2).optional(),
+    maxTokens: z.number().int().min(1).max(100000).optional(),
+    timeout: z.number().int().min(1000).max(300000).optional()
+  }).optional()
 });
 
 export const ContextCreateSchema = z.object({
@@ -371,6 +487,53 @@ export const EnvironmentSchema = z.object({
   name: z.string().min(1).max(50).regex(/^[a-zA-Z0-9_-]+$/, 'Environment name can only contain letters, numbers, hyphens and underscores'),
   config: z.record(z.any()).default({}),
   active: z.boolean().default(false)
+});
+
+// Agent execution schema
+export const AgentExecutionSchema = z.object({
+  agentId: z.string().min(1).max(255),
+  prompt: z.string().min(1).max(50000),
+  context: z.string().max(10000).optional(),
+  model: z.string().optional(),
+  provider: z.enum(['ollama', 'openai', 'anthropic', 'auto']).optional(),
+  config: z.object({
+    temperature: z.number().min(0).max(2).optional(),
+    maxTokens: z.number().int().min(1).max(100000).optional(),
+    timeout: z.number().int().min(1000).max(300000).optional(),
+    stream: z.boolean().optional()
+  }).optional(),
+  userId: z.string().uuid().optional()
+});
+
+// AI Provider configuration schema
+export const AIProviderConfigSchema = z.object({
+  provider: z.enum(['ollama', 'openai', 'anthropic']),
+  baseUrl: z.string().url().optional(),
+  apiKey: z.string().min(1).optional(),
+  models: z.array(z.string()).min(1),
+  defaultModel: z.string(),
+  config: z.object({
+    temperature: z.number().min(0).max(2).default(0.7),
+    maxTokens: z.number().int().min(1).max(100000).default(4000),
+    timeout: z.number().int().min(1000).max(300000).default(30000)
+  }).optional()
+});
+
+// Performance monitoring schema
+export const PerformanceMetricSchema = z.object({
+  provider: z.string(),
+  model: z.string(),
+  agentId: z.string().optional(),
+  tokens: z.object({
+    prompt: z.number().int().min(0),
+    completion: z.number().int().min(0),
+    total: z.number().int().min(0)
+  }),
+  duration: z.number().int().min(0),
+  cost: z.number().min(0),
+  success: z.boolean(),
+  error: z.string().optional(),
+  timestamp: z.string().datetime()
 });
 
 // File validation utilities
