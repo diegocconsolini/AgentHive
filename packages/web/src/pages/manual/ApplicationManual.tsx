@@ -102,7 +102,7 @@ const ApplicationManual: React.FC = () => {
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">1. Access the Dashboard</h4>
                 <p className="text-gray-600 dark:text-gray-400 mb-2">Open your browser and navigate to:</p>
-                <CodeBlock language="url">http://localhost:3001</CodeBlock>
+                <CodeBlock language="url">{`http://localhost:3001`}</CodeBlock>
                 <p className="text-sm text-gray-500 dark:text-gray-500">
                   Login with: admin@localhost / development-only-password
                 </p>
@@ -111,8 +111,8 @@ const ApplicationManual: React.FC = () => {
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">2. Use the CLI</h4>
                 <p className="text-gray-600 dark:text-gray-400 mb-2">Install and use the command line interface:</p>
-                <CodeBlock>npm install -g @agenthive/cli
-hive execute security-auditor "Analyze this system for vulnerabilities"</CodeBlock>
+                <CodeBlock>{`npm install -g @agenthive/cli
+hive execute security-auditor "Analyze this system for vulnerabilities"`}</CodeBlock>
               </div>
 
               <div>
@@ -266,18 +266,18 @@ hive execute security-auditor "Analyze this system for vulnerabilities"</CodeBlo
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">CLI Command</h4>
-                <CodeBlock>hive execute security-auditor "Check this configuration file"</CodeBlock>
+                <CodeBlock>{`hive execute security-auditor "Check this configuration file"`}</CodeBlock>
               </div>
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Direct API</h4>
-                <CodeBlock language="bash">curl -X POST http://localhost:4001/api/agents/execute \
-  -H "Content-Type: application/json" \
+                <CodeBlock language="bash">{`curl -X POST http://localhost:4001/api/agents/execute \\
+  -H "Content-Type: application/json" \\
   -d '{
     "agentId": "python-pro",
     "prompt": "Optimize this algorithm",
     "options": {"temperature": 0.3}
-  }'</CodeBlock>
+  }'`}</CodeBlock>
               </div>
             </div>
           </div>
@@ -342,7 +342,7 @@ hive execute security-auditor "Analyze this system for vulnerabilities"</CodeBlo
                 <p className="text-gray-600 dark:text-gray-400 mb-3">
                   Send tasks to specialized AI agents and receive intelligent responses.
                 </p>
-                <CodeBlock language="http">POST /api/agents/execute
+                <CodeBlock language="http">{`POST /api/agents/execute
 Content-Type: application/json
 
 {
@@ -352,7 +352,7 @@ Content-Type: application/json
     "temperature": 0.7,
     "complexity": "medium"
   }
-}</CodeBlock>
+}`}</CodeBlock>
                 
                 <div className="mt-3">
                   <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Response Format:</h5>
@@ -375,7 +375,7 @@ Content-Type: application/json
                 <p className="text-gray-600 dark:text-gray-400 mb-3">
                   Execute multiple agents concurrently with intelligent load distribution.
                 </p>
-                <CodeBlock language="http">POST /api/orchestration/distribute
+                <CodeBlock language="http">{`POST /api/orchestration/distribute
 Content-Type: application/json
 
 {
@@ -384,7 +384,7 @@ Content-Type: application/json
     {"agentId": "security-auditor", "prompt": "Check for vulnerabilities"},
     {"agentId": "code-reviewer", "prompt": "Review code quality"}
   ]
-}</CodeBlock>
+}`}</CodeBlock>
               </div>
 
               <div>
@@ -392,11 +392,11 @@ Content-Type: application/json
                 <p className="text-gray-600 dark:text-gray-400 mb-3">
                   Monitor agent performance and system health.
                 </p>
-                <CodeBlock language="http">GET /api/metrics/agents
+                <CodeBlock language="http">{`GET /api/metrics/agents
 # Returns live performance data
 
 GET /health  
-# System health check</CodeBlock>
+# System health check`}</CodeBlock>
               </div>
             </div>
           </div>
@@ -675,7 +675,7 @@ curl http://localhost:4001/api/metrics/agents`}</CodeBlock>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
               📦 Installation
             </h3>
-            <CodeBlock>npm install -g @agenthive/cli</CodeBlock>
+            <CodeBlock>{`npm install -g @agenthive/cli`}</CodeBlock>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
               After installation, use either <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">hive</code> or 
               <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">memory</code> commands (backward compatibility).
@@ -690,29 +690,29 @@ curl http://localhost:4001/api/metrics/agents`}</CodeBlock>
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Execute Agent</h4>
-                <CodeBlock>hive execute &lt;agent-id&gt; "&lt;prompt&gt;"
+                <CodeBlock>{`hive execute <agent-id> "<prompt>"
 
 # Examples:
 hive execute security-auditor "Analyze this configuration"
 hive execute python-pro "Optimize this algorithm"
-hive execute code-reviewer "Review this pull request"</CodeBlock>
+hive execute code-reviewer "Review this pull request"`}</CodeBlock>
               </div>
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">List Available Agents</h4>
-                <CodeBlock>hive list agents
+                <CodeBlock>{`hive list agents
 
 # Filter by category:
 hive list agents --category security
-hive list agents --category development</CodeBlock>
+hive list agents --category development`}</CodeBlock>
               </div>
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">System Status</h4>
-                <CodeBlock>hive status
+                <CodeBlock>{`hive status
 
 # Detailed health check:
-hive status --detailed</CodeBlock>
+hive status --detailed`}</CodeBlock>
               </div>
 
               <div>

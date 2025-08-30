@@ -881,7 +881,7 @@ jobs:
             -H "Content-Type: application/json" \\
             -d '{
               "agentId": "security-auditor",
-              "prompt": "Review this PR for security vulnerabilities: ${{ github.event.pull_request.diff_url }}",
+              "prompt": "Review this PR for security vulnerabilities",
               "options": {"complexity": "high"}
             }' > security-report.json
       
