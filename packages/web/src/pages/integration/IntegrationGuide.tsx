@@ -1627,7 +1627,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
         
       } catch (error) {
         lastError = error;
-        console.warn(\`Attempt \${attempt} failed:`, error.message);
+        console.warn(`Attempt ${attempt} failed:`, error.message);
         
         // Don't retry on certain errors
         if (error.message.includes('404') || error.message.includes('INVALID_AGENT')) {

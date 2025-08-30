@@ -378,13 +378,13 @@ Content-Type: application/json
                 <CodeBlock language="http">{`POST /api/orchestration/distribute
 Content-Type: application/json
 
-{
+` + JSON.stringify({
   "requests": [
     {"agentId": "python-pro", "prompt": "Debug this function"},
     {"agentId": "security-auditor", "prompt": "Check for vulnerabilities"},
     {"agentId": "code-reviewer", "prompt": "Review code quality"}
   ]
-}`}</CodeBlock>
+}, null, 2)}</CodeBlock>
               </div>
 
               <div>
@@ -717,9 +717,9 @@ hive status --detailed`}</CodeBlock>
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Configuration</h4>
-                <CodeBlock>hive config set api-url http://localhost:4001
+                <CodeBlock>{`hive config set api-url http://localhost:4001
 hive config set default-temperature 0.7
-hive config list</CodeBlock>
+hive config list`}</CodeBlock>
               </div>
             </div>
           </div>
@@ -732,43 +732,43 @@ hive config list</CodeBlock>
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Temperature Control</h4>
-                <CodeBlock>hive execute python-pro "Debug this function" --temperature 0.3
+                <CodeBlock>{`hive execute python-pro "Debug this function" --temperature 0.3
 
 # Temperature ranges:
 # 0.0-0.3: Focused, deterministic responses
 # 0.4-0.7: Balanced creativity and accuracy  
-# 0.8-1.0: Creative, exploratory responses</CodeBlock>
+# 0.8-1.0: Creative, exploratory responses`}</CodeBlock>
               </div>
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Complexity Hints</h4>
-                <CodeBlock>hive execute security-auditor "Full security audit" --complexity high
+                <CodeBlock>{`hive execute security-auditor "Full security audit" --complexity high
 
 # Complexity levels:
 # low: Simple questions, uses 7B model
 # medium: Standard tasks, uses 14B model  
-# high: Complex analysis, uses 32B model</CodeBlock>
+# high: Complex analysis, uses 32B model`}</CodeBlock>
               </div>
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Output Formatting</h4>
-                <CodeBlock>hive execute code-reviewer "Review code" --format json
+                <CodeBlock>{`hive execute code-reviewer "Review code" --format json
 hive execute python-pro "Analyze" --format markdown
-hive execute security-auditor "Scan" --output results.txt</CodeBlock>
+hive execute security-auditor "Scan" --output results.txt`}</CodeBlock>
               </div>
 
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Batch Processing</h4>
-                <CodeBlock>hive batch tasks.json
+                <CodeBlock>{`hive batch tasks.json
 
 # tasks.json format:
-{
+` + JSON.stringify({
   "tasks": [
     {"agent": "security-auditor", "prompt": "Check config"},
     {"agent": "code-reviewer", "prompt": "Review code"},
     {"agent": "python-pro", "prompt": "Optimize function"}
   ]
-}</CodeBlock>
+}, null, 2)}</CodeBlock>
               </div>
             </div>
           </div>
@@ -778,10 +778,10 @@ hive execute security-auditor "Scan" --output results.txt</CodeBlock>
               📊 Monitoring Commands
             </h3>
             
-            <CodeBlock>hive metrics                    # Real-time agent metrics
+            <CodeBlock>{`hive metrics                    # Real-time agent metrics
 hive metrics --agent python-pro    # Specific agent metrics
 hive logs                          # System logs
-hive health                        # Ollama connection status</CodeBlock>
+hive health                        # Ollama connection status`}</CodeBlock>
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
@@ -822,11 +822,11 @@ hive health                        # Ollama connection status</CodeBlock>
                 solution: (
                   <div className="space-y-3">
                     <p>Check if the System API is running:</p>
-                    <CodeBlock>curl http://localhost:4001/health</CodeBlock>
+                    <CodeBlock>{`curl http://localhost:4001/health`}</CodeBlock>
                     <p>If not running, start the System API:</p>
-                    <CodeBlock>cd packages/system-api
+                    <CodeBlock>{`cd packages/system-api
 npm install
-npm start</CodeBlock>
+npm start`}</CodeBlock>
                   </div>
                 )
               },
@@ -836,11 +836,11 @@ npm start</CodeBlock>
                 solution: (
                   <div className="space-y-3">
                     <p>Verify Ollama is running on the RTX 5090 server:</p>
-                    <CodeBlock>curl http://172.28.96.1:11434/api/tags</CodeBlock>
+                    <CodeBlock>{`curl http://172.28.96.1:11434/api/tags`}</CodeBlock>
                     <p>If Ollama is down, restart it on the GPU server:</p>
-                    <CodeBlock>ssh gpu-server
+                    <CodeBlock>{`ssh gpu-server
 sudo systemctl restart ollama
-ollama serve</CodeBlock>
+ollama serve`}</CodeBlock>
                   </div>
                 )
               },
@@ -850,10 +850,10 @@ ollama serve</CodeBlock>
                 solution: (
                   <div className="space-y-3">
                     <p>Check database connectivity:</p>
-                    <CodeBlock>ls -la database.sqlite
-sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"</CodeBlock>
+                    <CodeBlock>{`ls -la database.sqlite
+sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"`}</CodeBlock>
                     <p>If database is missing, reinitialize:</p>
-                    <CodeBlock>npm run db:seed</CodeBlock>
+                    <CodeBlock>{`npm run db:seed`}</CodeBlock>
                   </div>
                 )
               },
@@ -863,11 +863,11 @@ sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"</CodeBlock>
                 solution: (
                   <div className="space-y-3">
                     <p>Check GPU utilization on RTX 5090:</p>
-                    <CodeBlock>nvidia-smi</CodeBlock>
+                    <CodeBlock>{`nvidia-smi`}</CodeBlock>
                     <p>Monitor System API performance:</p>
-                    <CodeBlock>curl http://localhost:4001/api/metrics/agents</CodeBlock>
+                    <CodeBlock>{`curl http://localhost:4001/api/metrics/agents`}</CodeBlock>
                     <p>Use lower complexity models for faster responses:</p>
-                    <CodeBlock>hive execute agent-id "prompt" --complexity low</CodeBlock>
+                    <CodeBlock>{`hive execute agent-id "prompt" --complexity low`}</CodeBlock>
                   </div>
                 )
               },
@@ -877,9 +877,9 @@ sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"</CodeBlock>
                 solution: (
                   <div className="space-y-3">
                     <p>Verify the development server is running:</p>
-                    <CodeBlock>npm run dev</CodeBlock>
+                    <CodeBlock>{`npm run dev`}</CodeBlock>
                     <p>Check if port 3001 is available:</p>
-                    <CodeBlock>lsof -i :3001</CodeBlock>
+                    <CodeBlock>{`lsof -i :3001`}</CodeBlock>
                     <p>Clear browser cache and hard refresh (Ctrl+Shift+R)</p>
                   </div>
                 )
@@ -896,7 +896,7 @@ sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"</CodeBlock>
                     </div>
                     <p>Clear browser cookies and local storage</p>
                     <p>Check User API is running on port 4000:</p>
-                    <CodeBlock>curl http://localhost:4000/graphql</CodeBlock>
+                    <CodeBlock>{`curl http://localhost:4000/graphql`}</CodeBlock>
                   </div>
                 )
               }
