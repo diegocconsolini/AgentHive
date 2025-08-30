@@ -625,7 +625,7 @@ setInterval(async () => {
   }
   
   async executeAgent(agentId, prompt, options = {}) {
-    const response = await fetch(\\\`\\\${this.baseUrl}/api/agents/execute\\\`, {
+    const response = await fetch(\`\${this.baseUrl}/api/agents/execute\`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -639,19 +639,19 @@ setInterval(async () => {
     });
     
     if (!response.ok) {
-      throw new Error(\\\`HTTP \\\${response.status}: \\\${response.statusText}\\\`);
+      throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
     }
     
     return response.json();
   }
   
   async getMetrics() {
-    const response = await fetch(\\\`\\\${this.baseUrl}/api/metrics/agents\\\`);
+    const response = await fetch(\`\${this.baseUrl}/api/metrics/agents\`);
     return response.json();
   }
   
   async checkHealth() {
-    const response = await fetch(\\\`\\\${this.baseUrl}/health\\\`);
+    const response = await fetch(\`\${this.baseUrl}/health\`);
     return response.json();
   }
 }
@@ -775,9 +775,9 @@ setInterval(async () => {
     const data = await metrics.json();
     
     // Process metrics update
-    console.log(\\\`Active agents: \\\${data.activeAgents}\\\`);
+    console.log(\`Active agents: \${data.activeAgents}\`);
     data.metrics.forEach(agent => {
-      console.log(\\\`\\\${agent.agentId}: \\\${agent.requests} requests\\\`);
+      console.log(\`\${agent.agentId}: \${agent.requests} requests\`);
     });
     
   } catch (error) {
@@ -835,12 +835,12 @@ const eventSource = new EventSource('http://localhost:4001/api/events');
 
 eventSource.addEventListener('agent.execution.completed', (event) => {
   const data = JSON.parse(event.data);
-  console.log(\\\`Agent \\\${data.agentId} completed in \\\${data.duration}ms\\\`);
+  console.log(\`Agent \${data.agentId} completed in \${data.duration}ms\`);
 });
 
 eventSource.addEventListener('system.health.changed', (event) => {
   const data = JSON.parse(event.data);
-  console.log(\\\`System status: \\\${data.status}\\\`);
+  console.log(\`System status: \${data.status}\`);
 });`}</CodeBlock>
       </div>
     </div>
@@ -969,7 +969,7 @@ app.command('/hive', async ({ command, ack, respond }) => {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: \\\`*Agent:* \\\${agentId}\\\\n*Response:*\\\\n\\\${result.response}\\\`
+              text: \`*Agent:* \${agentId}\\n*Response:*\\n\${result.response}\`
             }
           },
           {
@@ -977,18 +977,18 @@ app.command('/hive', async ({ command, ack, respond }) => {
             elements: [
               {
                 type: 'mrkdwn',
-                text: \\\`Duration: \\\${result.metadata.duration}ms | Tokens: \\\${result.metadata.tokens} | Cost: $\\\${result.metadata.cost}\\\`
+                text: \`Duration: \${result.metadata.duration}ms | Tokens: \${result.metadata.tokens} | Cost: $\${result.metadata.cost}\`
               }
             ]
           }
         ]
       });
     } else {
-      await respond(\\\`❌ Error: \\\${result.message}\\\`);
+      await respond(\`❌ Error: \${result.message}\`);
     }
     
   } catch (error) {
-    await respond(\\\`❌ Failed to execute agent: \\\${error.message}\\\`);
+    await respond(\`❌ Failed to execute agent: \${error.message}\`);
   }
 });
 
@@ -1019,10 +1019,10 @@ app.event('app_mention', async ({ event, say }) => {
     
     const result = await response.json();
     
-    await say(\\\`🤖 \\\${result.response}\\\`);
+    await say(\`🤖 \${result.response}\`);
     
   } catch (error) {
-    await say(\\\`Sorry, I'm having trouble connecting to the AI agents right now.\\\`);
+    await say(\`Sorry, I'm having trouble connecting to the AI agents right now.\`);
   }
 });
 
@@ -1057,7 +1057,7 @@ const AgentExecutor = () => {
       const data = await res.json();
       setResponse(data.response);
     } catch (error) {
-      setResponse(\\\`Error: \\\${error.message}\\\`);
+      setResponse(\`Error: \${error.message}\`);
     } finally {
       setLoading(false);
     }
@@ -1097,7 +1097,7 @@ app.post('/api/hive/execute', async (req, res) => {
   const { agentId, prompt, options = {} } = req.body;
   
   // Log request for analytics
-  console.log(\\\`User executed \\\${agentId}: \\\${prompt}\\\`);
+  console.log(\`User executed \${agentId}: \${prompt}\`);
   
   try {
     const response = await fetch('http://localhost:4001/api/agents/execute', {
@@ -1376,11 +1376,11 @@ class AgentHiveMonitor {
   async collectMetrics() {
     try {
       // Get agent metrics
-      const metricsRes = await fetch(\\\`\\\${this.baseUrl}/api/metrics/agents\\\`);
+      const metricsRes = await fetch(\`\${this.baseUrl}/api/metrics/agents\`);
       const metrics = await metricsRes.json();
       
       // Get health status
-      const healthRes = await fetch(\\\`\\\${this.baseUrl}/health\\\`);
+      const healthRes = await fetch(\`\${this.baseUrl}/health\`);
       const health = await healthRes.json();
       
       // Calculate aggregated metrics
@@ -1424,21 +1424,21 @@ class AgentHiveMonitor {
     if (currentMetrics.responseTime > 10000) {
       alerts.push({
         level: 'critical',
-        message: \\\`High response time: \\\${currentMetrics.responseTime}ms\\\`
+        message: \`High response time: \${currentMetrics.responseTime}ms\`
       });
     }
     
     if (currentMetrics.successRate < 0.9) {
       alerts.push({
         level: 'warning',
-        message: \\\`Low success rate: \\\${(currentMetrics.successRate * 100).toFixed(1)}%\\\`
+        message: \`Low success rate: \${(currentMetrics.successRate * 100).toFixed(1)}%\`
       });
     }
     
     if (currentMetrics.systemHealth !== 'healthy') {
       alerts.push({
         level: 'critical',
-        message: \\\`System health degraded: \\\${currentMetrics.systemHealth}\\\`
+        message: \`System health degraded: \${currentMetrics.systemHealth}\`
       });
     }
     
@@ -1453,8 +1453,8 @@ class AgentHiveMonitor {
         const alerts = this.checkAlerts(metrics);
         
         console.log('📊 Metrics:', {
-          responseTime: \\\`\\\${metrics.responseTime}ms\\\`,
-          successRate: \\\`\\\${(metrics.successRate * 100).toFixed(1)}%\\\`,
+          responseTime: \`\${metrics.responseTime}ms\`,
+          successRate: \`\${(metrics.successRate * 100).toFixed(1)}%\`,
           activeAgents: metrics.activeAgents,
           systemHealth: metrics.systemHealth
         });
@@ -1477,7 +1477,7 @@ class AgentHiveMonitor {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            text: \\\`🚨 AgentHive Critical Alerts:\\\\n\\\${criticalAlerts.map(a => a.message).join('\\\\n')}\\\`
+            text: \`🚨 AgentHive Critical Alerts:\\n\${criticalAlerts.map(a => a.message).join('\\n')}\`
           })
         });
       } catch (error) {
@@ -1549,7 +1549,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
   }
   
   getCacheKey(agentId, prompt) {
-    return \\\`\\\${agentId}:\\\${prompt.toLowerCase().trim()}\\\`;
+    return \`\${agentId}:\${prompt.toLowerCase().trim()}\`;
   }
   
   async executeWithCache(agentId, prompt, options = {}) {
@@ -1607,7 +1607,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
     
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
-        const response = await fetch(\\\`\\\${this.baseUrl}/api/agents/execute\\\`, {
+        const response = await fetch(\`\${this.baseUrl}/api/agents/execute\`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ agentId, prompt, options }),
@@ -1615,7 +1615,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
         });
         
         if (!response.ok) {
-          throw new Error(\\\`HTTP \\\${response.status}: \\\${response.statusText}\\\`);
+          throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
         }
         
         const result = await response.json();
@@ -1628,7 +1628,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
         
       } catch (error) {
         lastError = error;
-        console.warn(\\\`Attempt \\\${attempt} failed:\\\`, error.message);
+        console.warn(\`Attempt \${attempt} failed:\`, error.message);
         
         // Don't retry on certain errors
         if (error.message.includes('404') || error.message.includes('INVALID_AGENT')) {
@@ -1642,7 +1642,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
       }
     }
     
-    throw new Error(\\\`Failed after \\\${this.maxRetries} attempts. Last error: \\\${lastError.message}\\\`);
+    throw new Error(\`Failed after \${this.maxRetries} attempts. Last error: \${lastError.message}\`);
   }
   
   // Graceful degradation
