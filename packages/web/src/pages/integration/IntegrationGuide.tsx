@@ -1606,7 +1606,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
     
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
-        const response = await fetch(\`\${this.baseUrl}/api/agents/execute\`, {
+        const response = await fetch(\\\`\\\${this.baseUrl}/api/agents/execute\\\`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ agentId, prompt, options }),
@@ -1614,7 +1614,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
         });
         
         if (!response.ok) {
-          throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
+          throw new Error(\\\`HTTP \\\${response.status}: \\\${response.statusText}\\\`);
         }
         
         const result = await response.json();
@@ -1627,7 +1627,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
         
       } catch (error) {
         lastError = error;
-        console.warn(`Attempt ${attempt} failed:`, error.message);
+        console.warn(\\\`Attempt \\\${attempt} failed:\\\`, error.message);
         
         // Don't retry on certain errors
         if (error.message.includes('404') || error.message.includes('INVALID_AGENT')) {
@@ -1641,7 +1641,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
       }
     }
     
-    throw new Error(\`Failed after \${this.maxRetries} attempts. Last error: \${lastError.message}\`);
+    throw new Error(\\\`Failed after \\\${this.maxRetries} attempts. Last error: \\\${lastError.message}\\\`);
   }
   
   // Graceful degradation
