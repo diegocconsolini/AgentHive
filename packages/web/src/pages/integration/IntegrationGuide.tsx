@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Code, 
   Copy, 
@@ -447,37 +448,37 @@ curl http://localhost:4001/api/metrics/agents`}</CodeBlock>
             language: 'Python',
             status: 'Official',
             install: 'pip install agenthive-python',
-            docs: 'https://docs.agenthive.ai/python'
+            docs: '/docs/python'
           },
           {
             language: 'Node.js',
             status: 'Official', 
             install: 'npm install @agenthive/client',
-            docs: 'https://docs.agenthive.ai/nodejs'
+            docs: '/docs/nodejs'
           },
           {
             language: 'Go',
             status: 'Community',
             install: 'go get github.com/agenthive/go-client',
-            docs: 'https://pkg.go.dev/github.com/agenthive/go-client'
+            docs: '/docs/go'
           },
           {
             language: 'Java',
             status: 'Community',
             install: 'Maven/Gradle dependency',
-            docs: 'https://docs.agenthive.ai/java'
+            docs: '/docs/java'
           },
           {
             language: 'PHP',
             status: 'Community',
             install: 'composer require agenthive/php-client',
-            docs: 'https://docs.agenthive.ai/php'
+            docs: '/docs/php'
           },
           {
             language: 'Ruby',
             status: 'Community',
             install: 'gem install agenthive',
-            docs: 'https://docs.agenthive.ai/ruby'
+            docs: '/docs/ruby'
           }
         ].map((sdk) => (
           <div key={sdk.language} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
@@ -500,15 +501,13 @@ curl http://localhost:4001/api/metrics/agents`}</CodeBlock>
                   {sdk.install}
                 </code>
               </div>
-              <a 
-                href={sdk.docs}
+              <Link 
+                to={sdk.docs}
                 className="inline-flex items-center text-sm text-primary-600 hover:text-primary-700"
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 Documentation
-                <ExternalLink className="w-3 h-3 ml-1" />
-              </a>
+                <Code className="w-3 h-3 ml-1" />
+              </Link>
             </div>
           </div>
         ))}
