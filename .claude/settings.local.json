@@ -8,7 +8,8 @@
       "Bash(curl:*)",
       "WebSearch",
       "Bash(npm install)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

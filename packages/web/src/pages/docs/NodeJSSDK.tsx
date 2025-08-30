@@ -462,8 +462,7 @@ interface HealthStatus {
   };
   activeAgents: number;
   isHealthy(): boolean;
-}
-`}</CodeBlock>
+}`}</CodeBlock>
             </div>
           </div>
         </div>
