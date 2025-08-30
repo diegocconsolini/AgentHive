@@ -658,7 +658,7 @@ const result = await robustExecutor.executeWithRetry(
 
       {/* Advanced Usage */}
       <div className="mb-12">
-        <h2 className="text-2xl font-semibent text-gray-900 dark:text-gray-100 mb-6">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
           Advanced Usage
         </h2>
         
