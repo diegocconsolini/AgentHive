@@ -13,6 +13,9 @@ import {
   Bot,
   Database,
   Terminal,
+  Book,
+  Code,
+  ExternalLink,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useQuery, gql } from '@apollo/client';
@@ -108,6 +111,28 @@ const useNavigationItems = () => {
   ];
 };
 
+// Documentation and integration navigation items
+const documentationItems: NavItem[] = [
+  {
+    id: 'manual',
+    label: 'Application Manual',
+    path: '/manual',
+    icon: 'Book',
+  },
+  {
+    id: 'integration',
+    label: 'Integration Guide',
+    path: '/integration',
+    icon: 'Code',
+  },
+  {
+    id: 'api-docs',
+    label: 'API Documentation',
+    path: '/api-docs',
+    icon: 'ExternalLink',
+  },
+];
+
 const adminItems: NavItem[] = [
   {
     id: 'users',
@@ -134,6 +159,9 @@ const iconMap = {
   Bot,
   Database,
   Terminal,
+  Book,
+  Code,
+  ExternalLink,
 };
 
 interface NavItemComponentProps {
@@ -255,6 +283,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 item={item}
                 isCollapsed={isCollapsed}
                 loading={loading}
+              />
+            ))}
+          </div>
+
+          {/* Documentation Section */}
+          {!isCollapsed && (
+            <div className="pt-4 mt-4">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Documentation
+              </h3>
+            </div>
+          )}
+
+          {/* Documentation Navigation */}
+          <div className={clsx('space-y-1', isCollapsed && 'pt-4 border-t border-gray-200 dark:border-gray-700')}>
+            {documentationItems.map((item) => (
+              <NavItemComponent
+                key={item.id}
+                item={item}
+                isCollapsed={isCollapsed}
               />
             ))}
           </div>
