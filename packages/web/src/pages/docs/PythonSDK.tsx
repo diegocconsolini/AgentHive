@@ -117,7 +117,7 @@ response = client.execute_agent(
 print(f"Agent Response: {response.text}")
 print(f"Duration: {response.metadata.duration}ms")
 print(f"Tokens Used: {response.metadata.tokens}")
-print(f"Cost: ${response.metadata.cost:.4f}")
+print(f"Cost: \\${response.metadata.cost:.4f}")
 `}</CodeBlock>
       </div>
 
@@ -237,7 +237,7 @@ print(f"Agent ID: {response.metadata.agent_id}")
 print(f"Model Used: {response.metadata.model}")
 print(f"Duration: {response.metadata.duration}ms")
 print(f"Tokens: {response.metadata.tokens}")
-print(f"Cost: ${response.metadata.cost:.4f}")
+print(f"Cost: \\${response.metadata.cost:.4f}")
 `}</CodeBlock>
             </div>
 
