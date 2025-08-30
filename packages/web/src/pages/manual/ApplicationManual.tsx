@@ -118,7 +118,7 @@ hive execute security-auditor "Analyze this system for vulnerabilities"</CodeBlo
               <div>
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">3. Integrate with APIs</h4>
                 <p className="text-gray-600 dark:text-gray-400 mb-2">Connect external applications:</p>
-                <CodeBlock language="javascript">const response = await fetch('http://localhost:4001/api/agents/execute', {
+                <CodeBlock language="javascript">{`const response = await fetch('http://localhost:4001/api/agents/execute', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -126,7 +126,7 @@ hive execute security-auditor "Analyze this system for vulnerabilities"</CodeBlo
     prompt: 'Optimize this code',
     options: { temperature: 0.3 }
   })
-});</CodeBlock>
+});`}</CodeBlock>
               </div>
             </div>
           </div>

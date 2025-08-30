@@ -26,6 +26,11 @@ import { MonitoringDashboard } from './pages/admin/MonitoringDashboard';
 import { AnalyticsInsights } from './pages/admin/AnalyticsInsights';
 import { EnterpriseIntegrations } from './pages/admin/EnterpriseIntegrations';
 
+// Documentation components
+import ApplicationManual from './pages/manual/ApplicationManual';
+import IntegrationGuide from './pages/integration/IntegrationGuide';
+import ApiDocs from './pages/api-docs/ApiDocs';
+
 function App() {
   return (
     <ErrorBoundary>
@@ -58,6 +63,9 @@ function App() {
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="agents" element={<AgentsPage />} />
           <Route path="graphiql" element={<EmbeddedGraphiQLPage />} />
+          <Route path="manual" element={<ApplicationManual />} />
+          <Route path="integration" element={<IntegrationGuide />} />
+          <Route path="api-docs" element={<ApiDocs />} />
           <Route path="settings" element={<SettingsPage />} />
           
           {/* Legacy route redirect */}
