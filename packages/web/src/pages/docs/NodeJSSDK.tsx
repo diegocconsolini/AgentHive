@@ -1091,7 +1091,7 @@ program
         console.log(chalk.gray(\`\\nModel: \${response.metadata.model}\`));
         console.log(chalk.gray(\`Duration: \${response.metadata.duration}ms\`));
         console.log(chalk.gray(\`Tokens: \${response.metadata.tokens}\`));
-        console.log(chalk.gray(\`Cost: $\$\{'{'}response.metadata.cost.toFixed(4){'}'}\`));
+        console.log(chalk.gray(\`Cost: $\${response.metadata.cost.toFixed(4)}\`));
       }
       
       // Save to file if requested
