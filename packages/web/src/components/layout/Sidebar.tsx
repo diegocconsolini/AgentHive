@@ -247,7 +247,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Brain className="w-5 h-5 text-white" />
               </div>
               <span className="ml-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                MemoryMgr
+                AgentHive
               </span>
             </div>
           )}

@@ -13,6 +13,7 @@ import {
   Shield,
   Monitor,
   Settings,
+  Book,
 } from 'lucide-react';
 
 const IntegrationGuide: React.FC = () => {
