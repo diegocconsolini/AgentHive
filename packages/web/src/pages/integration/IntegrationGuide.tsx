@@ -606,7 +606,7 @@ client.executeAgentStream({
 // Health monitoring
 setInterval(async () => {
   const health = await client.getHealth();
-  console.log(\\\`System status: \\\${health.status}\\\`);
+  console.log(\`System status: \${health.status}\`);
 }, 30000);
 `}</CodeBlock>
       </div>
@@ -1431,14 +1431,14 @@ class AgentHiveMonitor {
     if (currentMetrics.successRate < 0.9) {
       alerts.push({
         level: 'warning',
-        message: \`Low success rate: \${(currentMetrics.successRate * 100).toFixed(1)}%\`
+        message: \\\`Low success rate: \\\${(currentMetrics.successRate * 100).toFixed(1)}%\\\`
       });
     }
     
     if (currentMetrics.systemHealth !== 'healthy') {
       alerts.push({
         level: 'critical',
-        message: \`System health degraded: \${currentMetrics.systemHealth}\`
+        message: \\\`System health degraded: \\\${currentMetrics.systemHealth}\\\`
       });
     }
     
@@ -1453,8 +1453,8 @@ class AgentHiveMonitor {
         const alerts = this.checkAlerts(metrics);
         
         console.log('📊 Metrics:', {
-          responseTime: \`\${metrics.responseTime}ms\`,
-          successRate: \`\${(metrics.successRate * 100).toFixed(1)}%\`,
+          responseTime: \\\`\\\${metrics.responseTime}ms\\\`,
+          successRate: \\\`\\\${(metrics.successRate * 100).toFixed(1)}%\\\`,
           activeAgents: metrics.activeAgents,
           systemHealth: metrics.systemHealth
         });
@@ -1477,7 +1477,7 @@ class AgentHiveMonitor {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            text: \`🚨 AgentHive Critical Alerts:\\n\${criticalAlerts.map(a => a.message).join('\\n')}\`
+            text: \\\`🚨 AgentHive Critical Alerts:\\\\n\\\${criticalAlerts.map(a => a.message).join('\\\\n')}\\\`
           })
         });
       } catch (error) {
@@ -1549,7 +1549,7 @@ const batchResult = await fetch('/api/orchestration/distribute', {
   }
   
   getCacheKey(agentId, prompt) {
-    return \`\${agentId}:\${prompt.toLowerCase().trim()}\`;
+    return \\\`\\\${agentId}:\\\${prompt.toLowerCase().trim()}\\\`;
   }
   
   async executeWithCache(agentId, prompt, options = {}) {
