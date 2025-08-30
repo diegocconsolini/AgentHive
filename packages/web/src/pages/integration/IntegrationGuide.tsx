@@ -539,7 +539,7 @@ response = client.execute_agent(
 
 print(f"Response: {response.text}")
 print(f"Tokens used: {response.metadata.tokens}")
-print(f"Cost: ${response.metadata.cost}")
+print(f"Cost: $\{response.metadata.cost}")
 
 # Batch execution with load balancing
 results = client.execute_batch([
