@@ -31,6 +31,14 @@ import ApplicationManual from './pages/manual/ApplicationManual';
 import IntegrationGuide from './pages/integration/IntegrationGuide';
 import ApiDocs from './pages/api-docs/ApiDocs';
 
+// SDK Documentation components
+import PythonSDK from './pages/docs/PythonSDK';
+import NodeJSSDK from './pages/docs/NodeJSSDK';
+import GoSDK from './pages/docs/GoSDK';
+import JavaSDK from './pages/docs/JavaSDK';
+import PHPSDK from './pages/docs/PHPSDK';
+import RubySDK from './pages/docs/RubySDK';
+
 function App() {
   return (
     <ErrorBoundary>
@@ -66,6 +74,15 @@ function App() {
           <Route path="manual" element={<ApplicationManual />} />
           <Route path="integration" element={<IntegrationGuide />} />
           <Route path="api-docs" element={<ApiDocs />} />
+          
+          {/* SDK Documentation Routes */}
+          <Route path="docs/python" element={<PythonSDK />} />
+          <Route path="docs/nodejs" element={<NodeJSSDK />} />
+          <Route path="docs/go" element={<GoSDK />} />
+          <Route path="docs/java" element={<JavaSDK />} />
+          <Route path="docs/php" element={<PHPSDK />} />
+          <Route path="docs/ruby" element={<RubySDK />} />
+          
           <Route path="settings" element={<SettingsPage />} />
           
           {/* Legacy route redirect */}
