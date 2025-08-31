@@ -15,17 +15,17 @@ import AgentsPage from './pages/AgentsPage';
 import { EmbeddedGraphiQLPage } from './pages/EmbeddedGraphiQLPage';
 
 // Admin components
-import { AdminLayout } from './components/admin/AdminLayout';
-import { AdminDashboard } from './pages/admin/AdminDashboard';
-import { UserManagement } from './pages/admin/UserManagement';
-import { RoleManagement } from './pages/admin/RoleManagement';
-import { ConfigManagement } from './pages/admin/ConfigManagement';
-import { AuditLogs } from './pages/admin/AuditLogs';
-import { BackupManagement } from './pages/admin/BackupManagement';
-import { MonitoringDashboard } from './pages/admin/MonitoringDashboard';
-import { AnalyticsInsights } from './pages/admin/AnalyticsInsights';
-import { EnterpriseIntegrations } from './pages/admin/EnterpriseIntegrations';
-import AIProviderManagement from './pages/admin/AIProviderManagement';
+// import { AdminLayout } from './components/admin/AdminLayout';
+// import { AdminDashboard } from './pages/admin/AdminDashboard';
+// import { UserManagement } from './pages/admin/UserManagement';
+// import { RoleManagement } from './pages/admin/RoleManagement';
+// import { ConfigManagement } from './pages/admin/ConfigManagement';
+// import { AuditLogs } from './pages/admin/AuditLogs';
+// import { BackupManagement } from './pages/admin/BackupManagement';
+// import { MonitoringDashboard } from './pages/admin/MonitoringDashboard';
+// import { AnalyticsInsights } from './pages/admin/AnalyticsInsights';
+// import { EnterpriseIntegrations } from './pages/admin/EnterpriseIntegrations';
+// import AIProviderManagement from './pages/admin/AIProviderManagement';
 
 // Documentation components
 import ApplicationManual from './pages/manual/ApplicationManual';
@@ -91,8 +91,8 @@ function App() {
           <Route path="home" element={<HomePage />} />
         </Route>
 
-        {/* Admin Routes */}
-        <Route 
+        {/* Admin Routes - Temporarily disabled due to missing components */}
+        {/* <Route 
           path="/admin" 
           element={
             <AuthGuard requireAdmin={true}>
@@ -111,7 +111,7 @@ function App() {
           <Route path="integrations" element={<EnterpriseIntegrations />} />
           <Route path="providers" element={<AIProviderManagement />} />
           <Route path="security" element={<AdminDashboard />} />
-        </Route>
+        </Route> */}
         
         {/* Catch-all route - redirect to dashboard */}
         <Route path="*" element={<DashboardPage />} />
