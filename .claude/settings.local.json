@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:bashthebug.com)"
+      "WebFetch(domain:bashthebug.com)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []
