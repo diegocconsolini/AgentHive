@@ -1,8 +1,8 @@
-# AgentHive CLI 🐝
+# AgentHive CLI
 
-Command your AI agent swarm from the terminal. AgentHive CLI provides direct access to specialized AI agents with intelligent routing and orchestration capabilities.
+Command Line Interface for AgentHive - Control your AI agent swarm from the terminal.
 
-## 🚀 Installation
+## Installation
 
 Install globally via npm:
 
@@ -10,9 +10,9 @@ Install globally via npm:
 npm install -g agenthive-cli
 ```
 
-## 📖 Quick Start
+## Quick Start
 
-After installation, use the `hive` command to interact with your AI agent swarm:
+Use the `hive` command to interact with your AI agent swarm:
 
 ```bash
 # Get help with any task
@@ -21,11 +21,11 @@ hive ask "Help me optimize a Python function for large datasets"
 # Check system status
 hive status
 
-# View examples and tips
+# View examples
 hive examples
 ```
 
-## 🎯 Commands
+## Commands
 
 ### `hive ask <prompt>`
 
@@ -34,7 +34,7 @@ Send requests to the AI agent swarm for intelligent processing and routing.
 **Basic Usage:**
 ```bash
 hive ask "Review this React component for security issues"
-hive ask "Design a REST API for user management"
+hive ask "Design a REST API for user management" 
 hive ask "Debug this performance bottleneck in my database queries"
 ```
 
@@ -60,7 +60,7 @@ hive status
 
 Shows:
 - System operational status
-- API endpoints status
+- API endpoints status  
 - Service availability
 - Provider information
 
@@ -72,7 +72,7 @@ Display usage examples and helpful tips.
 hive examples
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Routing Strategies
 
@@ -98,7 +98,7 @@ Set request priority for better resource allocation:
 hive ask "Your request" --priority high
 ```
 
-## 🛠️ Advanced Usage
+## Advanced Usage
 
 ### Session Management
 
@@ -118,27 +118,21 @@ Specify user identifiers for multi-user environments:
 hive ask "Team-specific request" --user-id team-frontend
 ```
 
-## 🔧 System Requirements
+## System Requirements
 
 - **Node.js**: Version 16 or higher
 - **npm**: Version 7 or higher
 - **AgentHive Services**: Running on ports 3000, 4000, 4001
 
-## 🏗️ Architecture
+## Architecture
 
 The AgentHive CLI connects to:
 
 - **Web Interface** (port 3000) - User dashboard and management
-- **User API** (port 4000) - GraphQL endpoint for user operations  
+- **User API** (port 4000) - GraphQL endpoint for user operations
 - **System API** (port 4001) - Orchestration and agent routing
 
-## 📊 Available Agent Types
-
-AgentHive includes 88+ specialized agents across multiple domains:
-
-The AgentHive CLI connects to your local AgentHive services to provide AI-powered assistance across various domains including development, DevOps, security, and content creation.
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Connection Issues
 
@@ -179,18 +173,6 @@ If `hive` command is not recognized:
    export PATH=$PATH:$(npm config get prefix)/bin
    ```
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
-
-## 🎉 Acknowledgments
-
-Built with modern technologies:
-- **Commander.js** - Command line interfaces
-- **Chalk** - Terminal string styling
-- **Node-fetch** - HTTP client
-- **TypeScript** - Type-safe development
-
----
-
-**Transform your development workflow with AI-powered assistance. Command your agent swarm today!** 🐝✨
