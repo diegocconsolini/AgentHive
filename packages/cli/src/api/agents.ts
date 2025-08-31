@@ -56,7 +56,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to create agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
