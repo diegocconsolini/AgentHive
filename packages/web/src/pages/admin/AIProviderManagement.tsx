@@ -75,6 +75,7 @@ const AIProviderManagement: React.FC = () => {
   const [providers, setProviders] = useState<AIProvider[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [testing, setTesting] = useState(false);
   const [testResults, setTestResults] = useState<Record<string, ProviderHealth>>({});
   const [editingProvider, setEditingProvider] = useState<string | null>(null);
@@ -102,8 +103,23 @@ const AIProviderManagement: React.FC = () => {
   const handleTest = async () => {
     try {
       setTesting(true);
+      setError(null);
+      setSuccess(null);
       const results = await testProviders();
       setTestResults(results.results || {});
+      
+      // Count healthy vs unhealthy providers
+      const healthyCount = Object.values(results.results || {}).filter(r => r.healthy).length;
+      const totalCount = Object.keys(results.results || {}).length;
+      
+      if (healthyCount === totalCount) {
+        setSuccess(`All ${totalCount} provider(s) are healthy and responding!`);
+      } else {
+        setSuccess(`${healthyCount}/${totalCount} providers are healthy. Check details below.`);
+      }
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccess(null), 5000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to test providers');
     } finally {
@@ -177,6 +193,15 @@ const AIProviderManagement: React.FC = () => {
           <div className="flex items-center">
             <AlertTriangle className="w-5 h-5 text-red-500 mr-2" />
             <span className="text-red-700 dark:text-red-400">{error}</span>
+          </div>
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <div className="flex items-center">
+            <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+            <span className="text-green-700 dark:text-green-400">{success}</span>
           </div>
         </div>
       )}

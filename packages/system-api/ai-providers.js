@@ -348,13 +348,40 @@ class AIProviderService {
           error: response.ok ? undefined : `HTTP ${response.status}`
         };
       } else if (provider.type === 'openai-compatible' || provider.type === 'api') {
-        // For API providers, we just check connectivity without making a real request
-        // since we don't want to waste API quota on health checks
-        return { 
-          healthy: !!provider.apiKey, 
-          latency: Date.now() - startTime,
-          error: !provider.apiKey ? 'API key not configured' : undefined
-        };
+        // Check if this is a local provider (localhost, 192.168.x.x, 127.0.0.1)
+        const isLocalProvider = provider.endpoint.includes('localhost') || 
+                               provider.endpoint.includes('127.0.0.1') ||
+                               provider.endpoint.match(/192\.168\.\d+\.\d+/) ||
+                               provider.endpoint.includes('10.0.0.') ||
+                               provider.endpoint.includes('172.16.');
+        
+        if (isLocalProvider) {
+          // For local providers like LM Studio, try to connect to the endpoint
+          try {
+            const testResponse = await fetch(provider.endpoint.replace('/chat/completions', '/models') || provider.endpoint, {
+              method: 'GET',
+              signal: AbortSignal.timeout(5000)
+            });
+            return { 
+              healthy: testResponse.ok, 
+              latency: Date.now() - startTime,
+              error: testResponse.ok ? undefined : `HTTP ${testResponse.status}`
+            };
+          } catch (connectError) {
+            return {
+              healthy: false,
+              latency: Date.now() - startTime,
+              error: 'Cannot connect to local provider'
+            };
+          }
+        } else {
+          // For cloud API providers, just check if API key is configured
+          return { 
+            healthy: !!provider.apiKey, 
+            latency: Date.now() - startTime,
+            error: !provider.apiKey ? 'API key required for cloud provider' : undefined
+          };
+        }
       }
       
       return { healthy: false, error: 'Unknown provider type' };
