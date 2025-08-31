@@ -34,7 +34,7 @@ class AgentHiveSystemAPI {
   setupMiddleware() {
     // CORS for cross-origin requests
     this.app.use(cors({
-      origin: ['http://localhost:3001', 'http://localhost:4000'],
+      origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:4000'],
       credentials: true
     }));
     
