@@ -311,7 +311,7 @@ export class AIProviderService {
       throw new Error(`${provider.name} API error: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as OpenAIResponse;
     const duration = Date.now() - startTime;
     
     const totalTokens = data.usage?.total_tokens || 0;
@@ -372,7 +372,7 @@ export class AIProviderService {
       throw new Error(`Anthropic API error: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as AnthropicResponse;
     const duration = Date.now() - startTime;
     
     const totalTokens = data.usage?.input_tokens + data.usage?.output_tokens || 0;
