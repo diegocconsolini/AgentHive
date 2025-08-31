@@ -39,6 +39,39 @@ export interface AIResponse {
   cost?: number;
 }
 
+// Provider-specific response types for type safety
+interface OllamaResponse {
+  response: string;
+  prompt_eval_count?: number;
+  eval_count?: number;
+  total_duration?: number;
+}
+
+interface OpenAIResponse {
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+  model: string;
+}
+
+interface AnthropicResponse {
+  content: Array<{
+    text: string;
+  }>;
+  usage: {
+    input_tokens: number;
+    output_tokens: number;
+  };
+  model: string;
+}
+
 export interface AIMetrics {
   providerId: string;
   model: string;
@@ -217,7 +250,7 @@ export class AIProviderService {
       throw new Error(`Ollama API error: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as OllamaResponse;
     
     return {
       response: data.response,

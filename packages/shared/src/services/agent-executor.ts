@@ -3,7 +3,7 @@
  * Connects 88 specialized agents to AI providers (Ollama, OpenAI, etc.)
  */
 
-import { aiProviderService, AIRequest, AIResponse } from './ai-providers.js';
+import { aiProviderService, AIRequest } from './ai-providers.js';
 
 export interface AgentConfig {
   id: string;
