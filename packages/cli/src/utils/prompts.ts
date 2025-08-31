@@ -180,6 +180,13 @@ export class InteractivePrompts {
   }
 
   /**
+   * Simple input method - alias for text method for backward compatibility
+   */
+  static async input(options: PromptOptions): Promise<string> {
+    return await this.text('input', options);
+  }
+
+  /**
    * Prompt for multiple values in sequence
    */
   static async sequence(prompts: Array<{

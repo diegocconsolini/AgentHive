@@ -443,7 +443,7 @@ export const AgentCreateSchema = z.object({
   ).default('auto'),
   systemPrompt: z.string().min(1).max(10000).optional(),
   tools: z.array(z.string()).default([]),
-  metadata: z.record(z.any()).default({}),
+  metadata: z.record(z.string(), z.any()).default({}),
   category: z.string().min(1).max(100).optional(),
   complexity: z.enum(['simple', 'medium', 'complex']).optional(),
   provider: z.enum(['ollama', 'openai', 'anthropic', 'auto']).default('auto'),
@@ -458,7 +458,7 @@ export const ContextCreateSchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().min(1).max(1000).optional(),
   agentId: z.string().uuid().optional(),
-  metadata: z.record(z.any()).default({})
+  metadata: z.record(z.string(), z.any()).default({})
 });
 
 export const MemoryCreateSchema = z.object({
@@ -466,7 +466,7 @@ export const MemoryCreateSchema = z.object({
   content: z.string().min(1),
   tags: z.array(z.string()).default([]),
   contextId: z.string().uuid().optional(),
-  metadata: z.record(z.any()).default({})
+  metadata: z.record(z.string(), z.any()).default({})
 });
 
 export const ConfigKeySchema = z.object({
@@ -485,7 +485,7 @@ export const TimeRangeSchema = z.object({
 // Environment configuration schema
 export const EnvironmentSchema = z.object({
   name: z.string().min(1).max(50).regex(/^[a-zA-Z0-9_-]+$/, 'Environment name can only contain letters, numbers, hyphens and underscores'),
-  config: z.record(z.any()).default({}),
+  config: z.record(z.string(), z.any()).default({}),
   active: z.boolean().default(false)
 });
 

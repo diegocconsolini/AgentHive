@@ -2,30 +2,49 @@ import { CLIError } from './errors.js';
 import { OutputFormatter } from './output.js';
 
 /**
- * Error handling decorator replacement for methods
+ * Error handling decorator for methods
  */
 export function handleErrors<T extends (...args: any[]) => any>(
   target: any,
-  propertyKey: string,
+  propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<T>
-): TypedPropertyDescriptor<T> {
-  const originalMethod = descriptor.value!;
+): TypedPropertyDescriptor<T>;
+/**
+ * Error handling function wrapper (alternative to decorator)
+ */
+export function handleErrors<T extends (...args: any[]) => any>(fn: T): T;
+export function handleErrors<T extends (...args: any[]) => any>(
+  targetOrFn: any,
+  propertyKey?: string | symbol,
+  descriptor?: TypedPropertyDescriptor<T>
+): TypedPropertyDescriptor<T> | T {
+  // If called as a function wrapper (1 argument)
+  if (arguments.length === 1 && typeof targetOrFn === 'function') {
+    return withErrorHandling(targetOrFn);
+  }
+  
+  // If called as a method decorator (3 arguments)
+  if (arguments.length === 3 && descriptor) {
+    const originalMethod = descriptor.value!;
 
-  descriptor.value = (async function (this: any, ...args: any[]) {
-    try {
-      return await originalMethod.apply(this, args);
-    } catch (error) {
-      if (error instanceof CLIError) {
-        OutputFormatter.error(error.message, error.details);
-        process.exit(error.exitCode || 1);
-      } else {
-        OutputFormatter.error('Unexpected error occurred', error instanceof Error ? error.message : 'Unknown error');
-        process.exit(1);
+    descriptor.value = (async function (this: any, ...args: any[]) {
+      try {
+        return await originalMethod.apply(this, args);
+      } catch (error) {
+        if (error instanceof CLIError) {
+          OutputFormatter.error(error.message, error.details);
+          process.exit(error.exitCode || 1);
+        } else {
+          OutputFormatter.error('Unexpected error occurred', error instanceof Error ? error.message : 'Unknown error');
+          process.exit(1);
+        }
       }
-    }
-  }) as T;
+    }) as T;
 
-  return descriptor;
+    return descriptor;
+  }
+  
+  throw new Error('handleErrors: Invalid arguments provided');
 }
 
 /**
