@@ -25,6 +25,7 @@ import { BackupManagement } from './pages/admin/BackupManagement';
 import { MonitoringDashboard } from './pages/admin/MonitoringDashboard';
 import { AnalyticsInsights } from './pages/admin/AnalyticsInsights';
 import { EnterpriseIntegrations } from './pages/admin/EnterpriseIntegrations';
+import AIProviderManagement from './pages/admin/AIProviderManagement';
 
 // Documentation components
 import ApplicationManual from './pages/manual/ApplicationManual';
@@ -108,6 +109,7 @@ function App() {
           <Route path="monitoring" element={<MonitoringDashboard />} />
           <Route path="analytics" element={<AnalyticsInsights />} />
           <Route path="integrations" element={<EnterpriseIntegrations />} />
+          <Route path="providers" element={<AIProviderManagement />} />
           <Route path="security" element={<AdminDashboard />} />
         </Route>
         

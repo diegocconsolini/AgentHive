@@ -5,7 +5,7 @@ const cors = require('cors');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // Import the flexible AI provider service
-const { aiProviderService } = require('../shared/src/services/ai-providers.ts');
+const { aiProviderService } = require('./ai-providers.js');
 
 class AgentHiveSystemAPI {
   constructor() {
