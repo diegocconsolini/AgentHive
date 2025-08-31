@@ -1,5 +1,5 @@
 {
-  "name": "@agenthive/cli",
+  "name": "agenthive-cli",
   "version": "1.0.0",
   "description": "AgentHive Command Line Interface - Control your AI agent swarm from the terminal",
   "type": "module",
