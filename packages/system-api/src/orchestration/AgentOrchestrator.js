@@ -128,7 +128,7 @@ class AgentOrchestrator {
     systemPrompt += `Your expertise includes: ${agent.capabilities.join(', ')}\n`;
     
     // Add relevant context if available
-    if (context.previousInteractions.length > 0) {
+    if (context.previousInteractions && context.previousInteractions.length > 0) {
       const recentContext = context.previousInteractions.slice(-3)
         .map(i => `Previous: ${i.prompt.substring(0, 100)}...`)
         .join('\n');
@@ -204,7 +204,7 @@ class AgentOrchestrator {
     context.agentPreferences[result.agentId].uses++;
     
     // Trim old interactions to prevent memory bloat
-    if (context.previousInteractions.length > 10) {
+    if (context.previousInteractions && context.previousInteractions.length > 10) {
       context.previousInteractions = context.previousInteractions.slice(-10);
     }
   }
@@ -213,7 +213,7 @@ class AgentOrchestrator {
    * Enhance prompt with relevant context
    */
   enhancePromptWithContext(prompt, context) {
-    if (context.previousInteractions.length === 0) {
+    if (!context.previousInteractions || context.previousInteractions.length === 0) {
       return prompt;
     }
     
