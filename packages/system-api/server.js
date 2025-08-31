@@ -4,16 +4,16 @@ const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
+// Import the flexible AI provider service
+const { aiProviderService } = require('../shared/src/services/ai-providers.ts');
+
 class AgentHiveSystemAPI {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 4001;
     
-    // AI Provider configurations
-    this.ollama = {
-      baseUrl: process.env.OLLAMA_HOST || 'http://172.28.96.1:11434',
-      models: ['mistral:7b-instruct', 'qwen2.5:14b-instruct', 'qwen2.5:32b-instruct']
-    };
+    // Initialize AI provider service
+    this.aiService = aiProviderService;
     
     // Agent orchestration state
     this.activeAgents = new Map();
@@ -60,15 +60,22 @@ class AgentHiveSystemAPI {
   setupRoutes() {
     // Health check endpoint with real system status
     this.app.get('/health', async (req, res) => {
-      const ollamaStatus = await this.checkOllamaHealth();
+      const providerStatus = await this.checkAIProvidersHealth();
       const systemMetrics = await this.getSystemMetrics();
       
+      const healthyProviders = Object.values(providerStatus).filter(p => p.healthy).length;
+      const totalProviders = Object.keys(providerStatus).length;
+      
       res.status(200).json({
-        status: ollamaStatus.healthy && systemMetrics.healthy ? 'healthy' : 'degraded',
+        status: healthyProviders > 0 && systemMetrics.healthy ? 'healthy' : 'degraded',
         timestamp: new Date().toISOString(),
         service: 'AgentHive System API',
         version: '2.0.0',
-        ollama: ollamaStatus,
+        aiProviders: {
+          healthy: healthyProviders,
+          total: totalProviders,
+          details: providerStatus
+        },
         system: systemMetrics,
         activeAgents: this.activeAgents.size
       });
@@ -76,7 +83,8 @@ class AgentHiveSystemAPI {
 
     // Comprehensive system status
     this.app.get('/api/status', async (req, res) => {
-      const ollamaModels = await this.getAvailableModels();
+      const availableProviders = this.aiService.getAvailableProviders();
+      const providerMetrics = this.aiService.getMetrics();
       const agentMetrics = Array.from(this.agentMetrics.entries()).map(([id, metrics]) => ({
         agentId: id,
         ...metrics
@@ -89,14 +97,14 @@ class AgentHiveSystemAPI {
         features: {
           agentOrchestration: 'production',
           loadBalancing: 'active',
-          aiProviders: 'ollama-primary',
+          aiProviders: 'flexible-multi-provider',
           performanceMonitoring: 'real-time',
           contextManagement: 'intelligent'
         },
-        ollama: {
-          baseUrl: this.ollama.baseUrl,
-          availableModels: ollamaModels,
-          status: 'connected'
+        aiProviders: {
+          enabled: availableProviders.filter(p => p.enabled),
+          total: availableProviders.length,
+          metrics: providerMetrics
         },
         metrics: {
           activeAgents: this.activeAgents.size,
@@ -109,7 +117,8 @@ class AgentHiveSystemAPI {
           status: '/api/status',
           agents: '/api/agents/*',
           orchestration: '/api/orchestration/*',
-          metrics: '/api/metrics/*'
+          metrics: '/api/metrics/*',
+          providers: '/api/providers/*'
         }
       });
     });
@@ -125,7 +134,7 @@ class AgentHiveSystemAPI {
           });
         }
         
-        const result = await this.executeAgentViaOrchestration(agentId, prompt, options);
+        const result = await this.executeAgentViaProviders(agentId, prompt, options);
         
         // Update metrics
         this.updateAgentMetrics(agentId, result);
@@ -256,17 +265,25 @@ class AgentHiveSystemAPI {
     console.log('🚀 Initializing AgentHive System API...');
     
     try {
-      // Test Ollama connection
-      const ollamaHealth = await this.checkOllamaHealth();
-      if (ollamaHealth.healthy) {
-        console.log('✅ Ollama connection established');
+      // Test all AI provider connections
+      const providerHealth = await this.checkAIProvidersHealth();
+      const enabledProviders = Object.entries(providerHealth).filter(([_, health]) => health.healthy);
+      
+      if (enabledProviders.length > 0) {
+        console.log(`✅ ${enabledProviders.length} AI provider(s) connected:`);
+        enabledProviders.forEach(([name, health]) => {
+          console.log(`  - ${name}: ${health.latency}ms latency`);
+        });
       } else {
-        console.warn('⚠️  Ollama connection failed, running in degraded mode');
+        console.warn('⚠️  No AI providers available, system running in degraded mode');
       }
       
-      // Load available models
-      const models = await this.getAvailableModels();
-      console.log(`📋 Available models: ${models.join(', ')}`);
+      // Show available providers and models
+      const providers = this.aiService.getAvailableProviders().filter(p => p.enabled);
+      if (providers.length > 0) {
+        const allModels = providers.flatMap(p => p.models);
+        console.log(`📋 Available models: ${allModels.join(', ')}`);
+      }
       
       // Initialize metrics collection
       this.startMetricsCollection();
@@ -277,27 +294,9 @@ class AgentHiveSystemAPI {
     }
   }
 
-  // Real Ollama health check
-  async checkOllamaHealth() {
-    try {
-      const response = await fetch(`${this.ollama.baseUrl}/api/tags`, {
-        method: 'GET',
-        timeout: 5000
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        return {
-          healthy: true,
-          models: data.models?.length || 0,
-          responseTime: Date.now() - Date.now()
-        };
-      }
-      
-      return { healthy: false, error: 'API not responding' };
-    } catch (error) {
-      return { healthy: false, error: error.message };
-    }
+  // Check health of all AI providers
+  async checkAIProvidersHealth() {
+    return await this.aiService.testAllProviders();
   }
 
   // Get system metrics
