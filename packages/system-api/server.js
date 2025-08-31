@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+require('dotenv').config({ path: '../../.env' });
+
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -10,7 +13,7 @@ const { aiProviderService } = require('./ai-providers.js');
 class AgentHiveSystemAPI {
   constructor() {
     this.app = express();
-    this.port = process.env.PORT || 4001;
+    this.port = process.env.SYSTEM_API_PORT || 4001;
     
     // Initialize AI provider service
     this.aiService = aiProviderService;
