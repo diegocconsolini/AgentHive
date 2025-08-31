@@ -467,6 +467,7 @@ interface HealthStatus {
             </div>
           </div>
         </div>
+      </div>
 
       {/* Available Agents */}
       <div className="mb-12">
