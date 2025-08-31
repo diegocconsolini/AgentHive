@@ -57,7 +57,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Failed to get system status', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -115,7 +115,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Failed to get metrics', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -157,7 +157,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Health check failed', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -206,7 +206,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Failed to get logs', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -288,7 +288,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Failed to analyze performance', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -329,7 +329,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Benchmark failed', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -370,7 +370,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Profiling failed', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -421,7 +421,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'System optimization failed', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -484,7 +484,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Failed to get usage statistics', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -554,7 +554,7 @@ export class AnalyticsService {
       return { 
         success: false, 
         error: 'Failed to get error analysis', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }

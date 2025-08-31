@@ -56,7 +56,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to create context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -101,7 +101,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to list contexts', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -149,7 +149,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to get context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -197,7 +197,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to update context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -224,7 +224,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to delete context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -253,7 +253,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to archive context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -282,7 +282,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to restore context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -322,7 +322,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to analyze context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -363,7 +363,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to merge contexts', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -404,7 +404,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to compare contexts', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -431,7 +431,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to export context', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -473,7 +473,7 @@ export class ContextsService {
       return { 
         success: false, 
         error: 'Failed to get context statistics', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }

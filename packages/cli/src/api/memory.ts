@@ -64,7 +64,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to search memories', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -112,7 +112,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to create memory', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -150,7 +150,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to update memory', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -177,7 +177,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to delete memory', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -209,7 +209,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to update memory tags', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -267,7 +267,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to analyze memories', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -307,7 +307,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to cluster memories', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -349,7 +349,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to summarize memories', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -393,7 +393,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to generate memory graph', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -431,7 +431,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to get related memories', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -465,7 +465,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to duplicate memory', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -505,7 +505,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to delete memories', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -540,7 +540,7 @@ export class MemoryService {
       return { 
         success: false, 
         error: 'Failed to export memories', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }

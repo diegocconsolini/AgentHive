@@ -294,7 +294,7 @@ export class ApiClient {
         const result = await this.request(request.query, request.variables);
         results.push({ success: true, data: result.data, errors: result.errors });
       } catch (error) {
-        results.push({ success: false, error: error.message });
+        results.push({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
       }
     }
 

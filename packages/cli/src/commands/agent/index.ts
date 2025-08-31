@@ -1,7 +1,9 @@
 import { Command } from 'commander';
 import { MemoryManagerAPI } from '../../api/index.js';
-import { OutputFormatter, InteractivePrompts } from '../../utils/output.js';
-import { ErrorHandler, handleErrors } from '../../utils/errors.js';
+import { OutputFormatter } from '../../utils/output.js';
+import { InteractivePrompts } from '../../utils/prompts.js';
+import { ErrorHandler } from '../../utils/errors.js';
+import { withErrorHandling } from '../../utils/decorators.js';
 import { 
   CreateAgentOptions,
   AgentListOptions,
@@ -43,7 +45,7 @@ Examples:
       .option('--from-file <file>', 'create from configuration file')
       .option('--interactive', 'use interactive mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.createAgent.bind(this)));
+      .action(withErrorHandling(this.createAgent.bind(this)));
 
     // List command
     agentCmd
@@ -55,7 +57,7 @@ Examples:
       .option('--sort-by <field>', 'sort by field (name, created, updated)', 'name')
       .option('--limit <limit>', 'limit number of results')
       .option('--json', 'output in JSON format')
-      .action(handleErrors(this.listAgents.bind(this)));
+      .action(withErrorHandling(this.listAgents.bind(this)));
 
     // Show command
     agentCmd
@@ -65,7 +67,7 @@ Examples:
       .description('Show agent details')
       .option('--detailed', 'include detailed statistics')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.showAgent.bind(this)));
+      .action(withErrorHandling(this.showAgent.bind(this)));
 
     // Update command
     agentCmd
@@ -78,7 +80,7 @@ Examples:
       .option('--tools <tools>', 'update tools (comma-separated)')
       .option('--interactive', 'use interactive mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.updateAgent.bind(this)));
+      .action(withErrorHandling(this.updateAgent.bind(this)));
 
     // Delete command
     agentCmd
@@ -88,7 +90,7 @@ Examples:
       .description('Delete an agent')
       .option('--force', 'force deletion without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.deleteAgent.bind(this)));
+      .action(withErrorHandling(this.deleteAgent.bind(this)));
 
     // Clone command
     agentCmd
@@ -97,7 +99,7 @@ Examples:
       .argument('<target>', 'target agent name')
       .description('Clone an agent')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.cloneAgent.bind(this)));
+      .action(withErrorHandling(this.cloneAgent.bind(this)));
 
     // Export command
     agentCmd
@@ -106,7 +108,7 @@ Examples:
       .description('Export agent configuration')
       .option('--format <format>', 'export format (json, yaml)', 'json')
       .option('--output <file>', 'output file (default: stdout)')
-      .action(handleErrors(this.exportAgent.bind(this)));
+      .action(withErrorHandling(this.exportAgent.bind(this)));
 
     // Import command
     agentCmd
@@ -116,7 +118,7 @@ Examples:
       .option('--merge', 'merge with existing agent if name conflicts')
       .option('--replace', 'replace existing agent if name conflicts')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.importAgent.bind(this)));
+      .action(withErrorHandling(this.importAgent.bind(this)));
 
     // Run command
     agentCmd
@@ -127,7 +129,7 @@ Examples:
       .option('--input-file <file>', 'read input from file')
       .option('--timeout <seconds>', 'timeout in seconds', '30')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.runAgent.bind(this)));
+      .action(withErrorHandling(this.runAgent.bind(this)));
 
     // Test command
     agentCmd
@@ -138,7 +140,7 @@ Examples:
       .option('--iterations <count>', 'number of test iterations', '1')
       .option('--timeout <seconds>', 'timeout per test', '30')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.testAgent.bind(this)));
+      .action(withErrorHandling(this.testAgent.bind(this)));
 
     // Validate command
     agentCmd
@@ -146,7 +148,7 @@ Examples:
       .argument('<id>', 'agent ID or name')
       .description('Validate agent configuration')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.validateAgent.bind(this)));
+      .action(withErrorHandling(this.validateAgent.bind(this)));
 
     // Benchmark command
     agentCmd
@@ -157,7 +159,7 @@ Examples:
       .option('--scenario <file>', 'benchmark scenario file')
       .option('--warmup <count>', 'warmup iterations', '2')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.benchmarkAgent.bind(this)));
+      .action(withErrorHandling(this.benchmarkAgent.bind(this)));
 
     return agentCmd;
   }

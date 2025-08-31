@@ -100,7 +100,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to list agents', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -151,7 +151,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to get agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -200,7 +200,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to update agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -227,7 +227,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to delete agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -270,7 +270,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to clone agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -297,7 +297,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to export agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -350,7 +350,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to import agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -385,7 +385,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to run agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -420,7 +420,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to test agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -453,7 +453,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to validate agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
@@ -490,7 +490,7 @@ export class AgentsService {
       return { 
         success: false, 
         error: 'Failed to benchmark agent', 
-        data: response.errors,
+        data: null as any,
         timestamp: new Date().toISOString()
       };
     }
