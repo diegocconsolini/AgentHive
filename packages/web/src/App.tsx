@@ -25,7 +25,7 @@ import { EmbeddedGraphiQLPage } from './pages/EmbeddedGraphiQLPage';
 // import { MonitoringDashboard } from './pages/admin/MonitoringDashboard';
 // import { AnalyticsInsights } from './pages/admin/AnalyticsInsights';
 // import { EnterpriseIntegrations } from './pages/admin/EnterpriseIntegrations';
-// import AIProviderManagement from './pages/admin/AIProviderManagement';
+import AIProviderManagement from './pages/admin/AIProviderManagement';
 
 // Documentation components
 import ApplicationManual from './pages/manual/ApplicationManual';
@@ -91,27 +91,32 @@ function App() {
           <Route path="home" element={<HomePage />} />
         </Route>
 
-        {/* Admin Routes - Temporarily disabled due to missing components */}
-        {/* <Route 
-          path="/admin" 
-          element={
-            <AuthGuard requireAdmin={true}>
-              <AdminLayout />
-            </AuthGuard>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="roles" element={<RoleManagement />} />
-          <Route path="config" element={<ConfigManagement />} />
-          <Route path="audit" element={<AuditLogs />} />
-          <Route path="backup" element={<BackupManagement />} />
-          <Route path="monitoring" element={<MonitoringDashboard />} />
-          <Route path="analytics" element={<AnalyticsInsights />} />
-          <Route path="integrations" element={<EnterpriseIntegrations />} />
-          <Route path="providers" element={<AIProviderManagement />} />
-          <Route path="security" element={<AdminDashboard />} />
-        </Route> */}
+        {/* Admin Routes */}
+        <Route path="/admin" element={
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <div className="flex">
+              <div className="w-64 bg-white dark:bg-gray-800 shadow-sm min-h-screen">
+                <div className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Admin Panel</h2>
+                  <nav className="mt-8">
+                    <a href="/admin/providers" className="block px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">AI Providers</a>
+                  </nav>
+                </div>
+              </div>
+              <div className="flex-1 p-8">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Dashboard</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">AI Providers</h3>
+                    <p className="text-gray-600 dark:text-gray-400">Configure and manage your AI provider settings</p>
+                    <a href="/admin/providers" className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Manage</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        } />
+        <Route path="/admin/providers" element={<AIProviderManagement />} />
         
         {/* Catch-all route - redirect to dashboard */}
         <Route path="*" element={<DashboardPage />} />
