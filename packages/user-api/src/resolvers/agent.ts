@@ -5,6 +5,7 @@ import { eq, and, like, desc, or } from 'drizzle-orm';
 import type { GraphQLContext } from '../context.js';
 // import { agentExecutor, AgentExecutionRequest } from '@memory-manager/shared/services/agent-executor.js';
 import { v4 as uuidv4 } from 'uuid';
+const fetch = (...args: any[]) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 function requireAuth(context: GraphQLContext) {
   if (!context.isAuthenticated || !context.user) {
@@ -310,5 +311,79 @@ export const agentResolvers = {
       // This demonstrates AgentHive can execute real AI agents via your RTX 5090
     }
     */
+
+    // Intelligent orchestration mutation
+    async orchestrateRequest(_: any, { input }: { input: any }, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        // Call the system-api orchestration endpoint
+        const systemApiUrl = process.env.SYSTEM_API_URL || 'http://localhost:4001';
+        const response = await fetch(`${systemApiUrl}/api/orchestrate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: input.prompt,
+            options: {
+              routingStrategy: input.routingStrategy || 'balanced',
+              priority: input.priority || 'normal'
+            },
+            userId: user.id,
+            sessionId: input.sessionId || 'default'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`System API error: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        
+        if (!result.success) {
+          throw new Error(result.message || 'Orchestration failed');
+        }
+
+        // Transform system-api response to GraphQL format
+        return {
+          success: true,
+          output: result.result.output,
+          selectedAgent: result.result.selectedAgent,
+          agentName: result.result.agentName,
+          routingReason: result.result.routingReason,
+          contextUsed: result.result.contextUsed,
+          provider: result.result.provider,
+          model: result.result.model,
+          tokens: {
+            prompt: result.result.tokens?.prompt || 0,
+            completion: result.result.tokens?.completion || 0,
+            total: result.result.tokens?.total || 0
+          },
+          duration: result.result.duration,
+          orchestrationTime: result.result.orchestrationTime,
+          cost: result.result.cost || 0,
+          error: null
+        };
+
+      } catch (error) {
+        console.error('Orchestration error:', error);
+        return {
+          success: false,
+          output: '',
+          selectedAgent: '',
+          agentName: '',
+          routingReason: '',
+          contextUsed: '',
+          provider: '',
+          model: '',
+          tokens: { prompt: 0, completion: 0, total: 0 },
+          duration: 0,
+          orchestrationTime: 0,
+          cost: 0,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        };
+      }
+    }
   },
 };

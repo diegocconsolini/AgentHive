@@ -160,6 +160,56 @@ class AgentHiveSystemAPI {
       }
     });
 
+    // Intelligent orchestration endpoint (new)
+    this.app.post('/api/orchestrate', async (req, res) => {
+      try {
+        const { prompt, options = {}, userId, sessionId } = req.body;
+        
+        if (!prompt) {
+          return res.status(400).json({
+            error: 'Missing required field: prompt'
+          });
+        }
+        
+        const result = await this.orchestrator.orchestrateRequest(
+          prompt, 
+          options, 
+          userId || 'anonymous', 
+          sessionId || 'default'
+        );
+        
+        res.json({
+          success: true,
+          result,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('Orchestration error:', error);
+        res.status(500).json({
+          error: 'Orchestration failed',
+          message: error.message
+        });
+      }
+    });
+
+    // Orchestration statistics endpoint
+    this.app.get('/api/orchestration/stats', async (req, res) => {
+      try {
+        const stats = this.orchestrator.getStatistics();
+        res.json({
+          success: true,
+          stats,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('Stats error:', error);
+        res.status(500).json({
+          error: 'Failed to get statistics',
+          message: error.message
+        });
+      }
+    });
+
     // Load balancing endpoint
     this.app.post('/api/orchestration/distribute', async (req, res) => {
       try {

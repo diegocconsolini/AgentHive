@@ -86,6 +86,22 @@ export const typeDefs = `
     error: String
   }
 
+  type OrchestrationResult {
+    success: Boolean!
+    output: String!
+    selectedAgent: String!
+    agentName: String!
+    routingReason: String!
+    contextUsed: String!
+    provider: String!
+    model: String!
+    tokens: TokenUsage!
+    duration: Int!
+    orchestrationTime: Int!
+    cost: Float!
+    error: String
+  }
+
   type TokenUsage {
     prompt: Int!
     completion: Int!
@@ -96,6 +112,13 @@ export const typeDefs = `
     agentId: String!
     prompt: String!
     context: String
+  }
+
+  input OrchestrationInput {
+    prompt: String!
+    routingStrategy: String
+    priority: String
+    sessionId: String
   }
 
   type Query {
@@ -321,6 +344,7 @@ export const typeDefs = `
 
     # Agent execution
     executeAgent(input: AgentExecutionInput!): AgentExecutionResult!
+    orchestrateRequest(input: OrchestrationInput!): OrchestrationResult!
 
     # Analytics
     trackEvent(eventType: String!, eventData: String!): Boolean!
