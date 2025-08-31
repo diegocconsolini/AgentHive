@@ -326,8 +326,11 @@ export class ApiClient {
 
     const response = await fetch(uploadUrl, {
       method: 'POST',
-      headers: token ? { authorization: `Bearer ${token}` } : {},
-      body: formData
+      headers: {
+        ...(token ? { authorization: `Bearer ${token}` } : {}),
+        ...formData.getHeaders()
+      },
+      body: formData as any
     });
 
     if (!response.ok) {
