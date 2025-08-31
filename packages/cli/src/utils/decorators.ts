@@ -23,11 +23,19 @@ export function handleErrors<T extends (...args: any[]) => any>(
     return withErrorHandling(targetOrFn);
   }
   
-  // If called as a method decorator (3 arguments)
-  if (arguments.length === 3 && descriptor) {
-    const originalMethod = descriptor.value!;
+  // If called as a method decorator (2 or 3 arguments)
+  if (arguments.length >= 2) {
+    // Handle both 2-argument (target, propertyKey) and 3-argument (target, propertyKey, descriptor) cases
+    const actualDescriptor = descriptor || Object.getOwnPropertyDescriptor(targetOrFn, propertyKey!) || {
+      value: targetOrFn[propertyKey!],
+      writable: true,
+      enumerable: true,
+      configurable: true
+    };
+    
+    const originalMethod = actualDescriptor.value!;
 
-    descriptor.value = (async function (this: any, ...args: any[]) {
+    actualDescriptor.value = (async function (this: any, ...args: any[]) {
       try {
         return await originalMethod.apply(this, args);
       } catch (error) {
@@ -41,7 +49,13 @@ export function handleErrors<T extends (...args: any[]) => any>(
       }
     }) as T;
 
-    return descriptor;
+    // If descriptor was not provided, define the property
+    if (!descriptor) {
+      Object.defineProperty(targetOrFn, propertyKey!, actualDescriptor);
+      return actualDescriptor;
+    }
+    
+    return actualDescriptor;
   }
   
   throw new Error('handleErrors: Invalid arguments provided');

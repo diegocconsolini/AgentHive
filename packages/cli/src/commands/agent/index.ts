@@ -169,35 +169,35 @@ Examples:
 
     // If no name provided or interactive mode, prompt for details
     if (!name || options.interactive) {
-      const answers = await InteractivePrompts.input(
-        'Agent name:', 
-        name,
-        (input) => input.length > 0 ? true : 'Name is required'
-      );
+      const answers = await InteractivePrompts.input({
+        message: 'Agent name:',
+        default: name,
+        validate: (input) => input.length > 0 ? true : 'Name is required'
+      });
       name = answers;
 
       if (!options.description) {
-        options.description = await InteractivePrompts.input('Description (optional):');
+        options.description = await InteractivePrompts.input({ message: 'Description (optional):' });
       }
 
       if (!options.model) {
-        options.model = await InteractivePrompts.select(
-          'Select model:', 
-          ['haiku', 'sonnet', 'opus']
-        );
+        options.model = await InteractivePrompts.select('model', {
+          message: 'Select model:',
+          choices: ['haiku', 'sonnet', 'opus']
+        });
       }
 
       if (!options.systemPrompt) {
-        const usePrompt = await InteractivePrompts.confirm('Add system prompt?');
+        const usePrompt = await InteractivePrompts.confirm('usePrompt', { message: 'Add system prompt?' });
         if (usePrompt) {
-          options.systemPrompt = await InteractivePrompts.editor('Enter system prompt:');
+          options.systemPrompt = await InteractivePrompts.editor('systemPrompt', { message: 'Enter system prompt:' });
         }
       }
 
       if (!options.tools) {
-        const addTools = await InteractivePrompts.confirm('Add tools?');
+        const addTools = await InteractivePrompts.confirm('addTools', { message: 'Add tools?' });
         if (addTools) {
-          const toolsInput = await InteractivePrompts.input('Tools (comma-separated):');
+          const toolsInput = await InteractivePrompts.input({ message: 'Tools (comma-separated):' });
           options.tools = toolsInput;
         }
       }
@@ -273,29 +273,29 @@ Examples:
       const agent = current.data;
       
       // Interactive updates
-      const newDescription = await InteractivePrompts.input(
-        'Description:', 
-        agent.description
-      );
+      const newDescription = await InteractivePrompts.input({
+        message: 'Description:',
+        default: agent.description
+      });
       if (newDescription !== agent.description) {
         options.description = newDescription;
       }
 
-      const newModel = await InteractivePrompts.select(
-        'Model:', 
-        ['haiku', 'sonnet', 'opus'],
-        agent.model
-      );
+      const newModel = await InteractivePrompts.select('model', {
+        message: 'Model:',
+        choices: ['haiku', 'sonnet', 'opus'],
+        default: agent.model
+      });
       if (newModel !== agent.model) {
         options.model = newModel;
       }
 
-      const updatePrompt = await InteractivePrompts.confirm('Update system prompt?');
+      const updatePrompt = await InteractivePrompts.confirm('updatePrompt', { message: 'Update system prompt?' });
       if (updatePrompt) {
-        options.systemPrompt = await InteractivePrompts.editor(
-          'System prompt:', 
-          agent.systemPrompt || ''
-        );
+        options.systemPrompt = await InteractivePrompts.editor('systemPrompt', {
+          message: 'System prompt:',
+          default: agent.systemPrompt || ''
+        });
       }
     }
 
@@ -313,9 +313,9 @@ Examples:
     const format = options.json ? 'json' : options.format;
 
     if (!options.force) {
-      const confirmed = await InteractivePrompts.confirm(
-        `Are you sure you want to delete agent "${id}"?`
-      );
+      const confirmed = await InteractivePrompts.confirm('confirmed', {
+        message: `Are you sure you want to delete agent "${id}"?`
+      });
       if (!confirmed) {
         OutputFormatter.info('Cancelled', format);
         return;
@@ -382,7 +382,7 @@ Examples:
 
     // Prompt for input if not provided
     if (!input) {
-      input = await InteractivePrompts.input('Enter input:');
+      input = await InteractivePrompts.input({ message: 'Enter input:' });
     }
 
     const runOptions = {
