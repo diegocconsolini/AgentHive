@@ -233,6 +233,92 @@ class AgentHiveSystemAPI {
       }
     });
 
+    // AI Provider Management endpoints
+    this.app.get('/api/providers', (req, res) => {
+      const providers = this.aiService.getAvailableProviders();
+      const providerMetrics = this.aiService.getMetrics();
+      
+      const providersWithMetrics = providers.map(provider => {
+        const metrics = providerMetrics.find(m => m.providerId === provider.name);
+        return {
+          ...provider,
+          metrics: metrics || {
+            requestCount: 0,
+            totalTokens: 0,
+            averageResponseTime: 0,
+            totalCost: 0,
+            successRate: 1.0,
+            lastUsed: null
+          }
+        };
+      });
+      
+      res.json({
+        providers: providersWithMetrics,
+        timestamp: new Date().toISOString()
+      });
+    });
+
+    this.app.post('/api/providers/test', async (req, res) => {
+      try {
+        const results = await this.aiService.testAllProviders();
+        res.json({
+          success: true,
+          results,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        res.status(500).json({
+          error: 'Provider testing failed',
+          message: error.message
+        });
+      }
+    });
+
+    this.app.put('/api/providers/:providerId', async (req, res) => {
+      try {
+        const { providerId } = req.params;
+        const updates = req.body;
+        
+        const success = this.aiService.updateProviderConfig(providerId, updates);
+        
+        if (success) {
+          res.json({
+            success: true,
+            message: `Provider ${providerId} updated successfully`
+          });
+        } else {
+          res.status(404).json({
+            error: 'Provider not found',
+            providerId
+          });
+        }
+      } catch (error) {
+        res.status(500).json({
+          error: 'Provider update failed',
+          message: error.message
+        });
+      }
+    });
+
+    this.app.get('/api/providers/:providerId/health', async (req, res) => {
+      try {
+        const { providerId } = req.params;
+        const health = await this.aiService.checkProviderHealth(providerId);
+        
+        res.json({
+          providerId,
+          ...health,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        res.status(500).json({
+          error: 'Health check failed',
+          message: error.message
+        });
+      }
+    });
+
     // Root endpoint
     this.app.get('/', (req, res) => {
       res.json({
@@ -313,56 +399,41 @@ class AgentHiveSystemAPI {
     }
   }
 
-  // Get available Ollama models
-  async getAvailableModels() {
-    try {
-      const response = await fetch(`${this.ollama.baseUrl}/api/tags`);
-      if (response.ok) {
-        const data = await response.json();
-        return data.models?.map(m => m.name) || this.ollama.models;
-      }
-    } catch (error) {
-      console.warn('Could not fetch models from Ollama, using defaults');
-    }
-    return this.ollama.models;
+  // Get available models from all providers
+  getAvailableModels() {
+    const providers = this.aiService.getAvailableProviders().filter(p => p.enabled);
+    return providers.flatMap(p => p.models);
   }
 
-  // Execute agent via orchestration
-  async executeAgentViaOrchestration(agentId, prompt, options = {}) {
+  // Execute agent via flexible providers
+  async executeAgentViaProviders(agentId, prompt, options = {}) {
     const startTime = Date.now();
     
     try {
       // Add to active agents
       this.activeAgents.set(agentId, { startTime, prompt: prompt.substring(0, 100) });
       
-      // Determine optimal model based on complexity
-      const model = await this.selectOptimalModel(prompt, options.complexity);
-      
       // Build system prompt for agent
       const systemPrompt = this.buildAgentSystemPrompt(agentId);
-      const fullPrompt = `${systemPrompt}\n\nUser: ${prompt}`;
       
-      // Execute via Ollama
-      const response = await fetch(`${this.ollama.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model,
-          prompt: fullPrompt,
-          stream: false,
-          options: {
-            temperature: options.temperature || 0.7,
-            max_tokens: options.maxTokens || 4000,
-            top_p: options.topP || 0.9
-          }
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Ollama API error: ${response.status}`);
+      // Determine optimal model based on complexity
+      const availableProviders = this.aiService.getAvailableProviders().filter(p => p.enabled);
+      if (availableProviders.length === 0) {
+        throw new Error('No AI providers are enabled. Please configure at least one provider.');
       }
       
-      const result = await response.json();
+      const model = options.model || availableProviders[0].models[0];
+      
+      // Execute via AI provider service
+      const response = await this.aiService.generateResponse({
+        model,
+        prompt,
+        systemPrompt,
+        temperature: options.temperature || 0.7,
+        maxTokens: options.maxTokens || 4000,
+        stream: false
+      });
+      
       const duration = Date.now() - startTime;
       
       // Remove from active agents
@@ -370,16 +441,12 @@ class AgentHiveSystemAPI {
       
       return {
         agentId,
-        output: result.response,
-        model,
-        tokens: {
-          prompt: result.prompt_eval_count || 0,
-          completion: result.eval_count || 0,
-          total: (result.prompt_eval_count || 0) + (result.eval_count || 0)
-        },
-        duration,
-        cost: 0, // Local Ollama = $0 cost
-        provider: 'ollama',
+        output: response.response,
+        model: response.model,
+        tokens: response.tokens,
+        duration: response.duration,
+        cost: response.cost || 0,
+        provider: response.provider,
         timestamp: new Date().toISOString()
       };
       
@@ -389,15 +456,22 @@ class AgentHiveSystemAPI {
     }
   }
 
-  // Intelligent model selection
-  async selectOptimalModel(prompt, complexity = 'auto') {
-    if (complexity === 'simple' || (complexity === 'auto' && prompt.length < 100)) {
-      return 'mistral:7b-instruct';
-    } else if (complexity === 'complex' || (complexity === 'auto' && prompt.length > 500)) {
-      return 'qwen2.5:32b-instruct';
-    } else {
-      return 'qwen2.5:14b-instruct';
+  // Intelligent model selection using provider service
+  selectOptimalModel(complexity = 'auto', prompt = '') {
+    const providers = this.aiService.getAvailableProviders().filter(p => p.enabled);
+    if (providers.length === 0) return null;
+    
+    // Use the highest priority provider
+    const provider = providers.sort((a, b) => b.priority - a.priority)[0];
+    
+    // Auto-detect complexity if needed
+    if (complexity === 'auto') {
+      if (prompt.length < 100) complexity = 'simple';
+      else if (prompt.length > 500) complexity = 'complex';
+      else complexity = 'medium';
     }
+    
+    return this.aiService.selectOptimalModel(provider.name, complexity);
   }
 
   // Build specialized system prompt for agent
@@ -424,7 +498,7 @@ class AgentHiveSystemAPI {
     for (let i = 0; i < requests.length; i += concurrencyLimit) {
       const batch = requests.slice(i, i + concurrencyLimit);
       const batchPromises = batch.map(request => 
-        this.executeAgentViaOrchestration(request.agentId, request.prompt, request.options || {})
+        this.executeAgentViaProviders(request.agentId, request.prompt, request.options || {})
           .catch(error => ({ error: error.message, ...request }))
       );
       
@@ -510,10 +584,13 @@ class AgentHiveSystemAPI {
   }
 
   getModelUsageStats() {
-    return this.ollama.models.map(model => ({
-      model,
-      usage: Math.floor(Math.random() * 100), // Would be real usage data
-      avgResponseTime: Math.floor(Math.random() * 3000) + 1000
+    const providerMetrics = this.aiService.getMetrics();
+    return providerMetrics.map(metric => ({
+      provider: metric.providerId,
+      model: metric.model,
+      usage: metric.requestCount,
+      avgResponseTime: metric.averageResponseTime,
+      totalCost: metric.totalCost
     }));
   }
 
