@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+/**
+ * AgentHive CLI - Command your AI agent swarm 🐝
+ * Entry point for the hive command
+ */
+
+import('../dist/index.js').catch(console.error);
