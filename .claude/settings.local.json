@@ -9,7 +9,8 @@
       "WebSearch",
       "Bash(npm install)",
       "Bash(lsof:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []
