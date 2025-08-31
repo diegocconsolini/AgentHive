@@ -423,19 +423,27 @@ const AIProviderManagement: React.FC = () => {
                 />
               </div>
 
-              {editForm.type !== 'local' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    API Key
-                  </label>
-                  <input
-                    type="password"
-                    value={editForm.apiKey || ''}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, apiKey: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-                  />
-                </div>
-              )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  API Key 
+                  <span className="text-gray-500 text-xs ml-2">
+                    {editForm.type === 'local' || editForm.endpoint?.includes('localhost') || editForm.endpoint?.includes('192.168') || editForm.endpoint?.includes('127.0.0.1') 
+                      ? '(Optional - Local provider)' 
+                      : '(Required for cloud providers)'
+                    }
+                  </span>
+                </label>
+                <input
+                  type="password"
+                  value={editForm.apiKey || ''}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, apiKey: e.target.value }))}
+                  placeholder={editForm.type === 'local' || editForm.endpoint?.includes('localhost') || editForm.endpoint?.includes('192.168') || editForm.endpoint?.includes('127.0.0.1') 
+                    ? 'Leave empty for local providers like LM Studio' 
+                    : 'Enter your API key'
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                />
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
