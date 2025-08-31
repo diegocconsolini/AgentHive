@@ -9,6 +9,7 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 
 // Import the flexible AI provider service
 const { aiProviderService } = require('./ai-providers.js');
+const AgentOrchestrator = require('./src/orchestration/AgentOrchestrator');
 
 class AgentHiveSystemAPI {
   constructor() {
@@ -18,7 +19,10 @@ class AgentHiveSystemAPI {
     // Initialize AI provider service
     this.aiService = aiProviderService;
     
-    // Agent orchestration state
+    // Initialize Agent Orchestrator with intelligent routing
+    this.orchestrator = new AgentOrchestrator(this.aiService);
+    
+    // Agent orchestration state (legacy - will be moved to orchestrator)
     this.activeAgents = new Map();
     this.agentMetrics = new Map();
     this.loadBalancingQueue = [];
