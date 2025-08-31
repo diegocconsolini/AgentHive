@@ -543,7 +543,7 @@ export class FileValidator {
     return allowedExtensions.includes(ext);
   }
 
-  static validateConfigFile(filePath: string): any {
+  static async validateConfigFile(filePath: string): Promise<any> {
     Validator.fileReadable(filePath, 'configuration file');
     
     const ext = path.extname(filePath).toLowerCase();
@@ -555,7 +555,7 @@ export class FileValidator {
       case '.yaml':
       case '.yml':
         try {
-          const yaml = require('js-yaml');
+          const yaml = await import('js-yaml');
           return yaml.load(content);
         } catch (error) {
           throw new CLIError(
@@ -574,8 +574,8 @@ export class FileValidator {
     }
   }
 
-  static validateTemplateFile(filePath: string): any {
-    return this.validateConfigFile(filePath);
+  static async validateTemplateFile(filePath: string): Promise<any> {
+    return await this.validateConfigFile(filePath);
   }
 
   static ensureDirectory(dirPath: string): void {

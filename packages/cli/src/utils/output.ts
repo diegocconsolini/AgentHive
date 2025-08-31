@@ -126,14 +126,14 @@ export class OutputFormatter {
 
     // Get all unique keys from all objects
     const allKeys = new Set<string>();
-    data.forEach(item => {
+    data.forEach((item: any) => {
       if (typeof item === 'object' && item !== null) {
         Object.keys(item).forEach(key => allKeys.add(key));
       }
     });
 
     const headers = Array.from(allKeys);
-    const rows = data.map(item => {
+    const rows = data.map((item: any) => {
       return headers.map(header => {
         const value = item[header];
         if (value === null || value === undefined) return '';
@@ -212,7 +212,7 @@ export class OutputFormatter {
     // Convert to CSV
     const csvRows = [
       headers.join(','), // Header row
-      ...data.map(row => 
+      ...data.map((row: any) => 
         headers.map(header => {
           const value = row[header];
           if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
