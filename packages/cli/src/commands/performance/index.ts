@@ -173,9 +173,9 @@ Examples:
     const format = options.json ? 'json' : options.format;
 
     if (!options.dryRun) {
-      const confirmed = await InteractivePrompts.confirm(
-        'This will apply system optimizations. Continue?'
-      );
+      const confirmed = await InteractivePrompts.confirm('confirmed', {
+        message: 'This will apply system optimizations. Continue?'
+      });
       if (!confirmed) {
         OutputFormatter.info('Cancelled', format);
         return;
