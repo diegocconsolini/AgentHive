@@ -82,6 +82,12 @@ const adminNavItems: NavItem[] = [
     icon: 'Zap'
   },
   {
+    id: 'providers',
+    label: 'AI Providers',
+    path: '/admin/providers',
+    icon: 'Server'
+  },
+  {
     id: 'security',
     label: 'Security',
     path: '/admin/security',
