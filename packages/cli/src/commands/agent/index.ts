@@ -164,7 +164,6 @@ Examples:
     return agentCmd;
   }
 
-  @handleErrors
   private async createAgent(name: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -223,7 +222,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async listAgents(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -250,7 +248,6 @@ Examples:
     }
   }
 
-  @handleErrors
   private async showAgent(id: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -262,7 +259,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async updateAgent(id: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -313,7 +309,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async deleteAgent(id: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -331,7 +326,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async cloneAgent(source: string, target: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -339,7 +333,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async exportAgent(id: string, options: any): Promise<void> {
     const format = options.format || 'json';
 
@@ -357,7 +350,6 @@ Examples:
     }
   }
 
-  @handleErrors
   private async importAgent(file: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -376,7 +368,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async runAgent(id: string, input: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -402,7 +393,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async testAgent(id: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -420,7 +410,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async validateAgent(id: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
@@ -428,7 +417,6 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
   private async benchmarkAgent(id: string, options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
