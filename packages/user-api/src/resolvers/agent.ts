@@ -281,28 +281,9 @@ export const agentResolvers = {
       
       return true;
     },
-  },
 
-  // Field resolvers for Agent type
-  Agent: {
-    async author(agent: any) {
-      if (!agent.authorId) return null;
-      
-      const userResults = await db.select().from(users).where(eq(users.id, agent.authorId));
-      const user = userResults[0];
-      
-      if (!user) return null;
-      
-      return {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      };
-    }
-  },
+    // Intelligent orchestration mutation
+    async orchestrateRequest(_: any, { input }: { input: any }, context: GraphQLContext) {
       const user = requireAuth(context);
       
       try {
@@ -373,6 +354,27 @@ export const agentResolvers = {
           error: error instanceof Error ? error.message : 'Unknown error'
         };
       }
+    }
+  },
+
+  // Field resolvers for Agent type
+  Agent: {
+    async author(agent: any) {
+      if (!agent.authorId) return null;
+      
+      const userResults = await db.select().from(users).where(eq(users.id, agent.authorId));
+      const user = userResults[0];
+      
+      if (!user) return null;
+      
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
     }
   },
 };
