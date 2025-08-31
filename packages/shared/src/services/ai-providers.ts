@@ -393,7 +393,7 @@ export class AIProviderService {
     };
   }
 
-  private selectOptimalProvider(request: AIRequest): string {
+  private selectOptimalProvider(_request: AIRequest): string {
     // Get enabled providers sorted by priority (highest first)
     const enabledProviders = Array.from(this.providers.values())
       .filter(p => p.enabled)
