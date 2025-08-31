@@ -1,15 +1,20 @@
 /**
  * Universal AI Provider Service
- * Supports Ollama, OpenAI, Anthropic, and other providers
+ * Supports OpenAI-compatible APIs, Ollama, Anthropic, and other providers
  */
 
 export interface AIProvider {
   name: string;
-  type: 'local' | 'api';
+  type: 'local' | 'api' | 'openai-compatible';
   endpoint: string;
+  apiKey?: string;
   models: string[];
   costPerToken?: number;
   maxTokens: number;
+  headers?: Record<string, string>;
+  timeout?: number;
+  enabled: boolean;
+  priority: number; // Higher = preferred
 }
 
 export interface AIRequest {
@@ -54,35 +59,78 @@ export class AIProviderService {
   }
 
   private initializeProviders() {
-    // Ollama Provider (Your RTX 5090)
-    this.registerProvider({
-      name: 'ollama',
-      type: 'local',
-      endpoint: 'http://172.28.96.1:11434',
-      models: ['mistral:7b-instruct', 'qwen2.5:14b-instruct', 'qwen2.5:32b-instruct'],
-      costPerToken: 0, // Free local inference
-      maxTokens: 16384
-    });
+    // Load providers from environment configuration
+    this.loadProvidersFromConfig();
+  }
 
-    // OpenAI Provider (for future)
-    this.registerProvider({
-      name: 'openai',
-      type: 'api',
-      endpoint: 'https://api.openai.com/v1',
-      models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo'],
-      costPerToken: 0.0015, // Approximate cost per 1K tokens
-      maxTokens: 128000
+  private loadProvidersFromConfig() {
+    const providers = this.getProviderConfigurations();
+    
+    providers.forEach(provider => {
+      if (provider.enabled) {
+        this.registerProvider(provider);
+      }
     });
+  }
 
-    // Anthropic Provider (for future)
-    this.registerProvider({
-      name: 'anthropic',
-      type: 'api',
-      endpoint: 'https://api.anthropic.com/v1',
-      models: ['claude-3-haiku-20240307', 'claude-3-sonnet-20240229', 'claude-3-opus-20240229'],
-      costPerToken: 0.0008,
-      maxTokens: 200000
-    });
+  private getProviderConfigurations(): AIProvider[] {
+    return [
+      // Primary Provider - OpenAI Compatible API
+      {
+        name: 'primary',
+        type: 'openai-compatible',
+        endpoint: process.env.AI_PROVIDER_ENDPOINT || 'https://api.openai.com/v1',
+        apiKey: process.env.AI_PROVIDER_API_KEY,
+        models: (process.env.AI_PROVIDER_MODELS || 'gpt-3.5-turbo,gpt-4').split(','),
+        costPerToken: parseFloat(process.env.AI_PROVIDER_COST_PER_TOKEN || '0.002'),
+        maxTokens: parseInt(process.env.AI_PROVIDER_MAX_TOKENS || '128000'),
+        timeout: parseInt(process.env.AI_PROVIDER_TIMEOUT || '30000'),
+        enabled: process.env.AI_PROVIDER_ENABLED !== 'false',
+        priority: parseInt(process.env.AI_PROVIDER_PRIORITY || '100'),
+        headers: process.env.AI_PROVIDER_HEADERS ? JSON.parse(process.env.AI_PROVIDER_HEADERS) : {}
+      },
+      
+      // Fallback Provider - OpenAI
+      {
+        name: 'openai',
+        type: 'api',
+        endpoint: process.env.OPENAI_ENDPOINT || 'https://api.openai.com/v1',
+        apiKey: process.env.OPENAI_API_KEY,
+        models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'gpt-4o'],
+        costPerToken: 0.0015,
+        maxTokens: 128000,
+        timeout: 30000,
+        enabled: !!process.env.OPENAI_API_KEY && process.env.OPENAI_ENABLED !== 'false',
+        priority: 80
+      },
+
+      // Anthropic Provider
+      {
+        name: 'anthropic',
+        type: 'api',
+        endpoint: process.env.ANTHROPIC_ENDPOINT || 'https://api.anthropic.com/v1',
+        apiKey: process.env.ANTHROPIC_API_KEY,
+        models: ['claude-3-5-sonnet-20241022', 'claude-3-haiku-20240307', 'claude-3-opus-20240229'],
+        costPerToken: 0.0008,
+        maxTokens: 200000,
+        timeout: 30000,
+        enabled: !!process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_ENABLED !== 'false',
+        priority: 90
+      },
+
+      // Local Ollama Provider (legacy fallback)
+      {
+        name: 'ollama',
+        type: 'local',
+        endpoint: process.env.OLLAMA_ENDPOINT || 'http://172.28.96.1:11434',
+        models: (process.env.OLLAMA_MODELS || 'mistral:7b-instruct,qwen2.5:14b-instruct,qwen2.5:32b-instruct').split(','),
+        costPerToken: 0,
+        maxTokens: 16384,
+        timeout: 60000,
+        enabled: process.env.OLLAMA_ENABLED !== 'false',
+        priority: 60
+      }
+    ];
   }
 
   registerProvider(provider: AIProvider) {
@@ -116,18 +164,28 @@ export class AIProviderService {
 
     let response: AIResponse;
     
-    switch (provider.name) {
-      case 'ollama':
-        response = await this.callOllama(provider, request);
+    switch (provider.type) {
+      case 'local':
+        if (provider.name === 'ollama') {
+          response = await this.callOllama(provider, request);
+        } else {
+          throw new Error(`Local provider ${provider.name} not implemented`);
+        }
         break;
-      case 'openai':
-        response = await this.callOpenAI(provider, request);
+      case 'openai-compatible':
+        response = await this.callOpenAICompatible(provider, request);
         break;
-      case 'anthropic':
-        response = await this.callAnthropic(provider, request);
+      case 'api':
+        if (provider.name === 'openai') {
+          response = await this.callOpenAI(provider, request);
+        } else if (provider.name === 'anthropic') {
+          response = await this.callAnthropic(provider, request);
+        } else {
+          throw new Error(`API provider ${provider.name} not implemented`);
+        }
         break;
       default:
-        throw new Error(`Provider ${provider.name} not implemented`);
+        throw new Error(`Provider type ${provider.type} not implemented`);
     }
 
     // Update metrics
@@ -175,28 +233,226 @@ export class AIProviderService {
     };
   }
 
+  private async callOpenAICompatible(provider: AIProvider, request: AIRequest): Promise<AIResponse> {
+    const messages = [];
+    
+    if (request.systemPrompt) {
+      messages.push({
+        role: 'system',
+        content: request.systemPrompt
+      });
+    }
+    
+    messages.push({
+      role: 'user', 
+      content: request.prompt
+    });
+
+    const payload = {
+      model: request.model,
+      messages,
+      temperature: request.temperature || 0.7,
+      max_tokens: request.maxTokens || 4096,
+      stream: request.stream || false
+    };
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...provider.headers
+    };
+
+    if (provider.apiKey) {
+      headers['Authorization'] = `Bearer ${provider.apiKey}`;
+    }
+
+    const startTime = Date.now();
+    const response = await fetch(`${provider.endpoint}/chat/completions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(provider.timeout || 30000)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`${provider.name} API error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    const duration = Date.now() - startTime;
+    
+    const totalTokens = data.usage?.total_tokens || 0;
+    const promptTokens = data.usage?.prompt_tokens || 0;
+    const completionTokens = data.usage?.completion_tokens || 0;
+    
+    return {
+      response: data.choices[0]?.message?.content || '',
+      model: request.model,
+      tokens: {
+        prompt: promptTokens,
+        completion: completionTokens,
+        total: totalTokens
+      },
+      duration,
+      provider: provider.name,
+      cost: totalTokens * (provider.costPerToken || 0)
+    };
+  }
+
   private async callOpenAI(provider: AIProvider, request: AIRequest): Promise<AIResponse> {
-    // Implementation for OpenAI API
-    throw new Error('OpenAI provider not yet implemented');
+    // Use the OpenAI-compatible implementation
+    return this.callOpenAICompatible(provider, request);
   }
 
   private async callAnthropic(provider: AIProvider, request: AIRequest): Promise<AIResponse> {
-    // Implementation for Anthropic API  
-    throw new Error('Anthropic provider not yet implemented');
+    const payload = {
+      model: request.model,
+      max_tokens: request.maxTokens || 4096,
+      temperature: request.temperature || 0.7,
+      messages: [
+        {
+          role: 'user',
+          content: request.systemPrompt ? 
+            `${request.systemPrompt}\n\n${request.prompt}` : 
+            request.prompt
+        }
+      ]
+    };
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'x-api-key': provider.apiKey || '',
+      'anthropic-version': '2023-06-01',
+      ...provider.headers
+    };
+
+    const startTime = Date.now();
+    const response = await fetch(`${provider.endpoint}/messages`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(provider.timeout || 30000)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Anthropic API error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    const duration = Date.now() - startTime;
+    
+    const totalTokens = data.usage?.input_tokens + data.usage?.output_tokens || 0;
+    const promptTokens = data.usage?.input_tokens || 0;
+    const completionTokens = data.usage?.output_tokens || 0;
+    
+    return {
+      response: data.content[0]?.text || '',
+      model: request.model,
+      tokens: {
+        prompt: promptTokens,
+        completion: completionTokens,
+        total: totalTokens
+      },
+      duration,
+      provider: provider.name,
+      cost: totalTokens * (provider.costPerToken || 0)
+    };
   }
 
   private selectOptimalProvider(request: AIRequest): string {
-    // Smart routing logic
-    const promptLength = request.prompt.length;
+    // Get enabled providers sorted by priority (highest first)
+    const enabledProviders = Array.from(this.providers.values())
+      .filter(p => p.enabled)
+      .sort((a, b) => b.priority - a.priority);
     
-    // For now, default to Ollama (free local inference)
-    if (promptLength < 1000) {
-      return 'ollama'; // Use fast 7B model for simple tasks
-    } else if (promptLength < 5000) {
-      return 'ollama'; // Use 14B model for medium complexity
-    } else {
-      return 'ollama'; // Use 32B model for complex tasks
+    if (enabledProviders.length === 0) {
+      throw new Error('No AI providers are enabled. Please configure at least one provider.');
     }
+    
+    // Return the highest priority enabled provider
+    return enabledProviders[0].name;
+  }
+
+  async checkProviderHealth(providerId: string): Promise<{ healthy: boolean; error?: string; latency?: number }> {
+    const provider = this.providers.get(providerId);
+    if (!provider) {
+      return { healthy: false, error: 'Provider not found' };
+    }
+
+    try {
+      const startTime = Date.now();
+      
+      if (provider.type === 'local' && provider.name === 'ollama') {
+        const response = await fetch(`${provider.endpoint}/api/tags`, {
+          method: 'GET',
+          signal: AbortSignal.timeout(5000)
+        });
+        return { 
+          healthy: response.ok, 
+          latency: Date.now() - startTime,
+          error: response.ok ? undefined : `HTTP ${response.status}`
+        };
+      } else if (provider.type === 'openai-compatible' || provider.type === 'api') {
+        // Test with a minimal request
+        const testRequest: AIRequest = {
+          model: provider.models[0],
+          prompt: 'Hello',
+          maxTokens: 1,
+          temperature: 0.1
+        };
+        
+        try {
+          await this.generateResponse(testRequest, providerId);
+          return { healthy: true, latency: Date.now() - startTime };
+        } catch (error) {
+          return { 
+            healthy: false, 
+            latency: Date.now() - startTime,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          };
+        }
+      }
+      
+      return { healthy: false, error: 'Unknown provider type' };
+    } catch (error) {
+      return { 
+        healthy: false, 
+        error: error instanceof Error ? error.message : 'Connection failed'
+      };
+    }
+  }
+
+  async testAllProviders(): Promise<Record<string, { healthy: boolean; error?: string; latency?: number }>> {
+    const results: Record<string, { healthy: boolean; error?: string; latency?: number }> = {};
+    
+    for (const [providerId] of this.providers.entries()) {
+      results[providerId] = await this.checkProviderHealth(providerId);
+    }
+    
+    return results;
+  }
+
+  updateProviderConfig(providerId: string, updates: Partial<AIProvider>): boolean {
+    const provider = this.providers.get(providerId);
+    if (!provider) return false;
+
+    const updatedProvider = { ...provider, ...updates };
+    this.providers.set(providerId, updatedProvider);
+    
+    // Reset metrics for this provider
+    this.metrics.set(providerId, {
+      providerId: providerId,
+      model: '',
+      requestCount: 0,
+      totalTokens: 0,
+      averageResponseTime: 0,
+      totalCost: 0,
+      successRate: 1.0,
+      lastUsed: new Date()
+    });
+    
+    return true;
   }
 
   selectOptimalModel(providerId: string, complexity: 'simple' | 'medium' | 'complex'): string {
