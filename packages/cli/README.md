@@ -136,32 +136,7 @@ The AgentHive CLI connects to:
 
 AgentHive includes 88+ specialized agents across multiple domains:
 
-### Development & Programming
-- **Frontend**: React, Vue, Angular specialists
-- **Backend**: Node.js, Python, Java, Go experts
-- **Mobile**: iOS, Android, React Native developers
-- **Database**: SQL optimization, schema design, performance tuning
-
-### DevOps & Infrastructure
-- **Cloud**: AWS, Azure, GCP architects
-- **Containerization**: Docker, Kubernetes specialists
-- **CI/CD**: Pipeline design and automation experts
-- **Monitoring**: Performance analysis and alerting
-
-### Security & Compliance
-- **Security Auditing**: Code review and vulnerability assessment
-- **Compliance**: GDPR, HIPAA, SOX requirements
-- **Penetration Testing**: Security testing specialists
-
-### Business & Strategy
-- **Product Management**: Feature planning and roadmaps
-- **Business Analysis**: Requirements gathering and documentation
-- **Financial Modeling**: Revenue projections and analysis
-
-### Content & Communication
-- **Technical Writing**: Documentation and API guides
-- **Content Marketing**: SEO and engagement optimization
-- **Legal**: Privacy policies and terms of service
+The AgentHive CLI connects to your local AgentHive services to provide AI-powered assistance across various domains including development, DevOps, security, and content creation.
 
 ## 🐛 Troubleshooting
 
@@ -204,43 +179,9 @@ If `hive` command is not recognized:
    export PATH=$PATH:$(npm config get prefix)/bin
    ```
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Development Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/agenthive/cli.git
-   cd cli
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Build the project:**
-   ```bash
-   npm run build
-   ```
-
-4. **Test locally:**
-   ```bash
-   npm link
-   hive --help
-   ```
-
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **Documentation**: [https://docs.agenthive.ai](https://docs.agenthive.ai)
-- **Issues**: [GitHub Issues](https://github.com/agenthive/cli/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/agenthive/cli/discussions)
+This project is licensed under the MIT License.
 
 ## 🎉 Acknowledgments
 
