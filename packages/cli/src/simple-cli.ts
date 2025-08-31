@@ -75,8 +75,8 @@ async function getSystemStatus(systemApiUrl: string = DEFAULT_SYSTEM_API) {
 
 program
   .name('hive')
-  .description('AgentHive CLI - Command your AI agent swarm 🐝')
-  .version('1.0.0');
+  .description('AgentHive CLI - Command your AI agent swarm')
+  .version('1.0.3');
 
 program
   .command('ask <prompt>')
@@ -86,8 +86,8 @@ program
   .option('--user-id <userId>', 'User identifier', 'cli-user')
   .option('--session-id <sessionId>', 'Session identifier', 'cli-session')
   .action(async (prompt, options) => {
-    console.log(chalk.blue('🐝 AgentHive is processing your request...'));
-    console.log(chalk.gray(`Prompt: ${prompt}`));
+    console.log('Processing request...');
+    console.log(`Prompt: ${prompt}`);
     
     try {
       const result = await orchestrateRequest(prompt, options);
@@ -115,7 +115,7 @@ program
   .command('status')
   .description('Check AgentHive system status')
   .action(async () => {
-    console.log(chalk.blue('🐝 Checking AgentHive system status...'));
+    console.log('Checking system status...');
     
     try {
       const status = await getSystemStatus();
@@ -143,25 +143,25 @@ program
   .command('examples')
   .description('Show usage examples')
   .action(() => {
-    console.log(chalk.blue('🐝 AgentHive CLI Examples:\n'));
-    
-    console.log(chalk.yellow('Basic Agent Interaction:'));
-    console.log(chalk.gray('  hive ask "Help me optimize a Python function for large datasets"'));
-    console.log(chalk.gray('  hive ask "Review this React component for security issues"'));
-    console.log(chalk.gray('  hive ask "Design a REST API for user management"'));
-    
-    console.log(chalk.yellow('\nWith Routing Options:'));
-    console.log(chalk.gray('  hive ask "Debug this performance issue" --strategy performance'));
-    console.log(chalk.gray('  hive ask "Urgent: Fix production error" --priority high'));
-    
-    console.log(chalk.yellow('\nSystem Management:'));
-    console.log(chalk.gray('  hive status          # Check system health'));
-    console.log(chalk.gray('  hive examples        # Show these examples'));
-    
-    console.log(chalk.blue('\n🌟 Tips:'));
-    console.log(chalk.gray('  • Be specific in your requests for better agent routing'));
-    console.log(chalk.gray('  • Use --strategy performance for complex technical tasks'));
-    console.log(chalk.gray('  • Use --priority high for urgent requests'));
+    console.log('AgentHive CLI Examples:');
+    console.log('');
+    console.log('Basic Usage:');
+    console.log('  hive ask "Help me optimize a Python function for large datasets"');
+    console.log('  hive ask "Review this React component for security issues"');
+    console.log('  hive ask "Design a REST API for user management"');
+    console.log('');
+    console.log('With Options:');
+    console.log('  hive ask "Debug this performance issue" --strategy performance');
+    console.log('  hive ask "Urgent: Fix production error" --priority high');
+    console.log('');
+    console.log('System Commands:');
+    console.log('  hive status          # Check system health');
+    console.log('  hive examples        # Show these examples');
+    console.log('');
+    console.log('Tips:');
+    console.log('  - Be specific in your requests for better agent routing');
+    console.log('  - Use --strategy performance for complex technical tasks');
+    console.log('  - Use --priority high for urgent requests');
   });
 
 // Error handling

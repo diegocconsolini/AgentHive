@@ -1,6 +1,6 @@
 {
   "name": "agenthive-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "AgentHive Command Line Interface - Control your AI agent swarm from the terminal",
   "keywords": [
     "ai",
