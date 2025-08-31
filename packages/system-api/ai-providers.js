@@ -356,9 +356,14 @@ class AIProviderService {
                                provider.endpoint.includes('172.16.');
         
         if (isLocalProvider) {
-          // For local providers like LM Studio, try to connect to the endpoint
+          // For local providers like LM Studio, try to connect to the correct endpoint
           try {
-            const testResponse = await fetch(provider.endpoint.replace('/chat/completions', '/models') || provider.endpoint, {
+            // LM Studio uses /v1/models for health check, not just /v1
+            const healthEndpoint = provider.endpoint.includes('/v1') 
+              ? provider.endpoint.replace('/v1', '/v1/models')
+              : `${provider.endpoint}/models`;
+              
+            const testResponse = await fetch(healthEndpoint, {
               method: 'GET',
               signal: AbortSignal.timeout(5000)
             });

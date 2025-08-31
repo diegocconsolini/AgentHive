@@ -240,14 +240,19 @@ const AIProviderManagement: React.FC = () => {
               <div className="space-y-4 border-t pt-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Endpoint
+                    Endpoint URL
+                    <span className="text-gray-500 text-xs ml-2">(Base URL with /v1 suffix)</span>
                   </label>
                   <input
                     type="url"
                     value={editForm.endpoint || ''}
                     onChange={(e) => setEditForm(prev => ({ ...prev, endpoint: e.target.value }))}
+                    placeholder="http://192.168.2.101:1234/v1"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    For LM Studio: Use your LM Studio server address + /v1 (e.g., http://192.168.2.101:1234/v1)
+                  </p>
                 </div>
 
                 <div>
@@ -295,6 +300,38 @@ const AIProviderManagement: React.FC = () => {
                     Enabled
                   </label>
                 </div>
+
+                {/* Supported Endpoints Info */}
+                {(editForm.type === 'openai-compatible' || editForm.type === 'local') && (
+                  <div className="border-t pt-4 mt-4">
+                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Supported Endpoints</h4>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded p-3 text-xs font-mono">
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-green-600 dark:text-green-400">GET</span>
+                          <span>/v1/models</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-blue-600 dark:text-blue-400">POST</span>
+                          <span>/v1/chat/completions</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-blue-600 dark:text-blue-400">POST</span>
+                          <span>/v1/completions</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-blue-600 dark:text-blue-400">POST</span>
+                          <span>/v1/embeddings</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <p className="text-gray-600 dark:text-gray-400">
+                          Base URL: <span className="text-gray-900 dark:text-gray-100">{editForm.endpoint?.replace('/v1', '') || 'http://192.168.2.101:1234'}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex space-x-3 pt-4">
                   <button
@@ -374,6 +411,60 @@ const AIProviderManagement: React.FC = () => {
                     </span>
                   </div>
                 </div>
+
+                {/* Show available endpoints for OpenAI-compatible providers */}
+                {(provider.type === 'openai-compatible' || provider.type === 'local') && (
+                  <div className="mt-4 pt-3 border-t">
+                    <details className="group">
+                      <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                        <span>Available Endpoints</span>
+                        <span className="transition-transform group-open:rotate-180">▼</span>
+                      </summary>
+                      <div className="mt-2 bg-gray-50 dark:bg-gray-800 rounded p-3 text-xs font-mono">
+                        <div className="space-y-1">
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-green-600 dark:text-green-400 font-bold">GET</span>
+                              <span>/v1/models</span>
+                            </div>
+                            <button
+                              onClick={() => window.open(`${provider.endpoint}/models`, '_blank')}
+                              className="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500"
+                            >
+                              Test
+                            </button>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-blue-600 dark:text-blue-400 font-bold">POST</span>
+                              <span>/v1/chat/completions</span>
+                            </div>
+                            <span className="text-xs text-gray-500">Main API</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-blue-600 dark:text-blue-400 font-bold">POST</span>
+                              <span>/v1/completions</span>
+                            </div>
+                            <span className="text-xs text-gray-500">Legacy</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-blue-600 dark:text-blue-400 font-bold">POST</span>
+                              <span>/v1/embeddings</span>
+                            </div>
+                            <span className="text-xs text-gray-500">Vectors</span>
+                          </div>
+                        </div>
+                        <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+                          <p className="text-gray-600 dark:text-gray-400">
+                            Base URL: <span className="text-gray-900 dark:text-gray-100 font-semibold">{provider.endpoint.replace('/v1', '') || provider.endpoint}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </details>
+                  </div>
+                )}
 
                 {testResults[provider.name] && !testResults[provider.name].healthy && (
                   <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-3 mt-3">
