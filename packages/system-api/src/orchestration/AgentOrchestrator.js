@@ -71,11 +71,9 @@ class AgentOrchestrator {
     const taskAnalysis = this.analyzeTaskRequirements(prompt);
     
     // Get candidate agents using capability matcher
-    const candidates = await this.matcher.findBestMatches(taskAnalysis, {
-      strategy: options.routingStrategy || 'balanced',
-      limit: 5,
-      includePerformanceData: true
-    });
+    const availableAgents = this.registry.getAllAgentTypes().map(type => this.registry.getAgent(type));
+    const bestMatch = this.matcher.findBestMatch(taskAnalysis, availableAgents, options.routingStrategy || 'balanced');
+    const candidates = bestMatch ? [bestMatch] : [];
     
     if (candidates.length === 0) {
       throw new Error('No suitable agents found for this request');
