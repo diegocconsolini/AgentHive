@@ -131,42 +131,6 @@ const documentationItems: NavItem[] = [
     path: '/api-docs',
     icon: 'ExternalLink',
   },
-  {
-    id: 'python-sdk',
-    label: 'Python SDK',
-    path: '/docs/python',
-    icon: 'Code',
-  },
-  {
-    id: 'nodejs-sdk',
-    label: 'Node.js SDK',
-    path: '/docs/nodejs',
-    icon: 'Code',
-  },
-  {
-    id: 'go-sdk',
-    label: 'Go Client',
-    path: '/docs/go',
-    icon: 'Code',
-  },
-  {
-    id: 'java-sdk',
-    label: 'Java SDK',
-    path: '/docs/java',
-    icon: 'Code',
-  },
-  {
-    id: 'php-sdk',
-    label: 'PHP Client',
-    path: '/docs/php',
-    icon: 'Code',
-  },
-  {
-    id: 'ruby-sdk',
-    label: 'Ruby Gem',
-    path: '/docs/ruby',
-    icon: 'Code',
-  },
 ];
 
 const adminItems: NavItem[] = [
