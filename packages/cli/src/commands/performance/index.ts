@@ -1,7 +1,9 @@
 import { Command } from 'commander';
 import { MemoryManagerAPI } from '../../api/index.js';
-import { OutputFormatter, InteractivePrompts } from '../../utils/output.js';
-import { ErrorHandler, handleErrors } from '../../utils/errors.js';
+import { OutputFormatter } from '../../utils/output.js';
+import { InteractivePrompts } from '../../utils/prompts.js';
+import { ErrorHandler } from '../../utils/errors.js';
+import { handleErrors, withErrorHandling } from '../../utils/decorators.js';
 import { 
   StatusOptions,
   MetricsOptions,
@@ -52,7 +54,7 @@ Examples:
       .option('--concurrency <level>', 'concurrency level', '1')
       .option('--warmup <count>', 'warmup iterations', '10')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.runBenchmark.bind(this)));
+      .action(withErrorHandling(this.runBenchmark.bind(this)));
 
     // Profile command
     perfCmd
@@ -62,7 +64,7 @@ Examples:
       .option('--duration <seconds>', 'profiling duration in seconds', '30')
       .option('--output <format>', 'output format (flamegraph, callgrind, json)', 'json')
       .option('--file <file>', 'save profile to file')
-      .action(handleErrors(this.profileOperation.bind(this)));
+      .action(withErrorHandling(this.profileOperation.bind(this)));
 
     // Optimize command
     perfCmd
@@ -72,13 +74,12 @@ Examples:
       .option('--component <component>', 'component to optimize (db, cache, api, all)', 'all')
       .option('--aggressive', 'apply aggressive optimizations')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.optimizeSystem.bind(this)));
+      .action(withErrorHandling(this.optimizeSystem.bind(this)));
 
     return perfCmd;
   }
 
-  @handleErrors
-  private async analyzePerformance(options: any): Promise<void> {
+    private async analyzePerformance(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const analyzeOptions: PerfAnalyzeOptions = {
@@ -107,8 +108,7 @@ Examples:
     }
   }
 
-  @handleErrors
-  private async runBenchmark(options: any): Promise<void> {
+    private async runBenchmark(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const benchmarkOptions: PerfBenchmarkOptions = {
@@ -138,8 +138,7 @@ Examples:
     }
   }
 
-  @handleErrors
-  private async profileOperation(operation: string, options: any): Promise<void> {
+    private async profileOperation(operation: string, options: any): Promise<void> {
     const profileOptions: PerfProfileOptions = {
       operation,
       duration: parseInt(options.duration),
@@ -170,8 +169,7 @@ Examples:
     }
   }
 
-  @handleErrors
-  private async optimizeSystem(options: any): Promise<void> {
+    private async optimizeSystem(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     if (!options.dryRun) {
@@ -305,8 +303,7 @@ Examples:
     return monitorCmd;
   }
 
-  @handleErrors
-  private async getStatus(options: any): Promise<void> {
+    private async getStatus(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const statusOptions: StatusOptions = {
@@ -339,8 +336,7 @@ Examples:
     }
   }
 
-  @handleErrors
-  private async getMetrics(options: any): Promise<void> {
+    private async getMetrics(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const metricsOptions: MetricsOptions = {
@@ -368,8 +364,7 @@ Examples:
     }
   }
 
-  @handleErrors
-  private async healthCheck(options: any): Promise<void> {
+    private async healthCheck(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const healthOptions: HealthCheckOptions = {
@@ -397,8 +392,7 @@ Examples:
     }
   }
 
-  @handleErrors
-  private async getLogs(options: any): Promise<void> {
+    private async getLogs(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const logsOptions: LogsOptions = {
@@ -429,8 +423,7 @@ Examples:
     }
   }
 
-  @handleErrors
-  private async getUsageStats(options: any): Promise<void> {
+    private async getUsageStats(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const result = await this.api.analytics.getUsageStats({
@@ -441,8 +434,7 @@ Examples:
     OutputFormatter.result(result, format);
   }
 
-  @handleErrors
-  private async getErrorAnalysis(options: any): Promise<void> {
+    private async getErrorAnalysis(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
     const result = await this.api.analytics.getErrorAnalysis({

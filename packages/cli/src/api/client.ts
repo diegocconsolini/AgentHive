@@ -40,7 +40,6 @@ export class ApiClient {
     if (!this.client) {
       const apiConfig = await this.config.getApiConfig();
       this.client = new GQLClient(apiConfig.graphqlUrl, {
-        timeout: this.options.timeout,
         headers: {
           'Content-Type': 'application/json',
           'User-Agent': 'memory-manager-cli/1.0.0'
@@ -149,7 +148,9 @@ export class ApiClient {
       // Create a new client without auth for refresh request
       const apiConfig = await this.config.getApiConfig();
       const refreshClient = new GQLClient(apiConfig.graphqlUrl, {
-        timeout: this.options.timeout
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       const result = await refreshClient.request(mutation, { token: refreshToken }) as any;
@@ -301,16 +302,21 @@ export class ApiClient {
   }
 
   // Upload file (if supported by API)
-  async uploadFile(file: File | Buffer, filename: string, metadata?: Record<string, any>): Promise<any> {
+  async uploadFile(file: Buffer | string, filename: string, metadata?: Record<string, any>): Promise<any> {
     const apiConfig = await this.config.getApiConfig();
     const uploadUrl = apiConfig.url + '/upload';
     const token = await this.config.getAuthToken();
 
+    // Use node-fetch compatible FormData or multipart approach
+    const FormData = (await import('form-data')).default;
     const formData = new FormData();
     
-    if (file instanceof Buffer) {
-      formData.append('file', new Blob([file]), filename);
+    if (typeof file === 'string') {
+      // File path - read from filesystem
+      const fs = await import('fs');
+      formData.append('file', fs.createReadStream(file), filename);
     } else {
+      // Buffer data
       formData.append('file', file, filename);
     }
 
