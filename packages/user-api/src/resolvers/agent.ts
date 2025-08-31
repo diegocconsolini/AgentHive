@@ -301,19 +301,8 @@ export const agentResolvers = {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };
-    },
-
-    // PHASE 1 AGENT EXECUTION - Temporarily commented out due to schema conflicts
-    // Will be re-enabled once schema is fixed
-    /*
-    async executeAgent(agentId, prompt, context, user) {
-      // Real Ollama integration working - see test-agent-execution.js for proof
-      // This demonstrates AgentHive can execute real AI agents via your RTX 5090
     }
-    */
-
-    // Intelligent orchestration mutation
-    async orchestrateRequest(_: any, { input }: { input: any }, context: GraphQLContext) {
+  },
       const user = requireAuth(context);
       
       try {
