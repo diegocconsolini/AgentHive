@@ -1,7 +1,18 @@
 {
   "name": "agenthive-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AgentHive Command Line Interface - Control your AI agent swarm from the terminal",
+  "keywords": ["ai", "agents", "cli", "automation", "development", "orchestration", "swarm"],
+  "homepage": "https://github.com/agenthive/cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agenthive/cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agenthive/cli/issues"
+  },
+  "license": "MIT",
+  "author": "AgentHive Team",
   "type": "module",
   "bin": {
     "hive": "./bin/hive",
