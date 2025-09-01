@@ -3,7 +3,9 @@
     "allow": [
       "WebFetch(domain:bashthebug.com)",
       "Bash(chmod:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(node server.js)",
+      "Bash(hive ask:*)"
     ],
     "deny": [],
     "ask": []
