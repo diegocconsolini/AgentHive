@@ -191,17 +191,18 @@ class AgentOrchestrator {
     context.addInteraction({
       timestamp: new Date(),
       prompt,
-      agentId: result.agentId,
-      response: result.output.substring(0, 500), // Store truncated response
-      tokens: result.tokens,
-      duration: result.duration
+      agentId: result.agentId || 'unknown',
+      response: (result.output || '').substring(0, 500), // Store truncated response
+      tokens: result.tokens || 0,
+      duration: result.duration || 0
     });
     
     // Update agent preferences based on success
-    if (!context.agentPreferences[result.agentId]) {
-      context.agentPreferences[result.agentId] = { uses: 0, satisfaction: 0 };
+    const agentId = result.agentId || 'unknown';
+    if (!context.agentPreferences[agentId]) {
+      context.agentPreferences[agentId] = { uses: 0, satisfaction: 0 };
     }
-    context.agentPreferences[result.agentId].uses++;
+    context.agentPreferences[agentId].uses++;
     
     // Trim old interactions to prevent memory bloat
     if (context.previousInteractions && context.previousInteractions.length > 10) {

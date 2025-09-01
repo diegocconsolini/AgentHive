@@ -50,6 +50,12 @@ class Context {
       references: [],
       ...data.relationships
     };
+    
+    // Session-specific data for orchestration
+    this.userId = data.userId || null;
+    this.sessionId = data.sessionId || null;
+    this.previousInteractions = data.previousInteractions || [];
+    this.agentPreferences = data.agentPreferences || {};
   }
 
   /**
@@ -418,6 +424,34 @@ class Context {
     }
 
     return true;
+  }
+
+  /**
+   * Add an interaction to the context history
+   * @param {Object} interaction - Interaction data
+   * @returns {Context} Returns this for chaining
+   */
+  addInteraction(interaction) {
+    if (!this.previousInteractions) {
+      this.previousInteractions = [];
+    }
+    
+    this.previousInteractions.push({
+      timestamp: interaction.timestamp || new Date(),
+      prompt: interaction.prompt || '',
+      agentId: interaction.agentId || 'unknown',
+      response: interaction.response || '',
+      tokens: interaction.tokens || 0,
+      duration: interaction.duration || 0
+    });
+    
+    // Keep only last 20 interactions to prevent memory bloat
+    if (this.previousInteractions.length > 20) {
+      this.previousInteractions = this.previousInteractions.slice(-20);
+    }
+    
+    this.updated = new Date().toISOString();
+    return this;
   }
 
   /**
