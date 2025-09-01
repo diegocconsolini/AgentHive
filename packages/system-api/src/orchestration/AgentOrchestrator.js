@@ -69,10 +69,18 @@ class AgentOrchestrator {
   async selectOptimalAgent(prompt, options, context) {
     // Analyze prompt to understand requirements
     const taskAnalysis = this.analyzeTaskRequirements(prompt);
+    console.log('Task analysis:', taskAnalysis);
     
     // Get candidate agents using capability matcher
-    const availableAgents = this.registry.getAllAgentTypes().map(type => this.registry.getAgent(type));
+    const availableAgentTypes = this.registry.getAllAgentTypes();
+    console.log('Available agent types:', availableAgentTypes);
+    
+    const availableAgents = availableAgentTypes.map(type => this.registry.getAgent(type)).filter(agent => agent);
+    console.log('Available agents:', availableAgents.length, 'agents loaded');
+    
     const bestMatch = this.matcher.findBestMatch(taskAnalysis, availableAgents, options.routingStrategy || 'balanced');
+    console.log('Best match:', bestMatch);
+    
     const candidates = bestMatch ? [bestMatch] : [];
     
     if (candidates.length === 0) {
