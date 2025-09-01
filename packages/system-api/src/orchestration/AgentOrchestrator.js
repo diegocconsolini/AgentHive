@@ -410,8 +410,9 @@ class AgentOrchestrator {
     // Add agent-specific response processing here
     return {
       ...response,
+      output: response.response, // Map AI service response to expected output field
       agentProcessed: true,
-      agentId: agent.id,
+      agentId: agent.id || agent.type,
       processingTime: Date.now()
     };
   }
