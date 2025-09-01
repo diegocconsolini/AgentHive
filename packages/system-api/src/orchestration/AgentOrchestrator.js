@@ -107,8 +107,8 @@ class AgentOrchestrator {
       model,
       prompt,
       systemPrompt,
-      temperature: agent.config.temperature || options.temperature || 0.7,
-      maxTokens: agent.config.maxTokens || options.maxTokens || 4000,
+      temperature: (agent.config && agent.config.temperature) || options.temperature || 0.7,
+      maxTokens: (agent.config && agent.config.maxTokens) || options.maxTokens || 4000,
       stream: options.stream || false
     });
     
@@ -324,7 +324,7 @@ class AgentOrchestrator {
     const availableProviders = this.aiService.getAvailableProviders();
     
     if (options.model) return options.model;
-    if (agent.config.preferredModel) return agent.config.preferredModel;
+    if (agent.config && agent.config.preferredModel) return agent.config.preferredModel;
     
     // Default to first available model
     return availableProviders[0]?.models[0] || 'gpt-3.5-turbo';
