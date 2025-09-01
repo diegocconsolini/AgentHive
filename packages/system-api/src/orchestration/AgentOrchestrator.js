@@ -120,10 +120,12 @@ class AgentOrchestrator {
    * Build specialized system prompt for agent
    */
   buildAgentSystemPrompt(agent, context) {
-    let systemPrompt = `You are ${agent.name}, ${agent.description}\n\n`;
+    let systemPrompt = `You are ${agent.name || 'AI Assistant'}, ${agent.description || 'a helpful AI assistant'}\n\n`;
     
     // Add agent capabilities and expertise
-    systemPrompt += `Your expertise includes: ${agent.capabilities.join(', ')}\n`;
+    if (agent.capabilities && Array.isArray(agent.capabilities)) {
+      systemPrompt += `Your expertise includes: ${agent.capabilities.join(', ')}\n`;
+    }
     
     // Add relevant context if available
     if (context.previousInteractions && context.previousInteractions.length > 0) {
@@ -134,7 +136,7 @@ class AgentOrchestrator {
     }
     
     // Add agent-specific instructions
-    if (agent.config.instructions) {
+    if (agent.config && agent.config.instructions) {
       systemPrompt += `\nSpecific instructions:\n${agent.config.instructions}\n`;
     }
     
