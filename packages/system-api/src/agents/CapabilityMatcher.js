@@ -168,6 +168,19 @@ class CapabilityMatcher {
       });
     }
 
+    // Final fallback: if still no candidates, get all agents from category
+    if (candidates.size === 0 && category) {
+      const categoryAgents = this.registry.getAgentsByCategory(category);
+      categoryAgents.forEach(agent => candidates.add(agent.type));
+    }
+
+    // Ultimate fallback: if no category match, return some agents
+    if (candidates.size === 0) {
+      // Return first few agents as fallback
+      const allTypes = this.registry.getAllAgentTypes();
+      allTypes.slice(0, 5).forEach(type => candidates.add(type));
+    }
+
     return Array.from(candidates);
   }
 

@@ -78,7 +78,11 @@ class AgentOrchestrator {
     const availableAgents = availableAgentTypes.map(type => this.registry.getAgent(type)).filter(agent => agent);
     console.log('Available agents:', availableAgents.length, 'agents loaded');
     
-    const bestMatch = this.matcher.findBestMatch(taskAnalysis, availableAgents, options.routingStrategy || 'balanced');
+    // Convert task analysis to capability requirements
+    const taskRequirements = this.convertAnalysisToRequirements(taskAnalysis);
+    console.log('Task requirements:', taskRequirements);
+    
+    const bestMatch = this.matcher.findBestMatch(taskRequirements, availableAgents, options.routingStrategy || 'balanced');
     console.log('Best match:', bestMatch);
     
     const candidates = bestMatch ? [bestMatch] : [];
@@ -166,6 +170,53 @@ class AgentOrchestrator {
     };
     
     return analysis;
+  }
+
+  /**
+   * Convert task analysis to capability requirements
+   */
+  convertAnalysisToRequirements(taskAnalysis) {
+    const domainCapabilities = {
+      development: ['react-development', 'vue-development', 'angular-development', 'frontend-development', 'backend-development', 'api-development', 'javascript-development', 'typescript-development'],
+      security: ['security-audit', 'vulnerability-assessment', 'penetration-testing'],
+      devops: ['deployment', 'ci-cd', 'infrastructure-management', 'container-orchestration'],
+      data: ['data-analysis', 'sql-optimization', 'database-design'],
+      design: ['ui-design', 'ux-design', 'responsive-design', 'accessibility'],
+      testing: ['unit-testing', 'integration-testing', 'e2e-testing', 'qa-automation']
+    };
+
+    const requirements = {
+      requiredCapabilities: [],
+      preferredCapabilities: [],
+      complexity: taskAnalysis.complexity || 'medium',
+      category: taskAnalysis.domain,
+      priority: taskAnalysis.urgency || 'normal',
+      keywords: taskAnalysis.keywords || []
+    };
+
+    // Map domain to capabilities
+    if (taskAnalysis.domain && domainCapabilities[taskAnalysis.domain]) {
+      requirements.requiredCapabilities = domainCapabilities[taskAnalysis.domain];
+    }
+
+    // Extract capabilities from keywords
+    taskAnalysis.keywords?.forEach(keyword => {
+      const keywordCapabilities = {
+        'react': ['react-development', 'ui-implementation'],
+        'vue': ['vue-development', 'frontend-development'],
+        'angular': ['angular-development', 'frontend-development'], 
+        'api': ['api-design', 'api-development'],
+        'database': ['database-design', 'sql-optimization'],
+        'security': ['security-audit', 'vulnerability-assessment'],
+        'test': ['unit-testing', 'qa-automation']
+      };
+      
+      if (keywordCapabilities[keyword]) {
+        requirements.preferredCapabilities.push(...keywordCapabilities[keyword]);
+      }
+    });
+
+    return requirements;
   }
 
   /**
@@ -298,10 +349,12 @@ class AgentOrchestrator {
 
   identifyDomain(prompt) {
     const domains = {
-      development: ['code', 'function', 'debug', 'programming', 'javascript', 'python'],
-      security: ['security', 'vulnerability', 'audit', 'penetration'],
-      devops: ['deployment', 'docker', 'kubernetes', 'infrastructure'],
-      data: ['data', 'sql', 'database', 'analysis', 'query']
+      development: ['code', 'function', 'debug', 'programming', 'javascript', 'python', 'react', 'vue', 'angular', 'frontend', 'backend', 'api', 'component', 'typescript', 'node', 'npm', 'development', 'build', 'compile'],
+      security: ['security', 'vulnerability', 'audit', 'penetration', 'authentication', 'authorization'],
+      devops: ['deployment', 'docker', 'kubernetes', 'infrastructure', 'ci/cd', 'pipeline', 'server'],
+      data: ['data', 'sql', 'database', 'analysis', 'query', 'analytics', 'reporting'],
+      design: ['ui', 'ux', 'design', 'interface', 'layout', 'responsive', 'accessibility'],
+      testing: ['test', 'testing', 'unit', 'integration', 'e2e', 'qa', 'quality']
     };
     
     const words = prompt.toLowerCase().split(/\s+/);
