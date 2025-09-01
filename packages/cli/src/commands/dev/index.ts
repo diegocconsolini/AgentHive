@@ -499,9 +499,9 @@ Examples:
     }
 
     if (!options.force) {
-      const confirmed = await InteractivePrompts.confirm(
-        'This will replace existing data. Continue?'
-      );
+      const confirmed = await InteractivePrompts.confirm('confirmed', {
+        message: 'This will replace existing data. Continue?'
+      });
       if (!confirmed) {
         OutputFormatter.info('Cancelled', format);
         return;
@@ -676,9 +676,9 @@ Examples:
     const format = options.json ? 'json' : options.format;
 
     if (!options.force) {
-      const confirmed = await InteractivePrompts.confirm(
-        'This will delete development artifacts. Continue?'
-      );
+      const confirmed = await InteractivePrompts.confirm('confirmed', {
+        message: 'This will delete development artifacts. Continue?'
+      });
       if (!confirmed) {
         OutputFormatter.info('Cancelled', format);
         return;
@@ -707,10 +707,10 @@ Examples:
   private async init(options: any): Promise<void> {
     const format = options.json ? 'json' : options.format;
 
-    const template = options.template || await InteractivePrompts.select(
-      'Select project template:',
-      ['basic', 'full-stack', 'api-only', 'minimal']
-    );
+    const template = options.template || await InteractivePrompts.select('template', {
+      message: 'Select project template:',
+      choices: ['basic', 'full-stack', 'api-only', 'minimal']
+    });
 
     // Simulate initialization
     const result = {
