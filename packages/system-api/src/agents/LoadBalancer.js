@@ -796,6 +796,80 @@ class LoadBalancer {
   }
 
   /**
+   * Select optimal agent from candidates
+   * @param {Array} candidates - Array of candidate agents
+   * @param {Object} options - Selection options
+   * @returns {Object} Selected agent
+   */
+  selectAgent(candidates, options = {}) {
+    if (!candidates || candidates.length === 0) {
+      throw new Error('No candidate agents provided');
+    }
+
+    const {
+      considerWorkload = true,
+      preferenceHistory = {},
+      userPriority = 'normal',
+      strategy = 'adaptive'
+    } = options;
+
+    // If only one candidate, return it
+    if (candidates.length === 1) {
+      return candidates[0];
+    }
+
+    // Filter out unavailable agents
+    const availableAgents = candidates.filter(agent => {
+      const circuitBreaker = this.circuitBreakers.get(agent.id || agent.agent_id);
+      return !circuitBreaker || circuitBreaker.state !== 'open';
+    });
+
+    if (availableAgents.length === 0) {
+      throw new Error('No available agents after filtering');
+    }
+
+    // Apply load balancing strategy
+    let selectedAgent;
+    
+    if (considerWorkload) {
+      // Find agent with least load
+      selectedAgent = availableAgents.reduce((best, agent) => {
+        const agentId = agent.id || agent.agent_id;
+        const bestId = best.id || best.agent_id;
+        
+        const agentMetrics = this.metrics.agentUtilization.get(agentId) || { currentLoad: 0 };
+        const bestMetrics = this.metrics.agentUtilization.get(bestId) || { currentLoad: 0 };
+        
+        return agentMetrics.currentLoad < bestMetrics.currentLoad ? agent : best;
+      });
+    } else {
+      // Use specified strategy
+      const agentType = availableAgents[0].type;
+      const strategyFn = this.strategies[strategy] || this.strategies.adaptive;
+      selectedAgent = strategyFn(agentType, { candidates: availableAgents });
+      
+      // Fallback if strategy returns null
+      if (!selectedAgent) {
+        selectedAgent = availableAgents[0];
+      }
+    }
+
+    // Apply user preferences if available
+    if (Object.keys(preferenceHistory).length > 0) {
+      const preferredAgent = availableAgents.find(agent => {
+        const agentId = agent.id || agent.agent_id;
+        return preferenceHistory[agentId] && preferenceHistory[agentId].satisfaction > 0.7;
+      });
+      
+      if (preferredAgent) {
+        selectedAgent = preferredAgent;
+      }
+    }
+
+    return selectedAgent;
+  }
+
+  /**
    * Get detailed metrics
    * @returns {Object} Detailed metrics
    */
