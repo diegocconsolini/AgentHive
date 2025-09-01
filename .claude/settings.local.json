@@ -5,7 +5,8 @@
       "Bash(chmod:*)",
       "Bash(npm run build:*)",
       "Bash(node server.js)",
-      "Bash(hive ask:*)"
+      "Bash(hive ask:*)",
+      "Bash(npx hive ask:*)"
     ],
     "deny": [],
     "ask": []
