@@ -50,8 +50,8 @@ class AgentOrchestrator {
       
       return {
         ...result,
-        selectedAgent: selectedAgent.id,
-        agentName: selectedAgent.name,
+        selectedAgent: selectedAgent.id || selectedAgent.type,
+        agentName: selectedAgent.name || selectedAgent.type,
         routingReason: selectedAgent.selectionReason,
         contextUsed: context.id,
         orchestrationTime: Date.now() - startTime
@@ -85,7 +85,19 @@ class AgentOrchestrator {
     const bestMatch = this.matcher.findBestMatch(taskRequirements, availableAgents, options.routingStrategy || 'balanced');
     console.log('Best match:', bestMatch);
     
-    const candidates = bestMatch ? [bestMatch] : [];
+    // Convert best match type to full agent object
+    let candidates = [];
+    if (bestMatch && bestMatch.success && bestMatch.bestMatch) {
+      const agentType = bestMatch.bestMatch;
+      const fullAgent = this.registry.getAgent(agentType);
+      if (fullAgent) {
+        // Add the match info to the agent object
+        fullAgent.matchScore = bestMatch.score;
+        fullAgent.confidence = bestMatch.confidence;
+        fullAgent.matchReasoning = bestMatch.reasoning;
+        candidates = [fullAgent];
+      }
+    }
     
     if (candidates.length === 0) {
       throw new Error('No suitable agents found for this request');
@@ -123,6 +135,8 @@ class AgentOrchestrator {
       maxTokens: (agent.config && agent.config.maxTokens) || options.maxTokens || 4000,
       stream: options.stream || false
     });
+    
+    console.log('AI Service response:', response);
     
     // Process response with agent-specific post-processing
     return this.processAgentResponse(agent, response, context);
@@ -403,7 +417,9 @@ class AgentOrchestrator {
   }
 
   buildSelectionReason(selected, candidates, analysis) {
-    return `Selected ${selected.name} based on ${analysis.domain} domain match (confidence: ${(selected.confidence * 100).toFixed(1)}%) from ${candidates.length} candidates`;
+    const agentName = selected.name || selected.type || 'Unknown Agent';
+    const confidence = selected.confidence || selected.matchScore || 0;
+    return `Selected ${agentName} based on ${analysis.domain} domain match (confidence: ${(confidence * 100).toFixed(1)}%) from ${candidates.length} candidates`;
   }
 
   calculateSimilarity(str1, str2) {
