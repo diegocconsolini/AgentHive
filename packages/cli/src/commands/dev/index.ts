@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { MemoryManagerAPI } from '../../api/index.js';
-import { OutputFormatter, InteractivePrompts } from '../../utils/output.js';
+import { OutputFormatter } from '../../utils/output.js';
+import { InteractivePrompts } from '../../utils/prompts.js';
 import { ErrorHandler } from '../../utils/errors.js';
 import { handleErrors, withErrorHandling } from '../../utils/decorators.js';
 import { 
@@ -203,9 +204,9 @@ Examples:
 
       // Check if file exists and handle overwrite
       if (fs.existsSync(filePath) && !options.overwrite) {
-        const overwrite = await InteractivePrompts.confirm(
-          `File ${file.path} already exists. Overwrite?`
-        );
+        const overwrite = await InteractivePrompts.confirm('overwrite', {
+          message: `File ${file.path} already exists. Overwrite?`
+        });
         if (!overwrite) {
           continue;
         }
@@ -213,7 +214,7 @@ Examples:
 
       // Write file
       fs.writeFileSync(filePath, file.content);
-      if (file.executable) {
+      if ('executable' in file && file.executable) {
         fs.chmodSync(filePath, 0o755);
       }
 
@@ -419,9 +420,9 @@ Examples:
     const format = options.json ? 'json' : options.format;
 
     if (options.clean) {
-      const confirmed = await InteractivePrompts.confirm(
-        'This will delete existing data. Continue?'
-      );
+      const confirmed = await InteractivePrompts.confirm('confirmed', {
+        message: 'This will delete existing data. Continue?'
+      });
       if (!confirmed) {
         OutputFormatter.info('Cancelled', format);
         return;
