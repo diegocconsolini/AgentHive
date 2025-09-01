@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import { MemoryManagerAPI } from '../../api/index.js';
 import { OutputFormatter, InteractivePrompts } from '../../utils/output.js';
-import { ErrorHandler, handleErrors } from '../../utils/errors.js';
+import { ErrorHandler } from '../../utils/errors.js';
+import { handleErrors, withErrorHandling } from '../../utils/decorators.js';
 import { 
   ScaffoldOptions,
   MigrateOptions,
@@ -46,7 +47,7 @@ Examples:
       .option('--output <directory>', 'output directory', './generated')
       .option('--overwrite', 'overwrite existing files')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.scaffold.bind(this)));
+      .action(withErrorHandling(this.scaffold.bind(this)));
 
     // Migration command
     devCmd
@@ -58,7 +59,7 @@ Examples:
       .option('--steps <steps>', 'number of migration steps', '1')
       .option('--dry-run', 'preview migrations without applying')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.migrate.bind(this)));
+      .action(withErrorHandling(this.migrate.bind(this)));
 
     // Seed command
     devCmd
@@ -68,7 +69,7 @@ Examples:
       .option('--dataset <dataset>', 'specific dataset to seed')
       .option('--clean', 'clean existing data before seeding')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.seed.bind(this)));
+      .action(withErrorHandling(this.seed.bind(this)));
 
     // Backup command
     devCmd
@@ -79,7 +80,7 @@ Examples:
       .option('--include-config', 'include configuration in backup')
       .option('--include-secrets', 'include secrets (use with caution)')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.backup.bind(this)));
+      .action(withErrorHandling(this.backup.bind(this)));
 
     // Restore command
     devCmd
@@ -89,7 +90,7 @@ Examples:
       .option('--force', 'force restore without confirmation')
       .option('--exclude-config', 'exclude configuration from restore')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.restore.bind(this)));
+      .action(withErrorHandling(this.restore.bind(this)));
 
     // Test command
     devCmd
@@ -100,7 +101,7 @@ Examples:
       .option('--coverage', 'generate coverage report')
       .option('--watch', 'watch mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.test.bind(this)));
+      .action(withErrorHandling(this.test.bind(this)));
 
     // Validate config command
     devCmd
@@ -109,7 +110,7 @@ Examples:
       .option('--environment <env>', 'environment to validate')
       .option('--strict', 'strict validation mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.validateConfig.bind(this)));
+      .action(withErrorHandling(this.validateConfig.bind(this)));
 
     // Lint command
     devCmd
@@ -118,7 +119,7 @@ Examples:
       .option('--fix', 'automatically fix issues')
       .option('--format <format>', 'output format (json, text, compact)', 'text')
       .option('--rules <rules>', 'specific rules to check (comma-separated)')
-      .action(handleErrors(this.lint.bind(this)));
+      .action(withErrorHandling(this.lint.bind(this)));
 
     // Docs command
     devCmd
@@ -130,7 +131,7 @@ Examples:
       .option('--include-api', 'include API documentation')
       .option('--serve', 'serve documentation locally')
       .option('--port <port>', 'serve port', '3000')
-      .action(handleErrors(this.docs.bind(this)));
+      .action(withErrorHandling(this.docs.bind(this)));
 
     // Clean command
     devCmd
@@ -142,7 +143,7 @@ Examples:
       .option('--all', 'clean all artifacts')
       .option('--force', 'force clean without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.clean.bind(this)));
+      .action(withErrorHandling(this.clean.bind(this)));
 
     // Init command
     devCmd
@@ -151,7 +152,7 @@ Examples:
       .option('--template <template>', 'project template')
       .option('--force', 'force initialization')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.init.bind(this)));
+      .action(withErrorHandling(this.init.bind(this)));
 
     return devCmd;
   }
@@ -354,7 +355,7 @@ Examples:
       .command('action')
       .description('Perform an action')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.performAction.bind(this)));
+      .action(withErrorHandling(this.performAction.bind(this)));
 
     return cmd;
   }

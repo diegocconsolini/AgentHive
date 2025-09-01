@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import { MemoryManagerAPI } from '../../api/index.js';
 import { OutputFormatter, InteractivePrompts } from '../../utils/output.js';
-import { ErrorHandler, handleErrors } from '../../utils/errors.js';
+import { ErrorHandler } from '../../utils/errors.js';
+import { handleErrors, withErrorHandling } from '../../utils/decorators.js';
 import { 
   CreateContextOptions,
   ContextListOptions,
@@ -39,7 +40,7 @@ Examples:
       .option('--from-template <template>', 'create from template')
       .option('--interactive', 'use interactive mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.createContext.bind(this)));
+      .action(withErrorHandling(this.createContext.bind(this)));
 
     // List command
     contextCmd
@@ -50,7 +51,7 @@ Examples:
       .option('--status <status>', 'filter by status (active, archived)')
       .option('--format <format>', 'output format (json, table, tree)', 'table')
       .option('--json', 'output in JSON format')
-      .action(handleErrors(this.listContexts.bind(this)));
+      .action(withErrorHandling(this.listContexts.bind(this)));
 
     // Show command
     contextCmd
@@ -60,7 +61,7 @@ Examples:
       .description('Show context details')
       .option('--include-memories', 'include memories in output')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.showContext.bind(this)));
+      .action(withErrorHandling(this.showContext.bind(this)));
 
     // Update command
     contextCmd
@@ -72,7 +73,7 @@ Examples:
       .option('--agent <agent>', 'update associated agent')
       .option('--interactive', 'use interactive mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.updateContext.bind(this)));
+      .action(withErrorHandling(this.updateContext.bind(this)));
 
     // Delete command
     contextCmd
@@ -83,7 +84,7 @@ Examples:
       .option('--cascade', 'delete associated memories')
       .option('--force', 'force deletion without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.deleteContext.bind(this)));
+      .action(withErrorHandling(this.deleteContext.bind(this)));
 
     // Archive command
     contextCmd
@@ -91,7 +92,7 @@ Examples:
       .argument('<id>', 'context ID')
       .description('Archive a context')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.archiveContext.bind(this)));
+      .action(withErrorHandling(this.archiveContext.bind(this)));
 
     // Restore command
     contextCmd
@@ -99,7 +100,7 @@ Examples:
       .argument('<id>', 'context ID')
       .description('Restore an archived context')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.restoreContext.bind(this)));
+      .action(withErrorHandling(this.restoreContext.bind(this)));
 
     // Analyze command
     contextCmd
@@ -109,7 +110,7 @@ Examples:
       .option('--depth <depth>', 'analysis depth (shallow, deep)', 'shallow')
       .option('--include-metrics', 'include detailed metrics')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.analyzeContext.bind(this)));
+      .action(withErrorHandling(this.analyzeContext.bind(this)));
 
     // Merge command
     contextCmd
@@ -121,7 +122,7 @@ Examples:
       .option('--conflict-resolution <resolution>', 'conflict resolution (source, target, merge)', 'merge')
       .option('--dry-run', 'preview merge without applying')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.mergeContexts.bind(this)));
+      .action(withErrorHandling(this.mergeContexts.bind(this)));
 
     // Diff command
     contextCmd
@@ -130,7 +131,7 @@ Examples:
       .argument('<id2>', 'second context ID')
       .description('Compare two contexts')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.diffContexts.bind(this)));
+      .action(withErrorHandling(this.diffContexts.bind(this)));
 
     // Export command
     contextCmd
@@ -140,7 +141,7 @@ Examples:
       .option('--format <format>', 'export format (json, yaml, markdown)', 'json')
       .option('--output <file>', 'output file (default: stdout)')
       .option('--include-memories', 'include memories in export')
-      .action(handleErrors(this.exportContext.bind(this)));
+      .action(withErrorHandling(this.exportContext.bind(this)));
 
     // Stats command
     contextCmd
@@ -148,7 +149,7 @@ Examples:
       .argument('[id]', 'context ID (optional, shows global stats if omitted)')
       .description('Show context statistics')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.contextStats.bind(this)));
+      .action(withErrorHandling(this.contextStats.bind(this)));
 
     return contextCmd;
   }

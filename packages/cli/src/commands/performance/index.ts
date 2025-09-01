@@ -43,7 +43,7 @@ Examples:
       .option('--duration <duration>', 'time duration (e.g., 1h, 24h, 7d)', '24h')
       .option('--include-breakdown', 'include detailed performance breakdown')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.analyzePerformance.bind(this)));
+      .action(withErrorHandling(this.analyzePerformance.bind(this)));
 
     // Benchmark command
     perfCmd
@@ -250,7 +250,7 @@ Examples:
       .option('--detailed', 'include detailed system information')
       .option('--component <component>', 'check specific component (all, api, db, cache)')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.getStatus.bind(this)));
+      .action(withErrorHandling(this.getStatus.bind(this)));
 
     // Metrics command
     monitorCmd
@@ -259,7 +259,7 @@ Examples:
       .option('--category <category>', 'metric category (performance, usage, errors)')
       .option('--time-range <range>', 'time range (e.g., 1h, 24h, 7d)', '1h')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.getMetrics.bind(this)));
+      .action(withErrorHandling(this.getMetrics.bind(this)));
 
     // Health check command
     monitorCmd
@@ -268,7 +268,7 @@ Examples:
       .option('--component <component>', 'component to check (all, api, db, cache)', 'all')
       .option('--timeout <seconds>', 'timeout per check in seconds', '30')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.healthCheck.bind(this)));
+      .action(withErrorHandling(this.healthCheck.bind(this)));
 
     // Logs command
     monitorCmd
@@ -280,7 +280,7 @@ Examples:
       .option('--since <time>', 'show logs since time (e.g., 2023-01-01T00:00:00Z)')
       .option('--component <component>', 'filter by component')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.getLogs.bind(this)));
+      .action(withErrorHandling(this.getLogs.bind(this)));
 
     // Usage stats command
     monitorCmd
@@ -289,7 +289,7 @@ Examples:
       .option('--time-range <range>', 'time range (e.g., 24h, 7d, 30d)', '24h')
       .option('--granularity <granularity>', 'data granularity (hour, day, week)', 'hour')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.getUsageStats.bind(this)));
+      .action(withErrorHandling(this.getUsageStats.bind(this)));
 
     // Error analysis command
     monitorCmd
@@ -298,7 +298,7 @@ Examples:
       .option('--time-range <range>', 'time range (e.g., 24h, 7d)', '24h')
       .option('--severity <severity>', 'error severity (low, medium, high, critical)')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.getErrorAnalysis.bind(this)));
+      .action(withErrorHandling(this.getErrorAnalysis.bind(this)));
 
     return monitorCmd;
   }

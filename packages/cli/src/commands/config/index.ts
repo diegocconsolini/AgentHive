@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import { ConfigManager } from '../../lib/config.js';
 import { OutputFormatter, InteractivePrompts } from '../../utils/output.js';
-import { ErrorHandler, handleErrors } from '../../utils/errors.js';
+import { ErrorHandler } from '../../utils/errors.js';
+import { handleErrors, withErrorHandling } from '../../utils/decorators.js';
 import { Validator } from '../../utils/validation.js';
 import { 
   ConfigGetOptions,
@@ -43,7 +44,7 @@ Examples:
       .option('--environment <env>', 'environment context')
       .option('--decrypt', 'decrypt encrypted values')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.getConfig.bind(this)));
+      .action(withErrorHandling(this.getConfig.bind(this)));
 
     // Set command
     configCmd
@@ -55,7 +56,7 @@ Examples:
       .option('--encrypt', 'encrypt sensitive values')
       .option('--type <type>', 'value type (string, number, boolean, json)', 'string')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.setConfig.bind(this)));
+      .action(withErrorHandling(this.setConfig.bind(this)));
 
     // List command
     configCmd
@@ -66,7 +67,7 @@ Examples:
       .option('--format <format>', 'output format (json, table, tree)', 'table')
       .option('--include-secrets', 'include encrypted values (masked)')
       .option('--filter <pattern>', 'filter keys by pattern')
-      .action(handleErrors(this.listConfig.bind(this)));
+      .action(withErrorHandling(this.listConfig.bind(this)));
 
     // Delete/unset command
     configCmd
@@ -77,7 +78,7 @@ Examples:
       .option('--environment <env>', 'environment context')
       .option('--force', 'force deletion without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.deleteConfig.bind(this)));
+      .action(withErrorHandling(this.deleteConfig.bind(this)));
 
     // Validate command
     configCmd
@@ -86,7 +87,7 @@ Examples:
       .option('--environment <env>', 'environment to validate')
       .option('--strict', 'strict validation mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.validateConfig.bind(this)));
+      .action(withErrorHandling(this.validateConfig.bind(this)));
 
     // Export command
     configCmd
@@ -96,7 +97,7 @@ Examples:
       .option('--output <file>', 'output file (default: stdout)')
       .option('--format <format>', 'export format (json, yaml, env)', 'json')
       .option('--include-secrets', 'include encrypted values')
-      .action(handleErrors(this.exportConfig.bind(this)));
+      .action(withErrorHandling(this.exportConfig.bind(this)));
 
     // Import command
     configCmd
@@ -107,7 +108,7 @@ Examples:
       .option('--merge', 'merge with existing configuration')
       .option('--overwrite', 'overwrite existing values')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.importConfig.bind(this)));
+      .action(withErrorHandling(this.importConfig.bind(this)));
 
     // Reset command
     configCmd
@@ -116,7 +117,7 @@ Examples:
       .option('--environment <env>', 'environment to reset')
       .option('--force', 'force reset without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.resetConfig.bind(this)));
+      .action(withErrorHandling(this.resetConfig.bind(this)));
 
     // Edit command
     configCmd
@@ -126,14 +127,14 @@ Examples:
       .option('--environment <env>', 'environment context')
       .option('--editor <editor>', 'editor to use')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.editConfig.bind(this)));
+      .action(withErrorHandling(this.editConfig.bind(this)));
 
     // Path command
     configCmd
       .command('path')
       .description('Show configuration file path')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.configPath.bind(this)));
+      .action(withErrorHandling(this.configPath.bind(this)));
 
     return configCmd;
   }
@@ -602,7 +603,7 @@ Examples:
       .option('--from-template <template>', 'create from template')
       .option('--copy-from <env>', 'copy from existing environment')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.createEnvironment.bind(this)));
+      .action(withErrorHandling(this.createEnvironment.bind(this)));
 
     // List command
     envCmd
@@ -611,7 +612,7 @@ Examples:
       .description('List all environments')
       .option('--status <status>', 'filter by status (active, inactive)')
       .option('--format <format>', 'output format', 'table')
-      .action(handleErrors(this.listEnvironments.bind(this)));
+      .action(withErrorHandling(this.listEnvironments.bind(this)));
 
     // Switch command
     envCmd
@@ -620,7 +621,7 @@ Examples:
       .description('Switch to an environment')
       .option('--force', 'force switch without validation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.switchEnvironment.bind(this)));
+      .action(withErrorHandling(this.switchEnvironment.bind(this)));
 
     // Show command
     envCmd
@@ -628,7 +629,7 @@ Examples:
       .argument('[name]', 'environment name (current if omitted)')
       .description('Show environment details')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.showEnvironment.bind(this)));
+      .action(withErrorHandling(this.showEnvironment.bind(this)));
 
     // Delete command
     envCmd
@@ -638,7 +639,7 @@ Examples:
       .description('Delete an environment')
       .option('--force', 'force deletion without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.deleteEnvironment.bind(this)));
+      .action(withErrorHandling(this.deleteEnvironment.bind(this)));
 
     return envCmd;
   }

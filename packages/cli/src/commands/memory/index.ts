@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import { MemoryManagerAPI } from '../../api/index.js';
 import { OutputFormatter, InteractivePrompts } from '../../utils/output.js';
-import { ErrorHandler, handleErrors } from '../../utils/errors.js';
+import { ErrorHandler } from '../../utils/errors.js';
+import { handleErrors, withErrorHandling } from '../../utils/decorators.js';
 import { 
   MemorySearchOptions,
   MemoryTagOptions,
@@ -42,7 +43,7 @@ Examples:
       .option('--limit <limit>', 'limit results', '10')
       .option('--similarity <threshold>', 'minimum similarity threshold (0-1)', '0.3')
       .option('--format <format>', 'output format', 'table')
-      .action(handleErrors(this.searchMemories.bind(this)));
+      .action(withErrorHandling(this.searchMemories.bind(this)));
 
     // Create command
     memoryCmd
@@ -55,7 +56,7 @@ Examples:
       .option('--from-file <file>', 'read content from file')
       .option('--interactive', 'use interactive mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.createMemory.bind(this)));
+      .action(withErrorHandling(this.createMemory.bind(this)));
 
     // Update command
     memoryCmd
@@ -68,7 +69,7 @@ Examples:
       .option('--from-file <file>', 'read content from file')
       .option('--interactive', 'use interactive mode')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.updateMemory.bind(this)));
+      .action(withErrorHandling(this.updateMemory.bind(this)));
 
     // Delete command
     memoryCmd
@@ -78,7 +79,7 @@ Examples:
       .description('Delete a memory')
       .option('--force', 'force deletion without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.deleteMemory.bind(this)));
+      .action(withErrorHandling(this.deleteMemory.bind(this)));
 
     // Tag command
     memoryCmd
@@ -89,7 +90,7 @@ Examples:
       .option('--remove <tags>', 'remove tags (comma-separated)')
       .option('--replace <tags>', 'replace all tags (comma-separated)')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.tagMemory.bind(this)));
+      .action(withErrorHandling(this.tagMemory.bind(this)));
 
     // Untag command (alias for tag --remove)
     memoryCmd
@@ -98,7 +99,7 @@ Examples:
       .argument('<tags...>', 'tags to remove')
       .description('Remove tags from memory')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.untagMemory.bind(this)));
+      .action(withErrorHandling(this.untagMemory.bind(this)));
 
     // Analyze command
     memoryCmd
@@ -108,7 +109,7 @@ Examples:
       .option('--time-range <range>', 'time range (e.g., 24h, 7d, 30d)')
       .option('--include-relationships', 'include relationship analysis')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.analyzeMemories.bind(this)));
+      .action(withErrorHandling(this.analyzeMemories.bind(this)));
 
     // Cluster command
     memoryCmd
@@ -118,7 +119,7 @@ Examples:
       .option('--clusters <count>', 'target number of clusters', '5')
       .option('--threshold <threshold>', 'similarity threshold', '0.3')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.clusterMemories.bind(this)));
+      .action(withErrorHandling(this.clusterMemories.bind(this)));
 
     // Summarize command
     memoryCmd
@@ -127,7 +128,7 @@ Examples:
       .description('Generate summary of multiple memories')
       .option('--format <format>', 'summary format (bullet, paragraph)', 'paragraph')
       .option('--output-format <format>', 'output format', 'json')
-      .action(handleErrors(this.summarizeMemories.bind(this)));
+      .action(withErrorHandling(this.summarizeMemories.bind(this)));
 
     // Graph command
     memoryCmd
@@ -136,7 +137,7 @@ Examples:
       .option('--output <format>', 'output format (svg, png, dot, json)', 'json')
       .option('--layout <layout>', 'graph layout (force, circular, hierarchical)', 'force')
       .option('--file <file>', 'save to file')
-      .action(handleErrors(this.memoryGraph.bind(this)));
+      .action(withErrorHandling(this.memoryGraph.bind(this)));
 
     // Related command
     memoryCmd
@@ -146,7 +147,7 @@ Examples:
       .option('--limit <limit>', 'limit results', '10')
       .option('--threshold <threshold>', 'similarity threshold', '0.3')
       .option('--format <format>', 'output format', 'table')
-      .action(handleErrors(this.relatedMemories.bind(this)));
+      .action(withErrorHandling(this.relatedMemories.bind(this)));
 
     // Duplicate command
     memoryCmd
@@ -155,7 +156,7 @@ Examples:
       .description('Duplicate a memory')
       .option('--title <title>', 'new title for duplicate')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.duplicateMemory.bind(this)));
+      .action(withErrorHandling(this.duplicateMemory.bind(this)));
 
     // Bulk delete command
     memoryCmd
@@ -164,7 +165,7 @@ Examples:
       .description('Delete multiple memories')
       .option('--force', 'force deletion without confirmation')
       .option('--format <format>', 'output format', 'json')
-      .action(handleErrors(this.bulkDeleteMemories.bind(this)));
+      .action(withErrorHandling(this.bulkDeleteMemories.bind(this)));
 
     // Export command
     memoryCmd
@@ -173,7 +174,7 @@ Examples:
       .description('Export memories')
       .option('--format <format>', 'export format (json, csv, markdown)', 'json')
       .option('--output <file>', 'output file (default: stdout)')
-      .action(handleErrors(this.exportMemories.bind(this)));
+      .action(withErrorHandling(this.exportMemories.bind(this)));
 
     // List command (enhanced version of existing)
     memoryCmd
@@ -187,7 +188,7 @@ Examples:
       .option('--offset <offset>', 'skip results', '0')
       .option('--sort-by <field>', 'sort by field (created, updated, title)')
       .option('--format <format>', 'output format', 'table')
-      .action(handleErrors(this.listMemories.bind(this)));
+      .action(withErrorHandling(this.listMemories.bind(this)));
 
     return memoryCmd;
   }
