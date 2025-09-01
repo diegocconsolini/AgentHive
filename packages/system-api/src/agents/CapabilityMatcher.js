@@ -522,6 +522,44 @@ class CapabilityMatcher {
       dataPoints: history.length
     };
   }
+
+  /**
+   * Record agent performance for learning
+   * @param {string} agentId - Agent identifier
+   * @param {Object} performance - Performance data
+   * @param {boolean} performance.success - Whether task was successful
+   * @param {number} performance.duration - Task duration in ms
+   * @param {number} performance.tokens - Tokens used
+   */
+  recordAgentPerformance(agentId, performance) {
+    if (!this.performanceHistory.has(agentId)) {
+      this.performanceHistory.set(agentId, []);
+    }
+    
+    const history = this.performanceHistory.get(agentId);
+    const record = {
+      timestamp: Date.now(),
+      success: performance.success || false,
+      duration: performance.duration || 0,
+      tokens: performance.tokens || 0,
+      successRate: performance.success ? 1 : 0
+    };
+    
+    history.push(record);
+    
+    // Keep only last 100 records per agent
+    if (history.length > 100) {
+      history.shift();
+    }
+    
+    // Update success rate for the agent
+    const recentHistory = history.slice(-10);
+    const successCount = recentHistory.filter(r => r.success).length;
+    const recentSuccessRate = successCount / recentHistory.length;
+    
+    // Store aggregated performance metric
+    record.aggregatedSuccessRate = recentSuccessRate;
+  }
 }
 
 module.exports = CapabilityMatcher;
