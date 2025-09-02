@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const agentConfig = require('../config/AgentConfig');
 
 /**
  * Agent Registry
@@ -80,12 +81,7 @@ class AgentRegistry {
    * @private
    */
   _inferComplexity(description) {
-    const complexityIndicators = {
-      high: ['architect', 'design', 'advanced', 'enterprise', 'complex', 'comprehensive'],
-      medium: ['develop', 'implement', 'create', 'build', 'optimize', 'analyze'],
-      low: ['simple', 'basic', 'quick', 'straightforward']
-    };
-
+    const complexityIndicators = agentConfig.getComplexityIndicators();
     const desc = description.toLowerCase();
     
     if (complexityIndicators.high.some(indicator => desc.includes(indicator))) {
@@ -102,19 +98,7 @@ class AgentRegistry {
    * @private
    */
   _inferTaskTime(category) {
-    const categoryTimes = {
-      'development': 120,
-      'design': 90,
-      'testing': 60,
-      'security': 150,
-      'devops': 180,
-      'data': 140,
-      'ai-ml': 200,
-      'content': 45,
-      'specialized': 160
-    };
-    
-    return categoryTimes[category] || 100;
+    return agentConfig.getCategoryTime(category);
   }
 
   /**
@@ -122,8 +106,7 @@ class AgentRegistry {
    * @private
    */
   _inferSuccessRate(rating) {
-    const numRating = parseFloat(rating) || 4.0;
-    return Math.min(0.95, Math.max(0.7, numRating / 5.0));
+    return agentConfig.calculateSuccessRate(rating);
   }
 
   /**

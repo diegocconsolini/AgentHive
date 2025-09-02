@@ -2,6 +2,8 @@
  * Capability Matcher
  * Intelligent agent selection based on task requirements and agent capabilities
  */
+const agentConfig = require('../config/AgentConfig');
+
 class CapabilityMatcher {
   constructor(registry) {
     this.registry = registry;
