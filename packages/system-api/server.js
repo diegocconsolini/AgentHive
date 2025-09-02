@@ -533,18 +533,15 @@ class AgentHiveSystemAPI {
 
   // Build specialized system prompt for agent
   buildAgentSystemPrompt(agentId) {
-    const agentPrompts = {
-      'security-auditor': 'You are a security-auditor agent specializing in code security analysis. Identify vulnerabilities, security risks, and provide actionable recommendations.',
-      'code-reviewer': 'You are a code-reviewer agent providing comprehensive code reviews. Focus on code quality, best practices, performance, and maintainability.',
-      'python-pro': 'You are a python-pro agent expert in Python development. Write clean, efficient Python code following PEP standards.',
-      'javascript-pro': 'You are a javascript-pro agent expert in modern JavaScript/TypeScript development. Use latest ES6+ features and best practices.',
-      'performance-engineer': 'You are a performance-engineer agent specialized in system optimization and performance analysis.',
-      'database-optimizer': 'You are a database-optimizer agent expert in SQL optimization, database design, and query performance.',
-      'frontend-developer': 'You are a frontend-developer agent specialized in React, HTML, CSS, and modern frontend technologies.',
-      'backend-architect': 'You are a backend-architect agent expert in API design, microservices, and scalable backend systems.'
-    };
+    // Get agent data from orchestrator's registry
+    const agent = this.orchestrator.registry.getAgent(agentId);
     
-    return agentPrompts[agentId] || `You are a specialized AI agent with ID: ${agentId}. Provide expert assistance in your area of specialization.`;
+    if (agent && agent.systemPrompt) {
+      return agent.systemPrompt;
+    }
+    
+    // Fallback if agent not found or no system prompt
+    return `You are a specialized AI agent with ID: ${agentId}. Provide expert assistance in your area of specialization.`;
   }
 
   // Distribute multiple requests with load balancing

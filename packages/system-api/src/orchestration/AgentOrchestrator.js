@@ -146,6 +146,22 @@ class AgentOrchestrator {
    * Build specialized system prompt for agent
    */
   buildAgentSystemPrompt(agent, context) {
+    // Use the agent's actual systemPrompt from JSON if available
+    if (agent.systemPrompt) {
+      let systemPrompt = agent.systemPrompt;
+      
+      // Add relevant context if available
+      if (context.previousInteractions && context.previousInteractions.length > 0) {
+        const recentContext = context.previousInteractions.slice(-3)
+          .map(i => `Previous: ${i.prompt.substring(0, 100)}...`)
+          .join('\n');
+        systemPrompt += `\n\nRecent context:\n${recentContext}`;
+      }
+      
+      return systemPrompt;
+    }
+    
+    // Fallback to generic prompt if no systemPrompt available
     let systemPrompt = `You are ${agent.name || 'AI Assistant'}, ${agent.description || 'a helpful AI assistant'}\n\n`;
     
     // Add agent capabilities and expertise
@@ -159,11 +175,6 @@ class AgentOrchestrator {
         .map(i => `Previous: ${i.prompt.substring(0, 100)}...`)
         .join('\n');
       systemPrompt += `\nRecent context:\n${recentContext}\n`;
-    }
-    
-    // Add agent-specific instructions
-    if (agent.config && agent.config.instructions) {
-      systemPrompt += `\nSpecific instructions:\n${agent.config.instructions}\n`;
     }
     
     systemPrompt += '\nProvide expert-level assistance in your domain.';
@@ -190,13 +201,18 @@ class AgentOrchestrator {
    * Convert task analysis to capability requirements
    */
   convertAnalysisToRequirements(taskAnalysis) {
+    // Map domains to actual JSON capabilities
     const domainCapabilities = {
-      development: ['react-development', 'vue-development', 'angular-development', 'frontend-development', 'backend-development', 'api-development', 'javascript-development', 'typescript-development'],
-      security: ['security-audit', 'vulnerability-assessment', 'penetration-testing'],
-      devops: ['deployment', 'ci-cd', 'infrastructure-management', 'container-orchestration'],
-      data: ['data-analysis', 'sql-optimization', 'database-design'],
-      design: ['ui-design', 'ux-design', 'responsive-design', 'accessibility'],
-      testing: ['unit-testing', 'integration-testing', 'e2e-testing', 'qa-automation']
+      development: ['code-generation', 'architecture-design'],
+      security: ['code-analysis', 'testing-debugging'],
+      devops: ['deployment', 'integration'],
+      data: ['code-analysis', 'optimization'],
+      design: ['architecture-design', 'code-generation'],
+      testing: ['testing-debugging', 'code-analysis'],
+      'ai-ml': ['code-generation', 'integration'],
+      business: ['general-purpose'],
+      content: ['code-generation'],
+      specialized: ['architecture-design', 'integration']
     };
 
     const requirements = {
@@ -208,21 +224,24 @@ class AgentOrchestrator {
       keywords: taskAnalysis.keywords || []
     };
 
-    // Map domain to capabilities
+    // Map domain to actual capabilities
     if (taskAnalysis.domain && domainCapabilities[taskAnalysis.domain]) {
       requirements.requiredCapabilities = domainCapabilities[taskAnalysis.domain];
     }
 
-    // Extract capabilities from keywords
+    // Extract capabilities from keywords using actual JSON capabilities
     taskAnalysis.keywords?.forEach(keyword => {
       const keywordCapabilities = {
-        'react': ['react-development', 'ui-implementation'],
-        'vue': ['vue-development', 'frontend-development'],
-        'angular': ['angular-development', 'frontend-development'], 
-        'api': ['api-design', 'api-development'],
-        'database': ['database-design', 'sql-optimization'],
-        'security': ['security-audit', 'vulnerability-assessment'],
-        'test': ['unit-testing', 'qa-automation']
+        'react': ['code-generation', 'architecture-design'],
+        'vue': ['code-generation', 'architecture-design'],
+        'angular': ['code-generation', 'architecture-design'],
+        'api': ['integration', 'architecture-design'],
+        'database': ['optimization', 'architecture-design'],
+        'security': ['code-analysis', 'testing-debugging'],
+        'test': ['testing-debugging', 'code-analysis'],
+        'deploy': ['deployment'],
+        'optimize': ['optimization', 'performance-monitoring'],
+        'debug': ['testing-debugging', 'code-analysis']
       };
       
       if (keywordCapabilities[keyword]) {
