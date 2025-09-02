@@ -6,6 +6,7 @@
 const AgentRegistry = require('../agents/AgentRegistry');
 const CapabilityMatcher = require('../agents/CapabilityMatcher');
 const LoadBalancer = require('../agents/LoadBalancer');
+const AgentMemoryManager = require('../agents/AgentMemoryManager');
 const Context = require('../models/Context');
 
 class AgentOrchestrator {
