@@ -23,7 +23,7 @@ class AgentRegistry {
   _initializeRegistry() {
     try {
       // Load the comprehensive agent dataset
-      const agentsDataPath = path.join(__dirname, '../../../agents-data.json');
+      const agentsDataPath = path.join(__dirname, '../../../../agents-data.json');
       const agentsData = JSON.parse(fs.readFileSync(agentsDataPath, 'utf8'));
       
       console.log(`Loading ${agentsData.length} agents from agents-data.json...`);
