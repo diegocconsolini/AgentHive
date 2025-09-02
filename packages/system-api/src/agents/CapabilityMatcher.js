@@ -17,32 +17,36 @@ class CapabilityMatcher {
   _initializeWeightProfiles() {
     return {
       balanced: {
-        capabilityMatch: 0.3,
-        successRate: 0.25,
+        capabilityMatch: 0.25,
+        specializationMatch: 0.2,
+        successRate: 0.2,
         averageTime: 0.15,
-        complexity: 0.15,
-        workload: 0.15
+        complexity: 0.1,
+        workload: 0.1
       },
       performance: {
-        capabilityMatch: 0.2,
+        capabilityMatch: 0.15,
+        specializationMatch: 0.15,
         successRate: 0.35,
         averageTime: 0.1,
         complexity: 0.1,
-        workload: 0.25
+        workload: 0.15
       },
       speed: {
-        capabilityMatch: 0.25,
+        capabilityMatch: 0.2,
+        specializationMatch: 0.1,
         successRate: 0.15,
         averageTime: 0.35,
         complexity: 0.1,
-        workload: 0.15
+        workload: 0.1
       },
       accuracy: {
-        capabilityMatch: 0.4,
-        successRate: 0.3,
+        capabilityMatch: 0.3,
+        specializationMatch: 0.25,
+        successRate: 0.25,
         averageTime: 0.1,
-        complexity: 0.15,
-        workload: 0.05
+        complexity: 0.1,
+        workload: 0.0
       }
     };
   }
@@ -199,6 +203,12 @@ class CapabilityMatcher {
       agentData.capabilities,
       requirements.requiredCapabilities || [],
       requirements.preferredCapabilities || []
+    );
+
+    // Specialization match score (NEW - prevents SEO agents for dev tasks)
+    breakdown.specializationMatch = this._scoreSpecializationMatch(
+      agentData,
+      requirements
     );
 
     // Success rate score
