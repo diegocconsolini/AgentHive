@@ -9,48 +9,15 @@ class CapabilityMatcher {
     this.registry = registry;
     this.matchCache = new Map(); // Cache for recent matches
     this.performanceHistory = new Map(); // Historical performance data
-    this.weightProfiles = this._initializeWeightProfiles();
+    // Weight profiles are now loaded from configuration
   }
 
   /**
-   * Initialize weight profiles for different matching strategies
+   * Get weight profiles from configuration
    * @private
    */
-  _initializeWeightProfiles() {
-    return {
-      balanced: {
-        capabilityMatch: 0.25,
-        specializationMatch: 0.2,
-        successRate: 0.2,
-        averageTime: 0.15,
-        complexity: 0.1,
-        workload: 0.1
-      },
-      performance: {
-        capabilityMatch: 0.15,
-        specializationMatch: 0.15,
-        successRate: 0.35,
-        averageTime: 0.1,
-        complexity: 0.1,
-        workload: 0.15
-      },
-      speed: {
-        capabilityMatch: 0.2,
-        specializationMatch: 0.1,
-        successRate: 0.15,
-        averageTime: 0.35,
-        complexity: 0.1,
-        workload: 0.1
-      },
-      accuracy: {
-        capabilityMatch: 0.3,
-        specializationMatch: 0.25,
-        successRate: 0.25,
-        averageTime: 0.1,
-        complexity: 0.1,
-        workload: 0.0
-      }
-    };
+  _getWeightProfiles(strategy) {
+    return agentConfig.getCapabilityWeights(strategy);
   }
 
   /**
@@ -96,7 +63,7 @@ class CapabilityMatcher {
     }
 
     // Score each candidate
-    const weights = this.weightProfiles[strategy] || this.weightProfiles.balanced;
+    const weights = this._getWeightProfiles(strategy);
     const scores = candidates.map(agentType => {
       const score = this._scoreAgent(
         agentType,

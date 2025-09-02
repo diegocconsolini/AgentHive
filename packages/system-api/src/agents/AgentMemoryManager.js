@@ -1,5 +1,6 @@
 const AgentMemory = require('../models/AgentMemory');
 const StorageManager = require('../storage/StorageManager');
+const agentConfig = require('../config/AgentConfig');
 
 /**
  * Agent Memory Manager
@@ -17,12 +18,13 @@ class AgentMemoryManager {
     this.knowledgeGraph = new Map(); // Global knowledge graph across all agents
     this.initialized = false;
     
-    // Configuration
+    // Configuration - merge with global config
+    const memoryConfig = agentConfig.getMemoryConfig();
     this.config = {
-      maxCacheSize: options.maxCacheSize || 100,
-      memoryCompressionThreshold: options.memoryCompressionThreshold || 200,
-      autoCompressionInterval: options.autoCompressionInterval || 3600000, // 1 hour
-      knowledgeShareThreshold: options.knowledgeShareThreshold || 0.8,
+      maxCacheSize: options.maxCacheSize || memoryConfig.maxCacheSize,
+      memoryCompressionThreshold: options.memoryCompressionThreshold || memoryConfig.memoryCompressionThreshold,
+      autoCompressionInterval: options.autoCompressionInterval || memoryConfig.autoCompressionInterval,
+      knowledgeShareThreshold: options.knowledgeShareThreshold || memoryConfig.knowledgeShareThreshold,
       ...options
     };
     

@@ -8,6 +8,7 @@ const CapabilityMatcher = require('../agents/CapabilityMatcher');
 const LoadBalancer = require('../agents/LoadBalancer');
 const AgentMemoryManager = require('../agents/AgentMemoryManager');
 const Context = require('../models/Context');
+const agentConfig = require('../config/AgentConfig');
 
 class AgentOrchestrator {
   constructor(aiService) {
@@ -425,15 +426,7 @@ class AgentOrchestrator {
   }
 
   identifyDomain(prompt) {
-    const domains = {
-      development: ['code', 'function', 'debug', 'programming', 'javascript', 'python', 'react', 'vue', 'angular', 'frontend', 'backend', 'api', 'component', 'typescript', 'node', 'npm', 'development', 'build', 'compile'],
-      security: ['security', 'vulnerability', 'audit', 'penetration', 'authentication', 'authorization'],
-      devops: ['deployment', 'docker', 'kubernetes', 'infrastructure', 'ci/cd', 'pipeline', 'server'],
-      data: ['data', 'sql', 'database', 'analysis', 'query', 'analytics', 'reporting'],
-      design: ['ui', 'ux', 'design', 'interface', 'layout', 'responsive', 'accessibility'],
-      testing: ['test', 'testing', 'unit', 'integration', 'e2e', 'qa', 'quality']
-    };
-    
+    const domains = agentConfig.getDomainPatterns();
     const words = prompt.toLowerCase().split(/\s+/);
     
     for (const [domain, keywords] of Object.entries(domains)) {
@@ -446,7 +439,7 @@ class AgentOrchestrator {
   }
 
   assessUrgency(prompt) {
-    const urgentKeywords = ['urgent', 'asap', 'immediately', 'critical', 'emergency'];
+    const urgentKeywords = agentConfig.getUrgencyKeywords();
     return urgentKeywords.some(keyword => 
       prompt.toLowerCase().includes(keyword)
     ) ? 'high' : 'normal';
