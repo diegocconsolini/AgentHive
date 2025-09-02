@@ -269,6 +269,91 @@ class CapabilityMatcher {
   }
 
   /**
+   * Score specialization match based on agent name/type and task requirements
+   * @private
+   */
+  _scoreSpecializationMatch(agentData, requirements) {
+    const agentName = (agentData.name || '').toLowerCase();
+    const agentType = (agentData.type || '').toLowerCase();
+    const category = (requirements.category || '').toLowerCase();
+    const keywords = requirements.keywords || [];
+    
+    let score = 0.5; // Base score
+    
+    // Keywords from the task that indicate technology/domain
+    const taskKeywords = keywords.map(k => k.toLowerCase());
+    
+    // Define specialization patterns that should get priority
+    const specializationPatterns = {
+      // Development patterns
+      frontend: ['frontend', 'react', 'vue', 'angular', 'ui', 'web', 'css', 'javascript', 'typescript'],
+      backend: ['backend', 'api', 'server', 'node', 'express', 'fastify', 'database'],
+      database: ['database', 'sql', 'mysql', 'postgres', 'mongodb', 'redis', 'query'],
+      mobile: ['mobile', 'ios', 'android', 'react-native', 'flutter', 'swift', 'kotlin'],
+      devops: ['devops', 'docker', 'kubernetes', 'aws', 'azure', 'gcp', 'terraform', 'ci-cd'],
+      testing: ['test', 'testing', 'qa', 'unit', 'integration', 'e2e', 'selenium'],
+      security: ['security', 'auth', 'oauth', 'jwt', 'encryption', 'vulnerability', 'audit'],
+      
+      // Language patterns
+      python: ['python', 'django', 'flask', 'fastapi', 'pandas', 'numpy'],
+      javascript: ['javascript', 'js', 'node', 'npm', 'yarn', 'webpack'],
+      typescript: ['typescript', 'ts', 'type', 'interface'],
+      java: ['java', 'spring', 'maven', 'gradle', 'jvm'],
+      rust: ['rust', 'cargo', 'wasm', 'memory'],
+      golang: ['go', 'golang', 'goroutine', 'channel'],
+      csharp: ['c#', 'csharp', 'dotnet', '.net', 'aspnet'],
+      php: ['php', 'laravel', 'symfony', 'composer'],
+      
+      // Anti-patterns (should reduce score)
+      seo: ['seo', 'search-engine', 'keyword', 'ranking', 'google', 'bing', 'meta', 'sitemap']
+    };
+    
+    // Check for exact specialization matches
+    for (const [domain, patterns] of Object.entries(specializationPatterns)) {
+      const nameMatches = patterns.some(pattern => 
+        agentName.includes(pattern) || agentType.includes(pattern)
+      );
+      const taskMatches = patterns.some(pattern => 
+        taskKeywords.some(keyword => keyword.includes(pattern))
+      );
+      
+      if (nameMatches && taskMatches) {
+        // Perfect match - agent specializes in exactly what's needed
+        if (domain === 'seo') {
+          score = Math.max(0, score - 0.4); // Penalize SEO agents for non-SEO tasks
+        } else {
+          score += 0.4; // Bonus for specialization match
+        }
+      } else if (nameMatches && domain === 'seo' && !taskKeywords.some(k => k.includes('seo'))) {
+        // SEO agent for non-SEO task - penalize heavily
+        score = Math.max(0, score - 0.6);
+      }
+    }
+    
+    // Category matching bonus
+    if (category && (agentName.includes(category) || agentType.includes(category))) {
+      score += 0.2;
+    }
+    
+    // Generic development terms preference over SEO
+    const devTerms = ['developer', 'engineer', 'programmer', 'coder', 'architect', 'specialist'];
+    const seoTerms = ['seo', 'content', 'marketing', 'optimization'];
+    
+    const hasDevTerms = devTerms.some(term => agentName.includes(term) || agentType.includes(term));
+    const hasSeoTerms = seoTerms.some(term => agentName.includes(term) || agentType.includes(term));
+    
+    if (hasDevTerms && category === 'development') {
+      score += 0.3;
+    }
+    
+    if (hasSeoTerms && category !== 'marketing' && category !== 'content') {
+      score = Math.max(0, score - 0.3);
+    }
+    
+    return Math.min(1.0, score);
+  }
+
+  /**
    * Score complexity match
    * @private
    */
