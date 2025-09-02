@@ -15,6 +15,7 @@ class AgentOrchestrator {
     this.registry = new AgentRegistry();
     this.matcher = new CapabilityMatcher(this.registry);
     this.loadBalancer = new LoadBalancer(this.registry);
+    this.memoryManager = new AgentMemoryManager(); // Agent memory system
     this.contextStore = new Map(); // In-memory context storage
     this.executionHistory = new Map(); // Track execution patterns
   }
@@ -31,11 +32,14 @@ class AgentOrchestrator {
     const startTime = Date.now();
     
     try {
+      // Step 0: Initialize memory manager if not already initialized
+      await this._ensureMemoryManagerInitialized();
+      
       // Step 1: Load or create context
       const context = await this.getOrCreateContext(userId, sessionId);
       
-      // Step 2: Enhance prompt with context
-      const contextualPrompt = this.enhancePromptWithContext(prompt, context);
+      // Step 2: Enhance prompt with context and agent memories
+      const contextualPrompt = await this.enhancePromptWithMemories(prompt, context, userId, sessionId);
       
       // Step 3: Select optimal agent using intelligent matching
       const selectedAgent = await this.selectOptimalAgent(contextualPrompt, options, context);
@@ -46,8 +50,9 @@ class AgentOrchestrator {
       // Step 5: Update context with new interaction
       await this.updateContext(context, prompt, result);
       
-      // Step 6: Record performance metrics
+      // Step 6: Record performance metrics and agent memory
       this.recordExecution(selectedAgent, result, Date.now() - startTime);
+      await this.recordAgentInteraction(selectedAgent, prompt, result, userId, sessionId);
       
       return {
         ...result,
@@ -55,7 +60,8 @@ class AgentOrchestrator {
         agentName: selectedAgent.name || selectedAgent.type,
         routingReason: selectedAgent.selectionReason,
         contextUsed: context.id,
-        orchestrationTime: Date.now() - startTime
+        orchestrationTime: Date.now() - startTime,
+        memoryEnhanced: true
       };
       
     } catch (error) {
@@ -304,7 +310,44 @@ class AgentOrchestrator {
   }
 
   /**
-   * Enhance prompt with relevant context
+   * Enhance prompt with context and agent memories
+   */
+  async enhancePromptWithMemories(prompt, context, userId, sessionId) {
+    // Start with basic context enhancement
+    let enhancedPrompt = this.enhancePromptWithContext(prompt, context);
+    
+    try {
+      // Extract keywords for memory retrieval
+      const keywords = this.extractKeywords(prompt);
+      const domain = this.identifyDomain(prompt);
+      
+      // Try to find relevant memories from previous interactions
+      // We'll use a general agent memory first, then specific agent memories during execution
+      const memoryContext = {
+        keywords,
+        domain,
+        similarity_threshold: 0.3
+      };
+      
+      // Get relevant memories from global context (we'll implement agent-specific later in execution)
+      const relevantMemories = await this._getRelevantSystemMemories(memoryContext, 3);
+      
+      if (relevantMemories.length > 0) {
+        enhancedPrompt += '\n\nRelevant previous knowledge:\n';
+        relevantMemories.forEach((memory, index) => {
+          enhancedPrompt += `${index + 1}. ${memory.prompt ? memory.prompt.substring(0, 100) : 'Previous interaction'}...\n`;
+        });
+      }
+      
+    } catch (error) {
+      console.warn('Memory enhancement failed, using basic context:', error.message);
+    }
+    
+    return enhancedPrompt;
+  }
+
+  /**
+   * Enhance prompt with relevant context (original method)
    */
   enhancePromptWithContext(prompt, context) {
     if (!context.previousInteractions || context.previousInteractions.length === 0) {
@@ -449,6 +492,135 @@ class AgentOrchestrator {
     const words2 = new Set(str2.toLowerCase().split(/\s+/));
     const intersection = new Set([...words1].filter(x => words2.has(x)));
     return intersection.size / Math.max(words1.size, words2.size);
+  }
+
+  /**
+   * Record agent interaction in memory system
+   */
+  async recordAgentInteraction(selectedAgent, prompt, result, userId, sessionId) {
+    try {
+      const agentId = selectedAgent.id || selectedAgent.type;
+      const interaction = {
+        timestamp: new Date().toISOString(),
+        prompt: prompt,
+        response: result.output || result.response || '',
+        success: !result.error && result.output,
+        duration: result.duration || 0,
+        tokens: result.tokens || 0,
+        contextId: result.contextUsed || null,
+        feedback: null,
+        tags: [this.identifyDomain(prompt), selectedAgent.category || 'general']
+      };
+      
+      await this.memoryManager.recordInteraction(agentId, interaction, userId, sessionId);
+      
+      // Extract and record knowledge if interaction was successful
+      if (interaction.success) {
+        await this._extractAndRecordKnowledge(agentId, prompt, result.output, userId, sessionId);
+      }
+      
+    } catch (error) {
+      console.error('Failed to record agent interaction in memory:', error.message);
+    }
+  }
+
+  /**
+   * Extract and record knowledge from successful interactions
+   */
+  async _extractAndRecordKnowledge(agentId, prompt, response, userId, sessionId) {
+    try {
+      const domain = this.identifyDomain(prompt);
+      const keywords = this.extractKeywords(prompt);
+      
+      // Simple knowledge extraction - could be enhanced with NLP
+      if (domain && keywords.length > 0) {
+        const knowledge = {
+          domain: domain,
+          concept: keywords[0], // Use first keyword as concept
+          value: response.substring(0, 200), // Store truncated response
+          confidence: 0.7, // Base confidence
+          source: 'interaction',
+          tags: [domain, ...keywords.slice(0, 3)]
+        };
+        
+        await this.memoryManager.addKnowledge(agentId, knowledge, userId, sessionId);
+      }
+      
+    } catch (error) {
+      console.error('Failed to extract knowledge:', error.message);
+    }
+  }
+
+  /**
+   * Get relevant memories from system for prompt enhancement
+   */
+  async _getRelevantSystemMemories(memoryContext, limit = 3) {
+    try {
+      // For now, return empty array - this could be enhanced to search across all agent memories
+      return [];
+    } catch (error) {
+      console.error('Failed to get relevant system memories:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Ensure memory manager is initialized
+   */
+  async _ensureMemoryManagerInitialized() {
+    try {
+      await this.memoryManager.initialize();
+    } catch (error) {
+      console.error('Failed to initialize memory manager:', error.message);
+    }
+  }
+
+  /**
+   * Record user feedback for agent learning
+   */
+  async recordUserFeedback(agentId, feedback, userId = null, sessionId = null) {
+    try {
+      await this.memoryManager.recordFeedback(agentId, feedback, userId, sessionId);
+    } catch (error) {
+      console.error('Failed to record user feedback:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Get agent memory analytics
+   */
+  async getAgentAnalytics(agentId, options = {}) {
+    try {
+      return await this.memoryManager.getAgentAnalytics(agentId, options);
+    } catch (error) {
+      console.error('Failed to get agent analytics:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Get knowledge graph for an agent
+   */
+  async getAgentKnowledgeGraph(agentId, options = {}) {
+    try {
+      return await this.memoryManager.getKnowledgeGraph(agentId, options);
+    } catch (error) {
+      console.error('Failed to get agent knowledge graph:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Get system-wide memory statistics
+   */
+  async getMemorySystemStats() {
+    try {
+      return await this.memoryManager.getSystemStats();
+    } catch (error) {
+      console.error('Failed to get memory system stats:', error.message);
+      throw error;
+    }
   }
 
   /**
