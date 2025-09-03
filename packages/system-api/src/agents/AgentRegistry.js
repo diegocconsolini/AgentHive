@@ -183,9 +183,12 @@ class AgentRegistry {
     // Store agent data
     this.agents.set(type, {
       type,
+      name: agentData.name || type,
       category,
       capabilities: Array.isArray(capabilities) ? capabilities : [],
       specializations: new Set(specializations),
+      description: agentData.description || '',
+      systemPrompt: agentData.systemPrompt || '',
       metadata,
       version: metadata?.version || '1.0.0',
       createdAt: new Date().toISOString()
