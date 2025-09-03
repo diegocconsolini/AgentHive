@@ -184,7 +184,7 @@ class AgentRegistry {
     this.agents.set(type, {
       type,
       category,
-      capabilities: new Set(capabilities),
+      capabilities: Array.isArray(capabilities) ? capabilities : [],
       specializations: new Set(specializations),
       metadata,
       version: metadata?.version || '1.0.0',
