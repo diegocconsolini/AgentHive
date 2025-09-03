@@ -42,12 +42,12 @@ class AgentConfig {
       // Agent capability weight profiles for different strategies
       capabilityWeights: {
         balanced: {
-          capabilityMatch: 0.25,
-          specializationMatch: 0.2,
+          capabilityMatch: 0.2,
+          specializationMatch: 0.35,
           successRate: 0.2,
-          averageTime: 0.15,
+          averageTime: 0.1,
           complexity: 0.1,
-          workload: 0.1
+          workload: 0.05
         },
         performance: {
           capabilityMatch: 0.15,
