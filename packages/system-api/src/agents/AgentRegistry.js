@@ -243,8 +243,10 @@ class AgentRegistry {
    * @private
    */
   _calculateCapabilityOverlap(caps1, caps2) {
-    const intersection = new Set([...caps1].filter(x => caps2.has(x)));
-    const union = new Set([...caps1, ...caps2]);
+    const set1 = new Set(caps1);
+    const set2 = new Set(caps2);
+    const intersection = new Set([...set1].filter(x => set2.has(x)));
+    const union = new Set([...set1, ...set2]);
     return intersection.size / union.size;
   }
 
