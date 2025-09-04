@@ -37,6 +37,15 @@ Using the test-runner agent ensures:
 - Do not move on to the next test until the current test is complete.
 - If the test fails, consider checking if the test is structured correctly before deciding we need to refactor the codebase.
 - Tests to be verbose so we can use them for debugging.
+- **CRITICAL**: Always test actual system behavior, not just code analysis. Code review != runtime validation.
+
+### System Validation
+
+- **Runtime Testing Required**: Never claim "100% sure" based on code analysis alone
+- **Integration Testing**: Components that work individually may fail when integrated
+- **Data Structure Validation**: Ensure data types match between components (Arrays vs Sets)
+- **Actual Execution**: Use Node.js direct execution for validation when Jest unavailable
+- **Real Data Testing**: Test with actual production data (88 agents from JSON)
 
 
 ## Tone and Behavior
@@ -63,3 +72,25 @@ Using the test-runner agent ensures:
 - NO OVER-ENGINEERING - Don't add unnecessary abstractions, factory patterns, or middleware when simple functions would work. Don't think "enterprise" when you need "working"
 - NO MIXED CONCERNS - Don't put validation logic inside API handlers, database queries inside UI components, etc. instead of proper separation
 - NO RESOURCE LEAKS - Don't forget to close database connections, clear timeouts, remove event listeners, or clean up file handles
+
+## VALIDATED ARCHITECTURE PATTERNS
+
+### Agent Selection Algorithm - WORKING
+- **Specialization Weight**: 35% (increased from 20%) ensures specialists beat generics
+- **Capability Match**: 20% (reduced from 25%) prevents over-penalizing specialists
+- **Key Insight**: Task requirements must match agent capabilities (don't require architecture-design for frontend tasks)
+
+### Data Loading - VALIDATED  
+- **Agent Registry**: Loads all 88 agents from `/agents-data.json` ✅
+- **Capability Storage**: Arrays, not Sets (compatibility with CapabilityMatcher) ✅
+- **Path Resolution**: `../../../../agents-data.json` from `src/agents/` directory ✅
+
+### Configuration System - OPERATIONAL
+- **AgentConfig**: Centralized configuration eliminates hardcoded values ✅  
+- **Runtime Updates**: Supports configuration changes without restart ✅
+- **Environment Overrides**: ENV vars > config file > defaults ✅
+
+### Memory Architecture - IMPLEMENTED
+- **AgentMemory**: Core memory model with interactions/knowledge ✅
+- **StorageManager**: Hybrid filesystem + SQLite persistence ✅
+- **MemoryManager**: Cross-agent knowledge sharing with LRU cache ✅
