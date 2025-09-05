@@ -292,7 +292,7 @@ class AgentHiveSystemAPI {
 
     // AI Provider Management endpoints
     this.app.get('/api/providers', (req, res) => {
-      const providers = this.aiService.getAvailableProviders();
+      const providers = this.aiService.getAllProviders();
       const providerMetrics = this.aiService.getMetrics();
       
       const providersWithMetrics = providers.map(provider => {

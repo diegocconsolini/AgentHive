@@ -493,6 +493,34 @@ class AIProviderService {
   getAvailableProviders() {
     return Array.from(this.providers.values());
   }
+
+  getAllProviders() {
+    // Return all configured providers, including disabled ones
+    const allConfigs = this.getProviderConfigurations();
+    return allConfigs.map(config => {
+      const existingProvider = this.providers.get(config.name);
+      if (existingProvider) {
+        return existingProvider;
+      }
+      
+      // For disabled providers, create a stub with metrics
+      const stubMetrics = this.metrics.get(config.name) || {
+        providerId: config.name,
+        model: '',
+        requestCount: 0,
+        totalTokens: 0,
+        averageResponseTime: 0,
+        totalCost: 0,
+        successRate: 1.0,
+        lastUsed: new Date()
+      };
+      
+      return {
+        ...config,
+        metrics: stubMetrics
+      };
+    });
+  }
 }
 
 // Singleton instance
