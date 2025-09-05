@@ -21,7 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "ml-regression": "^6.3.0",
     "node-fetch": "^3.3.2",
-    "simple-statistics": "^7.8.8"
+    "simple-statistics": "^7.8.8",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "jest": "^29.7.0",
