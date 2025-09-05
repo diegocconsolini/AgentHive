@@ -397,7 +397,8 @@ class AgentHiveSystemAPI {
           '/', '/health', '/api/status',
           '/api/agents/execute', '/api/orchestration/distribute',
           '/api/metrics/agents', '/api/metrics/performance',
-          '/api/orchestration/route'
+          '/api/orchestration/route', '/api/providers',
+          '/api/providers/test', '/api/test/openai'
         ]
       });
     });
