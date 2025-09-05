@@ -54,7 +54,7 @@ class AIProviderService {
         costPerToken: 0.0015,
         maxTokens: 128000,
         timeout: 30000,
-        enabled: !!process.env.OPENAI_API_KEY && process.env.OPENAI_ENABLED !== 'false',
+        enabled: this.validateOpenAIKey(process.env.OPENAI_API_KEY) && process.env.OPENAI_ENABLED !== 'false',
         priority: 80
       },
 
@@ -85,6 +85,24 @@ class AIProviderService {
         priority: 60
       }
     ];
+  }
+
+  validateOpenAIKey(apiKey) {
+    if (!apiKey) {
+      return false;
+    }
+    
+    if (!apiKey.startsWith('sk-')) {
+      console.warn('⚠️  Invalid OpenAI API key format - should start with "sk-"');
+      return false;
+    }
+    
+    if (apiKey.length < 50) {
+      console.warn('⚠️  OpenAI API key appears too short - check your key');
+      return false;
+    }
+    
+    return true;
   }
 
   registerProvider(provider) {

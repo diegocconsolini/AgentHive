@@ -704,6 +704,53 @@ class AgentHiveSystemAPI {
         }
       }
     }, 60000); // Check every minute
+
+    // OpenAI Provider Test Endpoint
+    this.app.post('/api/test/openai', async (req, res) => {
+      try {
+        const { message = "Hello, test the OpenAI integration" } = req.body;
+        
+        // Check if OpenAI provider is available
+        const openaiProvider = this.aiService.providers.get('openai');
+        if (!openaiProvider || !openaiProvider.enabled) {
+          return res.status(400).json({
+            error: 'OpenAI provider not available',
+            details: 'Please set OPENAI_API_KEY in .env file',
+            provider: openaiProvider ? {
+              name: openaiProvider.name,
+              enabled: openaiProvider.enabled,
+              hasApiKey: !!openaiProvider.apiKey
+            } : null
+          });
+        }
+
+        // Test OpenAI request
+        const testRequest = {
+          task: message,
+          requirements: ['text-generation'],
+          context: 'Testing OpenAI integration'
+        };
+
+        const response = await this.aiService.generateResponse(testRequest, 'openai');
+        
+        res.json({
+          success: true,
+          provider: 'openai',
+          model: response.model || 'gpt-3.5-turbo',
+          response: response.text || response.content,
+          usage: response.usage,
+          timestamp: new Date().toISOString()
+        });
+
+      } catch (error) {
+        console.error('OpenAI test error:', error);
+        res.status(500).json({
+          error: 'OpenAI test failed',
+          message: error.message,
+          details: error.response?.data || error.toString()
+        });
+      }
+    });
   }
 
   async start() {
