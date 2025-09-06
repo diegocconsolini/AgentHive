@@ -247,7 +247,7 @@ class AIProviderService {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(provider.timeout || 120000)
+      // signal: AbortSignal.timeout(provider.timeout || 120000) // DISABLED FOR SSP TESTING
     });
 
     if (!response.ok) {
@@ -308,7 +308,7 @@ class AIProviderService {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(provider.timeout || 120000)
+      // signal: AbortSignal.timeout(provider.timeout || 120000) // DISABLED FOR SSP TESTING
     });
 
     if (!response.ok) {
