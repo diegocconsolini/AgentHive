@@ -9,6 +9,7 @@ const LoadBalancer = require('../agents/LoadBalancer');
 const AgentMemoryManager = require('../agents/AgentMemoryManager');
 const Context = require('../models/Context');
 const agentConfig = require('../config/AgentConfig');
+const SSPService = require('../services/SSPService');
 
 class AgentOrchestrator {
   constructor(aiService) {
