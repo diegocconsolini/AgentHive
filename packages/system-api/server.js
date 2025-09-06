@@ -398,9 +398,101 @@ class AgentHiveSystemAPI {
           '/api/agents/execute', '/api/orchestration/distribute',
           '/api/metrics/agents', '/api/metrics/performance',
           '/api/orchestration/route', '/api/providers',
-          '/api/providers/test', '/api/test/openai'
+          '/api/providers/test', '/api/test/openai',
+          '/api/ssp/patterns/:agentId', '/api/ssp/predict', '/api/ssp/analytics/:agentId'
         ]
       });
+    });
+
+    // SSP Extension - Stable Success Patterns API endpoints
+    this.app.get('/api/ssp/patterns/:agentId', async (req, res) => {
+      try {
+        const { agentId } = req.params;
+        const { userId, sessionId } = req.query;
+        
+        if (!userId || !sessionId) {
+          return res.status(400).json({
+            error: 'Missing required query parameters: userId and sessionId'
+          });
+        }
+        
+        // Ensure orchestrator and SSP service are initialized
+        await this.orchestrator._ensureMemoryManagerInitialized();
+        
+        const patterns = await this.orchestrator.sspService.getRelevantPatterns(
+          agentId, 
+          null, // All patterns
+          userId, 
+          sessionId
+        );
+        
+        res.json({ 
+          agentId,
+          patterns,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('SSP patterns error:', error);
+        res.status(500).json({ 
+          error: 'Failed to get SSP patterns', 
+          message: error.message 
+        });
+      }
+    });
+
+    this.app.post('/api/ssp/predict', async (req, res) => {
+      try {
+        const { procedureId, agentId, userId, sessionId } = req.body;
+        
+        if (!procedureId || !agentId || !userId || !sessionId) {
+          return res.status(400).json({
+            error: 'Missing required fields: procedureId, agentId, userId, sessionId'
+          });
+        }
+        
+        // Ensure orchestrator and SSP service are initialized
+        await this.orchestrator._ensureMemoryManagerInitialized();
+        
+        const prediction = await this.orchestrator.sspService.predictProcedureSuccess(
+          procedureId, agentId, userId, sessionId
+        );
+        
+        res.json({ 
+          procedureId,
+          agentId,
+          prediction: Math.round(prediction * 100), // Return as percentage
+          confidence: prediction > 0.5 ? 'high' : 'low',
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('SSP prediction error:', error);
+        res.status(500).json({ 
+          error: 'Failed to predict procedure success', 
+          message: error.message 
+        });
+      }
+    });
+
+    this.app.get('/api/ssp/analytics/:agentId', async (req, res) => {
+      try {
+        const { agentId } = req.params;
+        
+        // Ensure orchestrator and SSP service are initialized
+        await this.orchestrator._ensureMemoryManagerInitialized();
+        
+        const analytics = await this.orchestrator.sspService.getAgentSSPAnalytics(agentId);
+        
+        res.json({
+          ...analytics,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('SSP analytics error:', error);
+        res.status(500).json({ 
+          error: 'Failed to get SSP analytics', 
+          message: error.message 
+        });
+      }
     });
   }
 
