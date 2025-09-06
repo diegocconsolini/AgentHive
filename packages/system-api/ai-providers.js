@@ -237,6 +237,11 @@ class AIProviderService {
       headers['Authorization'] = `Bearer ${provider.apiKey}`;
     }
 
+    console.log(`🚀 Calling ${provider.name} at ${provider.endpoint}/chat/completions`);
+    console.log('📝 Payload:', JSON.stringify(payload, null, 2));
+    console.log('📋 Headers:', JSON.stringify(headers, null, 2));
+    console.log(`⏱️ Timeout: ${provider.timeout || 120000}ms`);
+
     const startTime = Date.now();
     const response = await fetch(`${provider.endpoint}/chat/completions`, {
       method: 'POST',
