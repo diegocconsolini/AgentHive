@@ -20,6 +20,9 @@ class AgentOrchestrator {
     this.memoryManager = new AgentMemoryManager(); // Agent memory system
     this.contextStore = new Map(); // In-memory context storage
     this.executionHistory = new Map(); // Track execution patterns
+    
+    // SSP Extension - Initialize after memoryManager is ready
+    this.sspService = null; // Will be initialized after memoryManager
   }
 
   /**
@@ -129,6 +132,8 @@ class AgentOrchestrator {
    * Execute agent with AI provider, applying agent specialization
    */
   async executeAgentWithProvider(agent, prompt, options, context) {
+    const startTime = Date.now();
+    
     // Build specialized system prompt for the selected agent
     const systemPrompt = this.buildAgentSystemPrompt(agent, context);
     
@@ -146,6 +151,34 @@ class AgentOrchestrator {
     });
     
     console.log('AI Service response:', response);
+    
+    // SSP Extension - Track procedure execution
+    const executionTime = Date.now() - startTime;
+    const success = !response.error && response.response && response.response.length > 0;
+    
+    if (context.type === 'task' && this.sspService) {
+      try {
+        // Record execution in context
+        context.recordProcedureExecution(success, executionTime);
+        
+        // Record in SSP database
+        await this.sspService.recordProcedureExecution(
+          context.id,
+          agent.id || agent.type,
+          options.sessionId,
+          success,
+          executionTime
+        );
+        
+        // Detect patterns periodically
+        if (Math.random() < 0.1) { // 10% chance to detect patterns
+          await this.sspService.detectPatterns(options.userId, options.sessionId, agent.id || agent.type);
+        }
+      } catch (sspError) {
+        console.error('SSP tracking error:', sspError);
+        // Don't fail the main execution due to SSP errors
+      }
+    }
     
     // Process response with agent-specific post-processing
     return this.processAgentResponse(agent, response, context);
@@ -564,6 +597,12 @@ class AgentOrchestrator {
   async _ensureMemoryManagerInitialized() {
     try {
       await this.memoryManager.initialize();
+      
+      // SSP Extension - Initialize SSP service after memoryManager is ready
+      if (!this.sspService) {
+        this.sspService = new SSPService(this.memoryManager.storageManager, this.memoryManager);
+        console.log('SSP Service initialized successfully');
+      }
     } catch (error) {
       console.error('Failed to initialize memory manager:', error.message);
     }
