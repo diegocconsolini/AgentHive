@@ -242,7 +242,7 @@ class AIProviderService {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(provider.timeout || 30000)
+      signal: AbortSignal.timeout(provider.timeout || 120000)
     });
 
     if (!response.ok) {
@@ -303,7 +303,7 @@ class AIProviderService {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(provider.timeout || 30000)
+      signal: AbortSignal.timeout(provider.timeout || 120000)
     });
 
     if (!response.ok) {
