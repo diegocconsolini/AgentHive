@@ -40,6 +40,11 @@ class Context {
       tags: [],
       dependencies: [],
       retention_policy: 'default',
+      // SSP Extension - Stable Success Patterns
+      procedure_success_count: 0,
+      procedure_execution_count: 0,
+      procedure_patterns: [], // IDs of patterns this procedure belongs to
+      success_boost: 0, // Boost from successful patterns
       ...data.metadata
     };
     
@@ -455,6 +460,54 @@ class Context {
   }
 
   /**
+   * Record a procedure execution for SSP tracking
+   * @param {boolean} success - Whether the procedure succeeded
+   * @param {number} executionTime - Execution time in milliseconds
+   * @param {string} patternId - Optional pattern ID this execution belongs to
+   * @returns {Context} Returns this for chaining
+   */
+  recordProcedureExecution(success, executionTime, patternId = null) {
+    this.metadata.procedure_execution_count = (this.metadata.procedure_execution_count || 0) + 1;
+    if (success) {
+      this.metadata.procedure_success_count = (this.metadata.procedure_success_count || 0) + 1;
+    }
+    
+    // Use existing addInteraction method with SSP data
+    this.addInteraction({
+      timestamp: new Date(),
+      prompt: `Procedure execution ${success ? 'succeeded' : 'failed'}`,
+      agentId: this.metadata.agent_id,
+      response: `Execution time: ${executionTime}ms${patternId ? `, Pattern: ${patternId}` : ''}`,
+      tokens: 0,
+      duration: executionTime,
+      // SSP-specific data
+      sspData: { success, executionTime, patternId }
+    });
+    
+    this.updated = new Date().toISOString();
+    return this;
+  }
+
+  /**
+   * Get procedure success rate for SSP system
+   * @returns {number} Success rate between 0 and 1
+   */
+  getProcedureSuccessRate() {
+    const executions = this.metadata.procedure_execution_count || 0;
+    const successes = this.metadata.procedure_success_count || 0;
+    return executions > 0 ? successes / executions : 0;
+  }
+
+  /**
+   * Get boosted success rate including pattern benefits
+   * @returns {number} Boosted success rate between 0 and 1
+   */
+  getBoostedSuccessRate() {
+    const baseRate = this.getProcedureSuccessRate();
+    return Math.min(0.95, baseRate + (this.metadata.success_boost || 0));
+  }
+
+  /**
    * Get a summary of the context for debugging/logging
    * @returns {string} Summary string
    */
@@ -463,8 +516,9 @@ class Context {
     const childCount = this.relationships.children.length;
     const refCount = this.relationships.references.length;
     const tagCount = this.metadata.tags.length;
+    const successRate = this.getProcedureSuccessRate();
     
-    return `Context[${this.id.substring(0, 8)}...] ${this.type} at ${hierarchyPath} (importance: ${this.importance}, children: ${childCount}, refs: ${refCount}, tags: ${tagCount})`;
+    return `Context[${this.id.substring(0, 8)}...] ${this.type} at ${hierarchyPath} (importance: ${this.importance}, children: ${childCount}, refs: ${refCount}, tags: ${tagCount}, SSP success: ${Math.round(successRate * 100)}%)`;
   }
 }
 

@@ -119,6 +119,21 @@ class SQLiteStorage extends IContextStorage {
       )
     `;
 
+    // SSP Extension - Procedure executions table
+    const createProcedureExecutionsTable = `
+      CREATE TABLE IF NOT EXISTS procedure_executions (
+        id TEXT PRIMARY KEY,
+        context_id TEXT NOT NULL,
+        agent_id TEXT,
+        session_id TEXT,
+        success INTEGER NOT NULL,
+        execution_time INTEGER,
+        pattern_id TEXT,
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (context_id) REFERENCES contexts (id) ON DELETE CASCADE
+      )
+    `;
+
     const createIndexes = `
       CREATE INDEX IF NOT EXISTS idx_contexts_type ON contexts(type);
       CREATE INDEX IF NOT EXISTS idx_contexts_hierarchy ON contexts(hierarchy_path);
@@ -128,6 +143,9 @@ class SQLiteStorage extends IContextStorage {
       CREATE INDEX IF NOT EXISTS idx_hierarchy_levels ON hierarchy_levels(level, name);
       CREATE INDEX IF NOT EXISTS idx_access_log_context ON access_log(context_id);
       CREATE INDEX IF NOT EXISTS idx_access_log_timestamp ON access_log(timestamp);
+      CREATE INDEX IF NOT EXISTS idx_procedure_executions_context ON procedure_executions(context_id);
+      CREATE INDEX IF NOT EXISTS idx_procedure_executions_agent ON procedure_executions(agent_id);
+      CREATE INDEX IF NOT EXISTS idx_procedure_executions_success ON procedure_executions(success);
     `;
 
     const queries = [
@@ -137,6 +155,7 @@ class SQLiteStorage extends IContextStorage {
       createDependenciesTable,
       createReferencesTable,
       createAccessLogTable,
+      createProcedureExecutionsTable,
       createIndexes
     ];
 
