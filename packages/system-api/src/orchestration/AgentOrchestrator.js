@@ -156,8 +156,12 @@ class AgentOrchestrator {
     const executionTime = Date.now() - startTime;
     const success = !response.error && response.response && response.response.length > 0;
     
+    console.log(`🔍 SSP Check: context.type="${context.type}", sspService=${!!this.sspService}, success=${success}, executionTime=${executionTime}ms`);
+    
     if (context.type === 'task' && this.sspService) {
       try {
+        console.log(`📝 SSP Recording execution for context ${context.id}, agent ${agent.id || agent.type}`);
+        
         // Record execution in context
         context.recordProcedureExecution(success, executionTime);
         
@@ -170,14 +174,19 @@ class AgentOrchestrator {
           executionTime
         );
         
+        console.log(`✅ SSP Execution recorded successfully`);
+        
         // Detect patterns periodically
         if (Math.random() < 0.1) { // 10% chance to detect patterns
+          console.log(`🔍 SSP Pattern detection triggered`);
           await this.sspService.detectPatterns(options.userId, options.sessionId, agent.id || agent.type);
         }
       } catch (sspError) {
         console.error('SSP tracking error:', sspError);
         // Don't fail the main execution due to SSP errors
       }
+    } else {
+      console.log(`❌ SSP Not recording: type=${context.type}, sspService=${!!this.sspService}`);
     }
     
     // Process response with agent-specific post-processing
@@ -313,6 +322,9 @@ class AgentOrchestrator {
       agentPreferences: {},
       metadata: {}
     });
+    
+    // Set context type for SSP tracking
+    context.type = 'task';
     
     this.contextStore.set(contextKey, context);
     return context;
