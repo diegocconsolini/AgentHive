@@ -388,22 +388,6 @@ class AgentHiveSystemAPI {
       });
     });
 
-    // 404 handler
-    this.app.use('*', (req, res) => {
-      res.status(404).json({
-        error: 'Endpoint not found',
-        service: 'AgentHive System API',
-        available_endpoints: [
-          '/', '/health', '/api/status',
-          '/api/agents/execute', '/api/orchestration/distribute',
-          '/api/metrics/agents', '/api/metrics/performance',
-          '/api/orchestration/route', '/api/providers',
-          '/api/providers/test', '/api/test/openai',
-          '/api/ssp/patterns/:agentId', '/api/ssp/predict', '/api/ssp/analytics/:agentId'
-        ]
-      });
-    });
-
     // SSP Extension - Stable Success Patterns API endpoints
     this.app.get('/api/ssp/patterns/:agentId', async (req, res) => {
       try {
@@ -493,6 +477,22 @@ class AgentHiveSystemAPI {
           message: error.message 
         });
       }
+    });
+
+    // 404 handler
+    this.app.use('*', (req, res) => {
+      res.status(404).json({
+        error: 'Endpoint not found',
+        service: 'AgentHive System API',
+        available_endpoints: [
+          '/', '/health', '/api/status',
+          '/api/agents/execute', '/api/orchestration/distribute',
+          '/api/metrics/agents', '/api/metrics/performance',
+          '/api/orchestration/route', '/api/providers',
+          '/api/providers/test', '/api/test/openai',
+          '/api/ssp/patterns/:agentId', '/api/ssp/predict', '/api/ssp/analytics/:agentId'
+        ]
+      });
     });
   }
 
