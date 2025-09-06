@@ -50,7 +50,9 @@ class AgentOrchestrator {
       const selectedAgent = await this.selectOptimalAgent(contextualPrompt, options, context);
       
       // Step 4: Execute via AI provider with agent specialization
+      console.log(`🚀 ORCHESTRATE: About to call executeAgentWithProvider`);
       const result = await this.executeAgentWithProvider(selectedAgent, contextualPrompt, options, context);
+      console.log(`✅ ORCHESTRATE: executeAgentWithProvider completed`, result.success);
       
       // Step 5: Update context with new interaction
       await this.updateContext(context, prompt, result);
@@ -133,6 +135,7 @@ class AgentOrchestrator {
    */
   async executeAgentWithProvider(agent, prompt, options, context) {
     const startTime = Date.now();
+    console.log(`🎯 EXECUTING AGENT: ${agent.id || agent.type} - CONTEXT TYPE: ${context.type}`);
     
     // Build specialized system prompt for the selected agent
     const systemPrompt = this.buildAgentSystemPrompt(agent, context);
