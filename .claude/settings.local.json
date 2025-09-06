@@ -8,7 +8,8 @@
       "Bash(hive ask:*)",
       "Bash(npx hive ask:*)",
       "Bash(npx hive:*)",
-      "WebFetch(domain:solace.com)"
+      "WebFetch(domain:solace.com)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
