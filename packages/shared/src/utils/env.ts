@@ -9,6 +9,7 @@ export class EnvUtils {
       NODE_ENV: (process.env.NODE_ENV as EnvironmentConfig['NODE_ENV']) || 'development',
       API_URL: process.env.API_URL || 'http://localhost:4000',
       GRAPHQL_URL: process.env.GRAPHQL_URL || 'http://localhost:4000/graphql',
+      SYSTEM_API_URL: process.env.SYSTEM_API_URL || 'http://localhost:4001',
       WS_URL: process.env.WS_URL,
       JWT_SECRET: process.env.JWT_SECRET,
       JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '1h',
