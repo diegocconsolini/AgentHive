@@ -14,7 +14,7 @@ const ActionValidator = require('./ActionValidator');
 const MigrationRunner = require('./migrations/MigrationRunner');
 
 // Import the real AgentHive AI infrastructure
-const { aiProviderService } = require('../../ai-providers');
+const { AIProviderService } = require('../../ai-providers');
 const AgentOrchestrator = require('../orchestration/AgentOrchestrator');
 
 /**
@@ -23,8 +23,8 @@ const AgentOrchestrator = require('../orchestration/AgentOrchestrator');
 class MeshIntegrationTest {
     constructor() {
         this.testResults = [];
-        // Use real AgentHive AI service - no mocks!
-        this.aiService = aiProviderService;
+        // Create fresh AI service instance to pick up latest environment variables
+        this.aiService = new AIProviderService();
         this.orchestrator = new AgentOrchestrator(this.aiService);
         this.components = {};
     }
