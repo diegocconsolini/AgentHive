@@ -588,6 +588,17 @@ class AgentHiveSystemAPI {
       
       // SSP Extension - Record successful procedure execution
       console.log(`🔍 SSP Check: orchestrator=${!!this.orchestrator}, sspService=${!!this.orchestrator?.sspService}`);
+      
+      // Initialize SSP service if needed
+      if (this.orchestrator && !this.orchestrator.sspService) {
+        try {
+          await this.orchestrator._ensureMemoryManagerInitialized();
+          console.log(`✅ SSP Service initialized on demand`);
+        } catch (initError) {
+          console.error('❌ SSP initialization error:', initError);
+        }
+      }
+      
       if (this.orchestrator && this.orchestrator.sspService) {
         try {
           const contextId = `${options.userId || 'anon'}-${options.sessionId || Date.now()}`;
