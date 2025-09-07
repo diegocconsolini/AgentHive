@@ -10,7 +10,8 @@
       "Bash(npx hive:*)",
       "WebFetch(domain:solace.com)",
       "WebSearch",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []
