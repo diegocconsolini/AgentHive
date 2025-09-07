@@ -13,67 +13,9 @@ const MeshSessionManager = require('./MeshSessionManager');
 const ActionValidator = require('./ActionValidator');
 const MigrationRunner = require('./migrations/MigrationRunner');
 
-// Import the real AgentHive AI service
-const { AIProviderService } = require('../../../shared/dist/services/ai-providers');
-
-/**
- * Real AI Service wrapper for testing - uses the actual AgentHive AI infrastructure
- */
-class RealAIService {
-    constructor() {
-        this.providerService = new AIProviderService();
-        this.callCount = 0;
-    }
-    
-    /**
-     * Use the real AgentHive AI service generateResponse method
-     * This matches the signature used by AgentOrchestrator
-     */
-    async generateResponse(options = {}) {
-        this.callCount++;
-        
-        try {
-            // Use the real AI provider service
-            const response = await this.providerService.generateResponse(
-                options.prompt || options.message,
-                {
-                    model: options.model || 'gpt-3.5-turbo',
-                    systemPrompt: options.systemPrompt,
-                    temperature: options.temperature || 0.7,
-                    maxTokens: options.maxTokens || 4000,
-                    stream: options.stream || false
-                }
-            );
-            
-            // Return in AgentHive format
-            return {
-                response: response.content || response.response,
-                tokensUsed: response.tokensUsed || response.usage?.total_tokens || 500,
-                model: response.model || options.model,
-                success: !response.error,
-                error: response.error,
-                metadata: {
-                    callCount: this.callCount,
-                    processingTime: response.processingTime || 0,
-                    provider: response.provider || 'openai'
-                }
-            };
-            
-        } catch (error) {
-            console.error('AI Service error:', error);
-            return {
-                response: '',
-                error: error.message,
-                success: false,
-                tokensUsed: 0,
-                metadata: {
-                    callCount: this.callCount,
-                    error: error.message
-                }
-            };
-        }
-    }
-}
+// Import the real AgentHive AI infrastructure
+const { aiProviderService } = require('../../ai-providers');
+const AgentOrchestrator = require('../orchestration/AgentOrchestrator');
 
 /**
  * Main integration test class
@@ -81,7 +23,9 @@ class RealAIService {
 class MeshIntegrationTest {
     constructor() {
         this.testResults = [];
-        this.mockAIService = new MockAIService();
+        // Use real AgentHive AI service - no mocks!
+        this.aiService = aiProviderService;
+        this.orchestrator = new AgentOrchestrator(this.aiService);
         this.components = {};
     }
     
@@ -155,11 +99,8 @@ class MeshIntegrationTest {
             });
             await this.components.sessionManager.initialize();
             
-            // Initialize mesh coordinator
-            this.components.meshCoordinator = new AgentMeshCoordinator(this.mockAIService);
-            
-            // Set up mock responses
-            this.setupMockResponses();
+            // Initialize mesh coordinator with real AI service
+            this.components.meshCoordinator = new AgentMeshCoordinator(this.aiService);
             
             console.log('✅ All components initialized successfully\n');
             this.addResult('Component Initialization', true);
@@ -171,38 +112,6 @@ class MeshIntegrationTest {
         }
     }
     
-    /**
-     * Set up mock AI service responses
-     */
-    setupMockResponses() {
-        const mockResponses = {
-            'frontend-developer': {
-                content: 'Created React component with TypeScript and responsive design',
-                tokensUsed: 850,
-                confidence: 0.9,
-                success: true,
-                metadata: { framework: 'React', language: 'TypeScript' }
-            },
-            'backend-architect': {
-                content: 'Designed RESTful API with Node.js and Express, includes authentication',
-                tokensUsed: 920,
-                confidence: 0.85,
-                success: true,
-                metadata: { framework: 'Express', database: 'PostgreSQL' }
-            },
-            'database-admin': {
-                content: 'Created database schema with optimized indexes and constraints',
-                tokensUsed: 650,
-                confidence: 0.95,
-                success: true,
-                metadata: { database: 'PostgreSQL', tables: 5 }
-            }
-        };
-        
-        for (const [agentId, response] of Object.entries(mockResponses)) {
-            this.mockAIService.setResponse(agentId, response);
-        }
-    }
     
     /**
      * Test TaskDecomposer component
@@ -645,9 +554,9 @@ class MeshIntegrationTest {
             console.log(`    • Sessions: ${sessionStats.totalSessions} total`);
             console.log(`    • Messages: ${busStats.totalMessages} total`);
             console.log(`    • Validations: ${validatorStats.totalValidations} total`);
-            console.log(`    • AI Calls: ${this.mockAIService.callCount} total`);
+            console.log(`    • AI Provider: ${this.aiService ? 'Real AgentHive Service' : 'Not Available'}`);
             
-            this.addResult('Complete Mesh Workflow', true, `Executed end-to-end workflow with ${this.mockAIService.callCount} AI calls`);
+            this.addResult('Complete Mesh Workflow', true, `Executed end-to-end workflow with real AgentHive AI service`);
             
         } catch (error) {
             console.error('  ❌ Complete workflow test failed:', error.message);
