@@ -587,6 +587,7 @@ class AgentHiveSystemAPI {
       const duration = Date.now() - startTime;
       
       // SSP Extension - Record successful procedure execution
+      console.log(`🔍 SSP Check: orchestrator=${!!this.orchestrator}, sspService=${!!this.orchestrator?.sspService}`);
       if (this.orchestrator && this.orchestrator.sspService) {
         try {
           const contextId = `${options.userId || 'anon'}-${options.sessionId || Date.now()}`;
@@ -604,6 +605,8 @@ class AgentHiveSystemAPI {
         } catch (sspError) {
           console.error('❌ SSP tracking error:', sspError);
         }
+      } else {
+        console.log(`⚠️ SSP not available: orchestrator=${!!this.orchestrator}, sspService=${!!this.orchestrator?.sspService}`);
       }
       
       // Remove from active agents
