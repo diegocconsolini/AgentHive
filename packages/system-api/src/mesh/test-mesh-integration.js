@@ -13,42 +13,65 @@ const MeshSessionManager = require('./MeshSessionManager');
 const ActionValidator = require('./ActionValidator');
 const MigrationRunner = require('./migrations/MigrationRunner');
 
+// Import the real AgentHive AI service
+const { AIProviderService } = require('../../../shared/dist/services/ai-providers');
+
 /**
- * Mock AI Service for testing
+ * Real AI Service wrapper for testing - uses the actual AgentHive AI infrastructure
  */
-class MockAIService {
+class RealAIService {
     constructor() {
-        this.responses = new Map();
+        this.providerService = new AIProviderService();
         this.callCount = 0;
     }
     
-    setResponse(agentId, response) {
-        this.responses.set(agentId, response);
-    }
-    
-    async generateResponse(prompt, context = {}) {
+    /**
+     * Use the real AgentHive AI service generateResponse method
+     * This matches the signature used by AgentOrchestrator
+     */
+    async generateResponse(options = {}) {
         this.callCount++;
-        const agentId = context.agentId || 'mock-agent';
         
-        // Simulate processing time
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
-        
-        const mockResponse = this.responses.get(agentId) || {
-            content: `Mock response from ${agentId} for prompt: ${prompt.substring(0, 50)}...`,
-            tokensUsed: Math.floor(Math.random() * 1000) + 100,
-            confidence: 0.8 + Math.random() * 0.2,
-            success: true
-        };
-        
-        return {
-            ...mockResponse,
-            agentId,
-            timestamp: new Date().toISOString(),
-            metadata: {
-                callCount: this.callCount,
-                processingTime: Math.floor(Math.random() * 1000)
-            }
-        };
+        try {
+            // Use the real AI provider service
+            const response = await this.providerService.generateResponse(
+                options.prompt || options.message,
+                {
+                    model: options.model || 'gpt-3.5-turbo',
+                    systemPrompt: options.systemPrompt,
+                    temperature: options.temperature || 0.7,
+                    maxTokens: options.maxTokens || 4000,
+                    stream: options.stream || false
+                }
+            );
+            
+            // Return in AgentHive format
+            return {
+                response: response.content || response.response,
+                tokensUsed: response.tokensUsed || response.usage?.total_tokens || 500,
+                model: response.model || options.model,
+                success: !response.error,
+                error: response.error,
+                metadata: {
+                    callCount: this.callCount,
+                    processingTime: response.processingTime || 0,
+                    provider: response.provider || 'openai'
+                }
+            };
+            
+        } catch (error) {
+            console.error('AI Service error:', error);
+            return {
+                response: '',
+                error: error.message,
+                success: false,
+                tokensUsed: 0,
+                metadata: {
+                    callCount: this.callCount,
+                    error: error.message
+                }
+            };
+        }
     }
 }
 
