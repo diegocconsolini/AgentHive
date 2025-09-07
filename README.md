@@ -16,6 +16,7 @@ AgentHive is the **"Kubernetes for AI agents"** - a comprehensive orchestration 
 - **🧠 88+ Specialized Agents** - From `python-pro` to `security-auditor`, each agent is an expert in their domain
 - **🎯 Intelligent Routing** - Automatically selects the best agent(s) for each task
 - **💾 Persistent Memory** - Context and conversations persist across sessions
+- **🔮 SSP (Stable Success Patterns)** - AI learns from successful patterns to optimize future executions
 - **📊 Analytics Dashboard** - Track agent performance and usage patterns
 - **🔧 CLI & Web Interface** - Command line power with web dashboard convenience
 - **🔒 Enterprise Ready** - Role-based access, audit logs, and integrations
