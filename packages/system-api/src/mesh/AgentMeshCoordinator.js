@@ -80,6 +80,13 @@ class AgentMeshCoordinator extends AgentOrchestrator {
         timeLimit: options.timeLimit || 300000
       });
       
+      // Initialize mesh session properties
+      meshSession.activeAgents = new Set();
+      meshSession.completedTasks = [];
+      meshSession.totalTokens = 0;
+      meshSession.totalCost = 0;
+      meshSession.startTime = new Date();
+      
       // Get base context
       const context = await this.getOrCreateContext(userId, sessionId);
       meshSession.context = context;
