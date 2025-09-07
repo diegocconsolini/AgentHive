@@ -568,7 +568,8 @@ class TaskDecomposer {
     };
     
     // Use existing capability matcher
-    const availableAgents = this.agentRegistry.getAllAgents();
+    const availableAgentTypes = this.agentRegistry.getAllAgentTypes();
+    const availableAgents = availableAgentTypes.map(type => this.agentRegistry.getAgent(type)).filter(agent => agent);
     const bestMatch = this.capabilityMatcher.findBestMatch(
       taskRequirements,
       availableAgents,

@@ -153,9 +153,9 @@ class AgentMeshCoordinator extends AgentOrchestrator {
     } catch (error) {
       console.error(`❌ MESH: Error in mesh orchestration:`, error);
       
-      // Fallback to single-agent execution
+      // Fallback to single-agent execution using parent orchestrator
       console.log(`🔄 MESH: Falling back to single-agent execution`);
-      return await this.orchestrateRequest(prompt, options, userId, sessionId);
+      return await super.orchestrateRequest(prompt, options, userId, sessionId);
     }
   }
 
