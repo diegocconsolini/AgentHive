@@ -1,6 +1,7 @@
 import React from 'react';
 import { Agent } from '../../../types';
 import { AgentIcon, StatusBadge } from '../shared';
+import { SSPBadge } from '../shared/SSPBadge';
 
 interface AgentCardProps {
   agent: Agent;
@@ -154,6 +155,11 @@ export const AgentCard: React.FC<AgentCardProps> = ({
               {agent.capabilities.slice(0, 3).join(', ')}
               {agent.capabilities.length > 3 && ` +${agent.capabilities.length - 3} more`}
             </div>
+          </div>
+
+          {/* SSP Analytics Badge */}
+          <div className="mb-3">
+            <SSPBadge agentId={agent.id} />
           </div>
 
           {/* Performance metrics */}

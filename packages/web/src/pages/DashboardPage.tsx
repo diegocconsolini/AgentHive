@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Brain, Plus, TrendingUp, Clock, Hash, BarChart3 } from 'lucide-react';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { SSPMetricsCard } from '../components/dashboard/SSPMetricsCard';
 
 const GET_MEMORIES = gql`
   query GetMemories {
@@ -69,6 +70,8 @@ export const DashboardPage: React.FC = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* SSP Metrics Card */}
+        <SSPMetricsCard />
         <div className="card">
           <div className="card-content">
             <div className="flex items-center justify-between">
