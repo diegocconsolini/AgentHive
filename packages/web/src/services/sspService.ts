@@ -1,7 +1,9 @@
 import { EnvUtils } from '@memory-manager/shared';
 
 const config = EnvUtils.getConfig();
+console.log('🔧 SSP Service Config:', config);
 const SSP_API_BASE = `${config.SYSTEM_API_URL}/api/ssp`;
+console.log('🎯 SSP API Base URL:', SSP_API_BASE);
 
 export interface SSPPattern {
   id: string;
@@ -43,6 +45,9 @@ class SSPService {
   private async makeRequest<T>(url: string, options: RequestInit = {}): Promise<T> {
     const token = this.getAuthToken();
     
+    // Debug logging
+    console.log('🔍 SSP API Request:', url);
+    
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -52,11 +57,16 @@ class SSPService {
       },
     });
 
+    console.log('📡 SSP API Response:', response.status, response.statusText);
+
     if (!response.ok) {
+      console.error('❌ SSP API Error:', response.status, response.statusText);
       throw new Error(`SSP API error: ${response.status} ${response.statusText}`);
     }
 
-    return response.json();
+    const data = await response.json();
+    console.log('✅ SSP API Data:', data);
+    return data;
   }
 
   async getPatterns(agentId: string): Promise<{ agentId: string; patterns: SSPPattern[]; timestamp: string }> {
