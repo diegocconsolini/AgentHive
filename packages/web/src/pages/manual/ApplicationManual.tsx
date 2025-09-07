@@ -17,6 +17,8 @@ import {
   Copy,
   CheckCircle,
   AlertCircle,
+  Activity,
+  TrendingUp,
 } from 'lucide-react';
 
 interface ManualSection {
@@ -87,6 +89,7 @@ const ApplicationManual: React.FC = () => {
             <ul className="space-y-2 text-blue-800 dark:text-blue-200">
               <li>• <strong>88+ Specialized Agents</strong> - Security, development, analysis, DevOps</li>
               <li>• <strong>Real AI Integration</strong> - Powered by Ollama + RTX 5090</li>
+              <li>• <strong>SSP (Stable Success Patterns)</strong> - AI learns from successful execution patterns</li>
               <li>• <strong>Load Balancing</strong> - Intelligent request distribution</li>
               <li>• <strong>Live Analytics</strong> - Real-time performance monitoring</li>
               <li>• <strong>CLI + Web Interface</strong> - Developer-friendly tools</li>
