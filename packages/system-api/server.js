@@ -586,6 +586,26 @@ class AgentHiveSystemAPI {
       
       const duration = Date.now() - startTime;
       
+      // SSP Extension - Record successful procedure execution
+      if (this.orchestrator && this.orchestrator.sspService) {
+        try {
+          const contextId = `${options.userId || 'anon'}-${options.sessionId || Date.now()}`;
+          console.log(`🔍 SSP Recording: contextId=${contextId}, agentId=${agentId}, duration=${duration}ms`);
+          
+          await this.orchestrator.sspService.recordProcedureExecution(
+            contextId,
+            agentId,
+            options.sessionId || 'default',
+            true, // success
+            duration
+          );
+          
+          console.log(`✅ SSP recorded successfully for agent ${agentId}`);
+        } catch (sspError) {
+          console.error('❌ SSP tracking error:', sspError);
+        }
+      }
+      
       // Remove from active agents
       this.activeAgents.delete(agentId);
       
