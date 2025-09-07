@@ -3,6 +3,9 @@
  * Tests the complete mesh system with all components working together
  */
 
+// Load environment variables FIRST before any other imports
+require('dotenv').config({ path: '../../../../.env' });
+
 const path = require('path');
 const TaskDecomposer = require('./TaskDecomposer');
 const AgentMeshCoordinator = require('./AgentMeshCoordinator');
