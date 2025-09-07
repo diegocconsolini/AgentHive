@@ -3,6 +3,9 @@
  * Supports OpenAI-compatible APIs, Ollama, Anthropic, and other providers
  */
 
+// Load environment variables from root .env file
+require('dotenv').config({ path: '../../.env' });
+
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 class AIProviderService {
