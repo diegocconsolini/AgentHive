@@ -311,6 +311,195 @@ hive execute security-auditor "Analyze this system for vulnerabilities"`}</CodeB
       ),
     },
     {
+      id: 'ssp',
+      title: 'SSP (Success Patterns)',
+      icon: <TrendingUp className="w-5 h-5" />,
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              SSP (Stable Success Patterns) System
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              AgentHive's advanced learning system that automatically tracks and learns from successful agent executions, 
+              enabling continuous optimization and intelligent success prediction.
+            </p>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-3">
+              ✅ System Status: OPERATIONAL
+            </h3>
+            <ul className="space-y-2 text-green-800 dark:text-green-200">
+              <li>• <strong>Auto-tracking</strong>: Every agent execution recorded in real-time</li>
+              <li>• <strong>Pattern Detection</strong>: AI identifies successful procedure sequences</li>
+              <li>• <strong>Cross-agent Learning</strong>: Insights shared across all 88 agents</li>
+              <li>• <strong>Success Prediction</strong>: Estimates procedure success probability</li>
+              <li>• <strong>Performance Analytics</strong>: Execution times and optimization data</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              🔄 Automatic Tracking
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              SSP automatically records every agent execution without any manual intervention:
+            </p>
+            <CodeBlock language="bash">{`# Execute any agent - SSP tracks automatically
+curl -X POST "http://localhost:4001/api/agents/execute" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "prompt": "Create a React component", 
+    "agentId": "frontend-developer",
+    "userId": "developer-123",
+    "sessionId": "coding-session"
+  }'
+
+# ✅ Execution automatically recorded:
+# - Agent: frontend-developer
+# - Success: true  
+# - Duration: 3.2s
+# - Timestamp: 2025-09-07T10:35:36Z`}</CodeBlock>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              📊 SSP Analytics API
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Access recorded patterns and performance data through dedicated endpoints:
+            </p>
+            
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Get Agent Patterns</h4>
+                <CodeBlock language="bash">{`curl "http://localhost:4001/api/ssp/patterns/frontend-developer" | jq`}</CodeBlock>
+              </div>
+
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Performance Analytics</h4>
+                <CodeBlock language="bash">{`curl "http://localhost:4001/api/ssp/analytics/python-pro" | jq`}</CodeBlock>
+              </div>
+
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Success Prediction</h4>
+                <CodeBlock language="bash">{`curl -X POST "http://localhost:4001/api/ssp/predict" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "contextId": "user-session-123",
+    "agentId": "security-auditor", 
+    "procedure": "vulnerability-scan"
+  }'`}</CodeBlock>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              🎯 Integration Examples
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Use SSP data in your applications:
+            </p>
+            
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">React Component</h4>
+                <CodeBlock language="tsx">{`function AgentAnalytics({ agentId }) {
+  const [analytics, setAnalytics] = useState(null);
+  
+  useEffect(() => {
+    async function loadAnalytics() {
+      const response = await fetch(\`/api/ssp/analytics/\${agentId}\`);
+      setAnalytics(await response.json());
+    }
+    loadAnalytics();
+  }, [agentId]);
+
+  return (
+    <div className="agent-analytics">
+      <h3>📊 {agentId} Performance</h3>
+      {analytics && (
+        <div>
+          <p>Success Rate: {analytics.successRate}%</p>
+          <p>Avg Duration: {analytics.avgDuration}ms</p>
+          <p>Total Executions: {analytics.totalExecutions}</p>
+        </div>
+      )}
+    </div>
+  );
+}`}</CodeBlock>
+              </div>
+
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">JavaScript Client</h4>
+                <CodeBlock language="javascript">{`class SSPClient {
+  constructor(baseUrl = 'http://localhost:4001') {
+    this.baseUrl = baseUrl;
+  }
+  
+  async getPatterns(agentId) {
+    const response = await fetch(\`\${this.baseUrl}/api/ssp/patterns/\${agentId}\`);
+    return response.json();
+  }
+  
+  async predictSuccess(contextId, agentId, procedure) {
+    const response = await fetch(\`\${this.baseUrl}/api/ssp/predict\`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contextId, agentId, procedure })
+    });
+    return response.json();
+  }
+}
+
+// Usage
+const ssp = new SSPClient();
+const patterns = await ssp.getPatterns('frontend-developer');
+const prediction = await ssp.predictSuccess('ctx-123', 'python-pro', 'optimization');`}</CodeBlock>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              📋 Current Database Status
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Check live SSP data from your system:
+            </p>
+            <CodeBlock language="bash">{`# View all recorded executions
+node check-ssp.js
+
+# Sample output:
+# 🔍 Checking SSP Database: memories.db
+# ✅ Connected to SSP database
+# ✅ procedure_executions table exists
+# 📊 Total procedure executions: 5
+# 
+# 📋 Recent executions:
+# • frontend-developer: 2 executions, avg 4.1s
+# • python-pro: 3 executions, avg 2.8s
+# • security-auditor: 1 execution, 5.2s`}</CodeBlock>
+          </div>
+
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+            <div className="flex items-start">
+              <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Live Learning System</h4>
+                <p className="text-blue-800 dark:text-blue-200">
+                  SSP runs transparently in the background, automatically learning from every execution to make 
+                  AgentHive smarter and more efficient over time. No configuration or manual tracking required.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
       id: 'integration',
       title: 'External Integration',
       icon: <Code className="w-5 h-5" />,
@@ -587,6 +776,51 @@ curl http://localhost:4001/api/metrics/agents`}</CodeBlock>
                   features: 'object - Enabled features status',
                   ollama: 'object - Ollama configuration and models',
                   agents: 'array - Current agent metrics'
+                }
+              },
+              {
+                method: 'GET',
+                endpoint: '/api/ssp/patterns/{agentId}',
+                description: 'Get successful patterns for a specific agent (SSP System)',
+                parameters: [
+                  { name: 'agentId', type: 'string', required: true, description: 'Agent ID to get patterns for' },
+                ],
+                response: {
+                  agentId: 'string - Agent identifier',
+                  patterns: 'array - Successful execution patterns',
+                  totalPatterns: 'number - Total patterns found'
+                }
+              },
+              {
+                method: 'GET',
+                endpoint: '/api/ssp/analytics/{agentId}',
+                description: 'Get performance analytics for an agent (SSP System)',
+                parameters: [
+                  { name: 'agentId', type: 'string', required: true, description: 'Agent ID to get analytics for' },
+                ],
+                response: {
+                  agentId: 'string - Agent identifier',
+                  totalExecutions: 'number - Total executions recorded',
+                  successRate: 'number - Success rate percentage',
+                  avgDuration: 'number - Average execution time in ms',
+                  lastExecution: 'string - Timestamp of last execution'
+                }
+              },
+              {
+                method: 'POST',
+                endpoint: '/api/ssp/predict',
+                description: 'Predict success probability for a procedure (SSP System)',
+                parameters: [
+                  { name: 'contextId', type: 'string', required: true, description: 'Context identifier' },
+                  { name: 'agentId', type: 'string', required: true, description: 'Agent to predict for' },
+                  { name: 'procedure', type: 'string', required: true, description: 'Procedure to predict' },
+                ],
+                response: {
+                  contextId: 'string - Context identifier',
+                  agentId: 'string - Agent identifier', 
+                  procedure: 'string - Procedure name',
+                  successProbability: 'number - Predicted success probability (0-1)',
+                  confidence: 'number - Prediction confidence score'
                 }
               }
             ].map((endpoint, index) => (
