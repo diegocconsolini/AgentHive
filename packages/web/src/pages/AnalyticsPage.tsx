@@ -7,7 +7,8 @@ import {
   FileText, 
   Bell, 
   BarChart3,
-  Settings 
+  Settings,
+  TrendingUp 
 } from 'lucide-react';
 import { subDays } from 'date-fns';
 
@@ -19,9 +20,10 @@ import { AgentPerformance } from '../components/analytics/agents/AgentPerformanc
 import { UserBehavior } from '../components/analytics/user/UserBehavior';
 import { ReportGenerator } from '../components/analytics/reports/ReportGenerator';
 import { AlertManager } from '../components/analytics/alerts/AlertManager';
+import { SSPAnalytics } from '../components/analytics/ssp/SSPAnalytics';
 import { TimeRange } from '../types/analytics';
 
-type AnalyticsView = 'dashboard' | 'memory' | 'ml' | 'agents' | 'users' | 'reports' | 'alerts';
+type AnalyticsView = 'dashboard' | 'memory' | 'ml' | 'agents' | 'users' | 'reports' | 'alerts' | 'ssp';
 
 interface AnalyticsTab {
   id: AnalyticsView;
@@ -73,6 +75,12 @@ const analyticsTabs: AnalyticsTab[] = [
     icon: <Bell className="w-5 h-5" />,
     description: 'Alert management and anomaly detection',
   },
+  {
+    id: 'ssp',
+    name: 'Success Patterns',
+    icon: <TrendingUp className="w-5 h-5" />,
+    description: 'AI learning patterns and agent performance optimization',
+  },
 ];
 
 export const AnalyticsPage: React.FC = () => {
@@ -99,6 +107,8 @@ export const AnalyticsPage: React.FC = () => {
         return <ReportGenerator className="mt-6" />;
       case 'alerts':
         return <AlertManager timeRange={timeRange} className="mt-6" />;
+      case 'ssp':
+        return <SSPAnalytics className="mt-6" />;
       default:
         return <AnalyticsDashboard className="mt-6" />;
     }
