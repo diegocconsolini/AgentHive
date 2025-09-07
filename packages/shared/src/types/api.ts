@@ -54,6 +54,7 @@ export interface EnvironmentConfig {
   NODE_ENV: 'development' | 'staging' | 'production' | 'test';
   API_URL: string;
   GRAPHQL_URL: string;
+  SYSTEM_API_URL: string;
   WS_URL?: string;
   JWT_SECRET?: string;
   JWT_EXPIRES_IN?: string;
