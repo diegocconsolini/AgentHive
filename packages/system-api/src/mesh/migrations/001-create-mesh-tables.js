@@ -493,11 +493,19 @@ class CreateMeshTablesMigration {
      * Check if migration has been applied
      */
     async isApplied() {
-        const result = this.db.prepare(
-            'SELECT COUNT(*) as count FROM migrations WHERE name = ?'
-        ).get(this.migrationName);
-        
-        return result.count > 0;
+        try {
+            const result = this.db.prepare(
+                'SELECT COUNT(*) as count FROM migrations WHERE name = ?'
+            ).get(this.migrationName);
+            
+            return result.count > 0;
+        } catch (error) {
+            // If migrations table doesn't exist, migration hasn't been applied
+            if (error.message.includes('no such table: migrations')) {
+                return false;
+            }
+            throw error;
+        }
     }
     
     /**

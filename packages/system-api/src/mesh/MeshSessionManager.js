@@ -565,6 +565,17 @@ class MeshSessionManager extends EventEmitter {
         const db = this.storageManager.indexStorage.db;
         
         try {
+            // Check if table exists first
+            const tableExists = db.prepare(`
+                SELECT name FROM sqlite_master 
+                WHERE type='table' AND name='mesh_sessions'
+            `).get();
+            
+            if (!tableExists) {
+                console.log('mesh_sessions table does not exist yet, skipping restore');
+                return;
+            }
+            
             const sessions = db.prepare(`
                 SELECT * FROM mesh_sessions 
                 WHERE status = 'active' 
