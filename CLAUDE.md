@@ -61,6 +61,34 @@
 - **Authentication**: Uses existing localStorage auth tokens
 - **Error Handling**: Graceful degradation with fallback states
 
+## Starting the Application
+
+**IMPORTANT**: Always use the root-level npm script, not individual service scripts.
+
+```bash
+# CORRECT: Start all services together
+npm run dev
+
+# WRONG: Starting individual services manually
+cd packages/system-api && node server.js  # ❌ Don't do this
+cd packages/user-api && npm run dev       # ❌ Don't do this
+```
+
+### Service Startup Verification
+When properly started with `npm run dev`, you should see:
+- ✅ **System API (port 4001)**: 88 agents loaded, AI orchestration ready
+- ✅ **User API (port 4000)**: GraphQL server with SQLite database
+- ✅ **Web Dashboard (port 3000)**: Vite React app ready
+- ✅ **SSP System**: Analytics endpoints active with real-time data
+
+### Access Points
+- **Web Dashboard**: http://localhost:3000 (Main UI)
+- **GraphQL Playground**: http://localhost:4000/graphql (User API)
+- **Health Checks**: 
+  - User API: http://localhost:4000/health
+  - System API: http://localhost:4001/health
+- **System Status**: http://localhost:4001/api/status
+
 ## Code Style
 
 Follow existing patterns in the codebase:
