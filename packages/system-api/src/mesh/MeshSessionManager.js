@@ -576,11 +576,17 @@ class MeshSessionManager extends EventEmitter {
                 return;
             }
             
-            const sessions = db.prepare(`
-                SELECT * FROM mesh_sessions 
-                WHERE status = 'active' 
-                ORDER BY updated_at DESC
-            `).all();
+            let sessions = [];
+            try {
+                sessions = db.prepare(`
+                    SELECT * FROM mesh_sessions 
+                    WHERE status = 'active' 
+                    ORDER BY updated_at DESC
+                `).all() || [];
+            } catch (error) {
+                console.log('Could not query mesh_sessions table:', error.message);
+                return;
+            }
             
             for (const sessionData of sessions) {
                 const session = await this.deserializeSessionFromDb(sessionData);
