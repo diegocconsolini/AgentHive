@@ -10,6 +10,7 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 // Import the flexible AI provider service
 const { aiProviderService } = require('./ai-providers.js');
 const AgentOrchestrator = require('./src/orchestration/AgentOrchestrator');
+const SmartMemoryIndex = require('./src/memory/SmartMemoryIndex');
 
 class AgentHiveSystemAPI {
   constructor() {
