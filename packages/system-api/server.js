@@ -631,7 +631,8 @@ class AgentHiveSystemAPI {
           '/api/metrics/agents', '/api/metrics/performance',
           '/api/orchestration/route', '/api/providers',
           '/api/providers/test', '/api/test/openai',
-          '/api/ssp/patterns/:agentId', '/api/ssp/predict', '/api/ssp/analytics/:agentId'
+          '/api/ssp/patterns/:agentId', '/api/ssp/predict', '/api/ssp/analytics/:agentId',
+          '/api/memory', '/api/memory/:id', '/api/memory/search', '/api/memory/analytics'
         ]
       });
     });
@@ -662,6 +663,14 @@ class AgentHiveSystemAPI {
         console.log(`📋 Available models: ${allModels.join(', ')}`);
       }
       
+      // Initialize Smart Memory Index
+      try {
+        await this.memoryIndex.initialize();
+        console.log('🧠 Smart Memory Index initialized successfully');
+      } catch (memoryError) {
+        console.warn('⚠️ Smart Memory Index initialization failed:', memoryError.message);
+      }
+
       // Initialize metrics collection
       this.startMetricsCollection();
       console.log('📊 Metrics collection started');
