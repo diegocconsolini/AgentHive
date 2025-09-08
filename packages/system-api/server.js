@@ -23,6 +23,9 @@ class AgentHiveSystemAPI {
     // Initialize Agent Orchestrator with intelligent routing
     this.orchestrator = new AgentOrchestrator(this.aiService);
     
+    // Initialize Smart Memory Index
+    this.memoryIndex = new SmartMemoryIndex();
+    
     // Agent orchestration state (legacy - will be moved to orchestrator)
     this.activeAgents = new Map();
     this.agentMetrics = new Map();
@@ -476,6 +479,143 @@ class AgentHiveSystemAPI {
         res.status(500).json({ 
           error: 'Failed to get SSP analytics', 
           message: error.message 
+        });
+      }
+    });
+
+    // Smart Memory Index API endpoints
+    this.app.post('/api/memory', async (req, res) => {
+      try {
+        const memory = await this.memoryIndex.addMemory(req.body);
+        res.json({
+          success: true,
+          memory,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory creation error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to create memory',
+          message: error.message
+        });
+      }
+    });
+
+    this.app.get('/api/memory/:id', async (req, res) => {
+      try {
+        const { id } = req.params;
+        const memory = await this.memoryIndex.getMemory(id);
+        
+        if (!memory) {
+          return res.status(404).json({
+            success: false,
+            error: 'Memory not found',
+            id
+          });
+        }
+        
+        res.json({
+          success: true,
+          memory,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory retrieval error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to retrieve memory',
+          message: error.message
+        });
+      }
+    });
+
+    this.app.put('/api/memory/:id', async (req, res) => {
+      try {
+        const { id } = req.params;
+        const memory = await this.memoryIndex.updateMemory(id, req.body);
+        
+        res.json({
+          success: true,
+          memory,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory update error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to update memory',
+          message: error.message
+        });
+      }
+    });
+
+    this.app.delete('/api/memory/:id', async (req, res) => {
+      try {
+        const { id } = req.params;
+        const deleted = await this.memoryIndex.deleteMemory(id);
+        
+        res.json({
+          success: true,
+          deleted,
+          id,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory deletion error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to delete memory',
+          message: error.message
+        });
+      }
+    });
+
+    this.app.post('/api/memory/search', async (req, res) => {
+      try {
+        const { query, ...options } = req.body;
+        
+        if (!query) {
+          return res.status(400).json({
+            success: false,
+            error: 'Search query is required'
+          });
+        }
+        
+        const results = await this.memoryIndex.searchMemories(query, options);
+        
+        res.json({
+          success: true,
+          query,
+          results,
+          count: results.length,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory search error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to search memories',
+          message: error.message
+        });
+      }
+    });
+
+    this.app.get('/api/memory/analytics', async (req, res) => {
+      try {
+        const analytics = await this.memoryIndex.getAnalytics();
+        
+        res.json({
+          success: true,
+          analytics,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory analytics error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to get memory analytics',
+          message: error.message
         });
       }
     });
