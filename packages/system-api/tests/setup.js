@@ -3,9 +3,9 @@
  * Common configuration and utilities for all test suites
  */
 
-import { performance } from 'perf_hooks';
-import fs from 'fs/promises';
-import path from 'path';
+const { performance } = require('perf_hooks');
+const fs = require('fs').promises;
+const path = require('path');
 
 // Global test configuration
 global.testConfig = {
@@ -158,4 +158,4 @@ expect.extend({
   }
 });
 
-export default global.testConfig;
+module.exports = global.testConfig;
