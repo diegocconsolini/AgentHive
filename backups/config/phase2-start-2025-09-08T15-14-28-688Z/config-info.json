@@ -1,0 +1,37 @@
+{
+  "files": [
+    {
+      "original": ".env",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/.env"
+    },
+    {
+      "original": "package.json",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/package.json"
+    },
+    {
+      "original": "packages/system-api/package.json",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/packages_system-api_package.json"
+    },
+    {
+      "original": "packages/user-api/package.json",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/packages_user-api_package.json"
+    },
+    {
+      "original": "packages/web/package.json",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/packages_web_package.json"
+    },
+    {
+      "original": "packages/cli/package.json",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/packages_cli_package.json"
+    },
+    {
+      "original": "packages/system-api/phase-tracker.json",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/packages_system-api_phase-tracker.json"
+    },
+    {
+      "original": "agents-data.json",
+      "backup": "/home/diegocc/AgentHive/backups/config/phase2-start-2025-09-08T15-14-28-688Z/agents-data.json"
+    }
+  ],
+  "timestamp": "2025-09-08T15:14:29.882Z"
+}
