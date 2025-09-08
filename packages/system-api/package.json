@@ -7,7 +7,7 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "build": "echo 'No build step for CommonJS'",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "jest"
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.0",
