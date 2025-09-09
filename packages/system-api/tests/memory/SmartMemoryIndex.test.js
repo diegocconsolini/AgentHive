@@ -84,12 +84,10 @@ describe('SmartMemoryIndex', () => {
         validateConnection: jest.fn().mockRejectedValue(new Error('Connection failed'))
       };
       
-      const mockAIProviderClass = jest.fn(() => failingProvider);
-      jest.doMock('../../ai-providers.js', () => ({
-        AIProviderService: mockAIProviderClass
-      }));
-
+      // Create a new instance with the failing provider
       const newIndex = new SmartMemoryIndex();
+      newIndex.aiProvider = failingProvider;
+      
       await expect(newIndex.initialize()).rejects.toThrow('Connection failed');
     });
   });
