@@ -59,6 +59,9 @@ describe('SmartMemoryIndex', () => {
   afterEach(() => {
     // Clean up any timers/intervals
     jest.clearAllTimers();
+    if (memoryIndex && memoryIndex.cleanup) {
+      memoryIndex.cleanup();
+    }
   });
 
   describe('Initialization', () => {
@@ -121,6 +124,9 @@ describe('SmartMemoryIndex', () => {
 
     test('should update memory and re-index', async () => {
       const addedMemory = await memoryIndex.addMemory(testMemoryData);
+      
+      // Wait a bit to ensure timestamp will be different
+      await new Promise(resolve => setTimeout(resolve, 10));
       
       const updates = {
         knowledge: {

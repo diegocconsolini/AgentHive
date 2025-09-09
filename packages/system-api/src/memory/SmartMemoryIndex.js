@@ -572,15 +572,30 @@ class SmartMemoryIndex {
   }
 
   setupMaintenanceTasks() {
-    // Clean up old access patterns every hour
-    setInterval(() => {
-      this.cleanupOldAccessPatterns();
-    }, 60 * 60 * 1000);
+    // Only set up maintenance tasks in production (not in tests)
+    if (process.env.NODE_ENV !== 'test') {
+      // Clean up old access patterns every hour
+      this.maintenanceIntervals = [
+        setInterval(() => {
+          this.cleanupOldAccessPatterns();
+        }, 60 * 60 * 1000),
 
-    // Optimize memory index every 6 hours
-    setInterval(() => {
-      this.optimizeMemoryIndex();
-    }, 6 * 60 * 60 * 1000);
+        // Optimize memory index every 6 hours
+        setInterval(() => {
+          this.optimizeMemoryIndex();
+        }, 6 * 60 * 60 * 1000)
+      ];
+    }
+  }
+
+  /**
+   * Clean up maintenance tasks (for testing)
+   */
+  cleanup() {
+    if (this.maintenanceIntervals) {
+      this.maintenanceIntervals.forEach(interval => clearInterval(interval));
+      this.maintenanceIntervals = [];
+    }
   }
 
   cleanupOldAccessPatterns() {
