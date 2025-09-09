@@ -22,7 +22,7 @@ module.exports = {
   transform: {
     '^.+\\.js$': 'babel-jest'
   },
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
   testPathIgnorePatterns: [

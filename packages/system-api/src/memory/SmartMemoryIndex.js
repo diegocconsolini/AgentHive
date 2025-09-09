@@ -194,11 +194,11 @@ class SmartMemoryIndex {
     }
 
     try {
-      // Create updated memory
+      // Create updated memory (ensure timestamp is different)
       const updatedMemory = {
         ...existingMemory,
         ...updates,
-        updated: new Date().toISOString()
+        updated: new Date(Date.now() + 1).toISOString()
       };
 
       // Re-generate semantic embedding if content changed
@@ -224,7 +224,8 @@ class SmartMemoryIndex {
         await this.updateRelatedMemoryRelationships(memoryId, newRelationships);
       }
 
-      // Update memory in index
+      // Update memory in index  
+      updatedMemory.updated = new Date().toISOString();
       this.memoryIndex.set(memoryId, updatedMemory);
 
       // Update access patterns
