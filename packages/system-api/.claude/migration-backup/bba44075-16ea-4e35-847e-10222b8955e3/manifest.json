@@ -1,0 +1,11 @@
+{
+  "migrationId": "bba44075-16ea-4e35-847e-10222b8955e3",
+  "timestamp": "2025-09-12T23:30:42.192Z",
+  "claudePath": "/home/diegocc/AgentHive/packages/system-api/tests/temp/3536f6ee-4804-47f1-8d99-6216d08b9a6d/.claude",
+  "files": [
+    {
+      "original": "/home/diegocc/AgentHive/packages/system-api/tests/temp/3536f6ee-4804-47f1-8d99-6216d08b9a6d/.claude/context/settings.json",
+      "backup": ".claude/migration-backup/bba44075-16ea-4e35-847e-10222b8955e3/context/settings.json"
+    }
+  ]
+}

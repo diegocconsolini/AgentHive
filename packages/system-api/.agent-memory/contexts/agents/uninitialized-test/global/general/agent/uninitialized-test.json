@@ -9,8 +9,8 @@
   ],
   "importance": 92.5,
   "created": "2025-09-12T23:24:18.474Z",
-  "updated": "2025-09-12T23:24:18.474Z",
-  "content": "{\"id\":\"6e88675c-5c04-4b34-ac87-90b4be7603c7\",\"agentId\":\"uninitialized-test\",\"userId\":null,\"sessionId\":null,\"created\":\"2025-09-12T23:24:18.474Z\",\"updated\":\"2025-09-12T23:24:18.474Z\",\"lastAccessed\":\"2025-09-12T23:24:18.474Z\",\"interactions\":[{\"id\":\"bccb56a3-875a-4de5-aca8-a214aa7127d7\",\"timestamp\":\"2025-09-12T23:24:18.247Z\",\"prompt\":\"Test uninitialized SmartMemoryIndex\",\"response\":\"Should still work\",\"success\":\"Should still work\",\"duration\":0,\"tokens\":0,\"contextId\":null,\"feedback\":null,\"tags\":[\"testing\",\"general\"]}],\"patterns\":{\"keywords\":{\"test\":1,\"uninitialized\":1,\"smartmemoryindex\":1},\"commonHours\":{\"1\":1},\"lastUpdated\":\"2025-09-12T23:24:18.474Z\"},\"knowledge\":{\"testing\":{\"test\":{\"value\":\"Should still work\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:24:18.474Z\",\"reinforcements\":0,\"tags\":[\"testing\",\"test\",\"uninitialized\",\"smartmemoryindex\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":0,\"totalInteractions\":1,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"testing\":[{\"concept\":\"test\",\"value\":\"Should still work\",\"confidence\":0.7,\"reinforcements\":1,\"timestamp\":\"2025-09-12T23:24:18.474Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
+  "updated": "2025-09-12T23:31:14.279Z",
+  "content": "{\"id\":\"6e88675c-5c04-4b34-ac87-90b4be7603c7\",\"agentId\":\"uninitialized-test\",\"userId\":null,\"sessionId\":null,\"created\":\"2025-09-12T23:24:18.474Z\",\"updated\":\"2025-09-12T23:31:14.277Z\",\"lastAccessed\":\"2025-09-12T23:31:14.277Z\",\"interactions\":[{\"id\":\"bccb56a3-875a-4de5-aca8-a214aa7127d7\",\"timestamp\":\"2025-09-12T23:24:18.247Z\",\"prompt\":\"Test uninitialized SmartMemoryIndex\",\"response\":\"Should still work\",\"success\":\"Should still work\",\"duration\":0,\"tokens\":0,\"contextId\":null,\"feedback\":null,\"tags\":[\"testing\",\"general\"]},{\"id\":\"d09326fe-4ce4-4ab7-b19a-71fa208c1426\",\"timestamp\":\"2025-09-12T23:31:13.890Z\",\"prompt\":\"Test uninitialized SmartMemoryIndex\",\"response\":\"Should still work\",\"success\":\"Should still work\",\"duration\":0,\"tokens\":0,\"contextId\":null,\"feedback\":null,\"tags\":[\"testing\",\"general\"]}],\"patterns\":{\"keywords\":{\"test\":2,\"uninitialized\":2,\"smartmemoryindex\":2},\"commonHours\":{\"1\":2},\"lastUpdated\":\"2025-09-12T23:31:14.277Z\"},\"knowledge\":{\"testing\":{\"test\":{\"value\":\"Should still work\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:31:14.277Z\",\"reinforcements\":0,\"tags\":[\"testing\",\"test\",\"uninitialized\",\"smartmemoryindex\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":0,\"totalInteractions\":2,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"testing\":[{\"concept\":\"test\",\"value\":\"Should still work\",\"confidence\":0.75,\"reinforcements\":2,\"timestamp\":\"2025-09-12T23:24:18.474Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
   "metadata": {
     "agent_id": "uninitialized-test",
     "tags": [
@@ -21,7 +21,7 @@
     "retention_policy": "long-term",
     "user_id": null,
     "session_id": null,
-    "interaction_count": 1,
+    "interaction_count": 2,
     "success_rate": 1,
     "knowledge_domains": 1
   },

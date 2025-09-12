@@ -9,8 +9,8 @@
   ],
   "importance": 92.5,
   "created": "2025-09-12T23:24:15.342Z",
-  "updated": "2025-09-12T23:24:15.484Z",
-  "content": "{\"id\":\"e0cb289f-11a5-479b-8efa-c3634b48e069\",\"agentId\":\"minimal-agent\",\"userId\":null,\"sessionId\":null,\"created\":\"2025-09-12T23:24:14.935Z\",\"updated\":\"2025-09-12T23:24:15.341Z\",\"lastAccessed\":\"2025-09-12T23:24:15.341Z\",\"interactions\":[{\"id\":\"154697fa-f31e-4bf4-ac38-c4dd9ab71cad\",\"timestamp\":\"2025-09-12T23:24:14.935Z\",\"prompt\":\"Minimal test\",\"response\":\"OK\",\"success\":\"OK\",\"duration\":0,\"tokens\":0,\"contextId\":null,\"feedback\":null,\"tags\":[\"testing\",\"general\"]}],\"patterns\":{\"keywords\":{\"minimal\":1,\"test\":1},\"commonHours\":{\"1\":1},\"lastUpdated\":\"2025-09-12T23:24:14.935Z\"},\"knowledge\":{\"testing\":{\"minimal\":{\"value\":\"OK\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:24:15.341Z\",\"reinforcements\":0,\"tags\":[\"testing\",\"minimal\",\"test\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":0,\"totalInteractions\":1,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"testing\":[{\"concept\":\"minimal\",\"value\":\"OK\",\"confidence\":0.7,\"reinforcements\":1,\"timestamp\":\"2025-09-12T23:24:15.341Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
+  "updated": "2025-09-12T23:31:10.420Z",
+  "content": "{\"id\":\"e0cb289f-11a5-479b-8efa-c3634b48e069\",\"agentId\":\"minimal-agent\",\"userId\":null,\"sessionId\":null,\"created\":\"2025-09-12T23:24:14.935Z\",\"updated\":\"2025-09-12T23:31:10.374Z\",\"lastAccessed\":\"2025-09-12T23:31:10.374Z\",\"interactions\":[{\"id\":\"154697fa-f31e-4bf4-ac38-c4dd9ab71cad\",\"timestamp\":\"2025-09-12T23:24:14.935Z\",\"prompt\":\"Minimal test\",\"response\":\"OK\",\"success\":\"OK\",\"duration\":0,\"tokens\":0,\"contextId\":null,\"feedback\":null,\"tags\":[\"testing\",\"general\"]},{\"id\":\"4465f43d-0449-4967-89a1-7e7415240b8d\",\"timestamp\":\"2025-09-12T23:31:10.281Z\",\"prompt\":\"Minimal test\",\"response\":\"OK\",\"success\":\"OK\",\"duration\":0,\"tokens\":0,\"contextId\":null,\"feedback\":null,\"tags\":[\"testing\",\"general\"]}],\"patterns\":{\"keywords\":{\"minimal\":2,\"test\":2},\"commonHours\":{\"1\":2},\"lastUpdated\":\"2025-09-12T23:31:10.303Z\"},\"knowledge\":{\"testing\":{\"minimal\":{\"value\":\"OK\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:31:10.374Z\",\"reinforcements\":0,\"tags\":[\"testing\",\"minimal\",\"test\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":0,\"totalInteractions\":2,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"testing\":[{\"concept\":\"minimal\",\"value\":\"OK\",\"confidence\":0.75,\"reinforcements\":2,\"timestamp\":\"2025-09-12T23:24:15.341Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
   "metadata": {
     "agent_id": "minimal-agent",
     "tags": [
@@ -21,7 +21,7 @@
     "retention_policy": "long-term",
     "user_id": null,
     "session_id": null,
-    "interaction_count": 1,
+    "interaction_count": 2,
     "success_rate": 1,
     "knowledge_domains": 1
   },
