@@ -4,9 +4,9 @@
  * compression algorithms, and emergency recovery mechanisms
  */
 
-import crypto from 'crypto';
-import zlib from 'zlib';
-import { EventEmitter } from 'events';
+const crypto = require('crypto');
+const zlib = require('zlib');
+const { EventEmitter } = require('events');
 
 /**
  * Importance scoring algorithms with ML-ready structure
@@ -1392,4 +1392,4 @@ class PromptCompactionResistance extends EventEmitter {
   }
 }
 
-export default PromptCompactionResistance;
+module.exports = PromptCompactionResistance;

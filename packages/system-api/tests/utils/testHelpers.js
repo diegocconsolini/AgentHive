@@ -308,21 +308,21 @@ class MemoryProfiler {
   }
 }
 
-export async function createTempFile(content = '', extension = '.tmp') {
+async function createTempFile(content = '', extension = '.tmp') {
   const tempPath = path.join(global.testConfig.testData.temp, 
     `test-${Date.now()}-${Math.random().toString(36)}${extension}`);
   await fs.writeFile(tempPath, content);
   return tempPath;
 }
 
-export async function createTempDir() {
+async function createTempDir() {
   const tempPath = path.join(global.testConfig.testData.temp, 
     `test-dir-${Date.now()}-${Math.random().toString(36)}`);
   await fs.mkdir(tempPath, { recursive: true });
   return tempPath;
 }
 
-export function waitForEvent(emitter, eventName, timeout = 5000) {
+function waitForEvent(emitter, eventName, timeout = 5000) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       reject(new Error(`Event '${eventName}' not emitted within ${timeout}ms`));
@@ -335,7 +335,7 @@ export function waitForEvent(emitter, eventName, timeout = 5000) {
   });
 }
 
-export function simulateLoad(operations, concurrency = 10) {
+function simulateLoad(operations, concurrency = 10) {
   const chunks = [];
   for (let i = 0; i < operations.length; i += concurrency) {
     chunks.push(operations.slice(i, i + concurrency));
@@ -347,7 +347,7 @@ export function simulateLoad(operations, concurrency = 10) {
   }, Promise.resolve());
 }
 
-export default {
+module.exports = {
   MockStorageManager,
   MockAgentRegistry,
   TestRunner,

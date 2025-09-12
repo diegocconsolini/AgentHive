@@ -114,26 +114,26 @@ class AgentMemoryManager {
     
     const memoryKey = this._generateMemoryKey(memory.agentId, memory.userId, memory.sessionId);
     
+    // Create context object for storage
+    const contextData = {
+      id: memoryKey,
+      type: 'agent-memory',
+      hierarchy: ['agents', memory.agentId, memory.userId || 'global', memory.sessionId || 'general'],
+      importance: this._calculateMemoryImportance(memory),
+      content: JSON.stringify(memory.export()),
+      metadata: {
+        agent_id: memory.agentId,
+        user_id: memory.userId,
+        session_id: memory.sessionId,
+        interaction_count: memory.interactions.length,
+        success_rate: memory.performance.successRate,
+        knowledge_domains: Object.keys(memory.knowledge).length,
+        retention_policy: 'long-term',
+        tags: ['agent-memory', memory.agentId, ...(memory.userId ? [memory.userId] : [])]
+      }
+    };
+    
     try {
-      // Create context object for storage
-      const contextData = {
-        id: memoryKey,
-        type: 'agent-memory',
-        hierarchy: ['agents', memory.agentId, memory.userId || 'global', memory.sessionId || 'general'],
-        importance: this._calculateMemoryImportance(memory),
-        content: JSON.stringify(memory.export()),
-        metadata: {
-          agent_id: memory.agentId,
-          user_id: memory.userId,
-          session_id: memory.sessionId,
-          interaction_count: memory.interactions.length,
-          success_rate: memory.performance.successRate,
-          knowledge_domains: Object.keys(memory.knowledge).length,
-          retention_policy: 'long-term',
-          tags: ['agent-memory', memory.agentId, ...(memory.userId ? [memory.userId] : [])]
-        }
-      };
-      
       // Save to storage
       await this.storageManager.create(contextData);
       
