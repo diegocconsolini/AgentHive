@@ -7,6 +7,7 @@ const AgentRegistry = require('../agents/AgentRegistry');
 const CapabilityMatcher = require('../agents/CapabilityMatcher');
 const LoadBalancer = require('../agents/LoadBalancer');
 const AgentMemoryManager = require('../agents/AgentMemoryManager');
+const SmartMemoryIndex = require('../memory/SmartMemoryIndex');
 const Context = require('../models/Context');
 const agentConfig = require('../config/AgentConfig');
 const SSPService = require('../services/SSPService');
@@ -18,6 +19,7 @@ class AgentOrchestrator {
     this.matcher = new CapabilityMatcher(this.registry);
     this.loadBalancer = new LoadBalancer(this.registry);
     this.memoryManager = new AgentMemoryManager(); // Agent memory system
+    this.smartMemoryIndex = new SmartMemoryIndex(); // AI-powered memory system
     this.contextStore = new Map(); // In-memory context storage
     this.executionHistory = new Map(); // Track execution patterns
     
