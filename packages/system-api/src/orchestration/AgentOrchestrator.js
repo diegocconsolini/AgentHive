@@ -558,6 +558,11 @@ class AgentOrchestrator {
       
       await this.memoryManager.recordInteraction(agentId, interaction, userId, sessionId);
       
+      // Bridge to SmartMemoryIndex for AI-powered memory features
+      if (this.smartMemoryIndex && this.smartMemoryIndex.initialized) {
+        await this._bridgeToSmartMemoryIndex(agentId, interaction, selectedAgent, userId, sessionId);
+      }
+      
       // Extract and record knowledge if interaction was successful
       if (interaction.success) {
         await this._extractAndRecordKnowledge(agentId, prompt, result.output, userId, sessionId);
@@ -596,11 +601,130 @@ class AgentOrchestrator {
   }
 
   /**
+   * Bridge agent interaction to SmartMemoryIndex for AI-powered memory features
+   */
+  async _bridgeToSmartMemoryIndex(agentId, interaction, selectedAgent, userId, sessionId) {
+    try {
+      const agentMemoryData = {
+        agentId,
+        userId: userId || 'system',
+        sessionId,
+        interactions: [{
+          timestamp: interaction.timestamp,
+          summary: interaction.prompt.substring(0, 200) + (interaction.prompt.length > 200 ? '...' : ''),
+          outcome: interaction.success ? 'success' : 'failure',
+          duration: interaction.duration
+        }],
+        knowledge: {
+          concepts: this._extractConcepts(interaction),
+          expertise: this._categorizeExpertise(selectedAgent, interaction),
+          context: interaction.contextId
+        },
+        patterns: {
+          userPreferences: this._extractUserPreferences(interaction, userId),
+          successFactors: interaction.success ? this._identifySuccessFactors(interaction) : []
+        },
+        performance: {
+          responseTime: interaction.duration,
+          successRate: interaction.success ? 1.0 : 0.0,
+          tokenUsage: interaction.tokens
+        }
+      };
+      
+      await this.smartMemoryIndex.addMemory(agentMemoryData);
+      console.log(`✅ Memory bridged to SmartMemoryIndex: ${agentId}`);
+      
+    } catch (error) {
+      console.error('SmartMemoryIndex bridge error:', error);
+      // Don't fail the entire agent execution for memory issues
+    }
+  }
+
+  /**
+   * Extract semantic concepts from interaction
+   */
+  _extractConcepts(interaction) {
+    const concepts = [];
+    const prompt = interaction.prompt.toLowerCase();
+    
+    // Basic concept extraction - could be enhanced with NLP
+    if (prompt.includes('build') || prompt.includes('create') || prompt.includes('develop')) {
+      concepts.push('development');
+    }
+    if (prompt.includes('test') || prompt.includes('debug')) {
+      concepts.push('testing');
+    }
+    if (prompt.includes('fix') || prompt.includes('error') || prompt.includes('bug')) {
+      concepts.push('troubleshooting');
+    }
+    if (prompt.includes('design') || prompt.includes('architecture')) {
+      concepts.push('design');
+    }
+    
+    return concepts;
+  }
+
+  /**
+   * Categorize agent expertise based on interaction
+   */
+  _categorizeExpertise(selectedAgent, interaction) {
+    return {
+      domain: selectedAgent.category || 'general',
+      specialization: selectedAgent.specialization || [],
+      taskType: this.identifyDomain(interaction.prompt)
+    };
+  }
+
+  /**
+   * Extract user preferences from interaction patterns
+   */
+  _extractUserPreferences(interaction, userId) {
+    if (!userId) return {};
+    
+    return {
+      responseLength: interaction.response ? 
+        (interaction.response.length > 1000 ? 'detailed' : 'concise') : 'unknown',
+      interactionTime: new Date(interaction.timestamp).getHours() < 12 ? 'morning' : 'evening'
+    };
+  }
+
+  /**
+   * Identify factors that contributed to successful interactions
+   */
+  _identifySuccessFactors(interaction) {
+    const factors = [];
+    
+    if (interaction.duration < 5000) factors.push('fast_response');
+    if (interaction.tokens > 0 && interaction.tokens < 1000) factors.push('efficient_tokens');
+    if (interaction.response && interaction.response.length > 100) factors.push('detailed_response');
+    
+    return factors;
+  }
+
+  /**
    * Get relevant memories from system for prompt enhancement
    */
   async _getRelevantSystemMemories(memoryContext, limit = 3) {
     try {
-      // For now, return empty array - this could be enhanced to search across all agent memories
+      // Use SmartMemoryIndex for intelligent memory retrieval if available
+      if (this.smartMemoryIndex && this.smartMemoryIndex.initialized) {
+        const query = memoryContext.keywords ? memoryContext.keywords.join(' ') : memoryContext.context;
+        const searchOptions = {
+          limit,
+          category: memoryContext.domain || 'interaction',
+          minSimilarity: 0.6
+        };
+        
+        const results = await this.smartMemoryIndex.searchMemories(query, searchOptions);
+        return results.results.map(result => ({
+          content: result.memory.interactions[0]?.summary || '',
+          relevance: result.similarity,
+          agentId: result.memory.agentId,
+          timestamp: result.memory.interactions[0]?.timestamp
+        }));
+      }
+      
+      // Fallback to traditional memory system
       return [];
     } catch (error) {
       console.error('Failed to get relevant system memories:', error.message);
@@ -614,6 +738,12 @@ class AgentOrchestrator {
   async _ensureMemoryManagerInitialized() {
     try {
       await this.memoryManager.initialize();
+      
+      // Initialize SmartMemoryIndex for AI-powered memory
+      if (!this.smartMemoryIndex.initialized) {
+        await this.smartMemoryIndex.initialize();
+        console.log('SmartMemoryIndex initialized successfully');
+      }
       
       // SSP Extension - Initialize SSP service after memoryManager is ready
       if (!this.sspService) {
