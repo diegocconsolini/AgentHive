@@ -1,33 +1,5 @@
 {
   "contexts": {
-    "test-runner:test-user-bridge:test-session-bridge": {
-      "id": "test-runner:test-user-bridge:test-session-bridge",
-      "type": "agent",
-      "hierarchy": [
-        "agents",
-        "test-runner",
-        "test-user-bridge",
-        "test-session-bridge"
-      ],
-      "importance": 92.49999998842593,
-      "created": "2025-09-12T22:35:23.005Z",
-      "updated": "2025-09-12T22:35:23.005Z",
-      "metadata": {
-        "agent_id": "test-runner",
-        "tags": [
-          "agent-memory",
-          "test-runner",
-          "test-user-bridge"
-        ],
-        "dependencies": [],
-        "retention_policy": "long-term",
-        "user_id": "test-user-bridge",
-        "session_id": "test-session-bridge",
-        "interaction_count": 1,
-        "success_rate": 1,
-        "knowledge_domains": 1
-      }
-    },
     "python-pro:test-python-user:python-session": {
       "id": "python-pro:test-python-user:python-session",
       "type": "agent",
@@ -55,7 +27,35 @@
         "success_rate": 1,
         "knowledge_domains": 1
       }
+    },
+    "test-runner:test-user-bridge:test-session-bridge": {
+      "id": "test-runner:test-user-bridge:test-session-bridge",
+      "type": "agent",
+      "hierarchy": [
+        "agents",
+        "test-runner",
+        "test-user-bridge",
+        "test-session-bridge"
+      ],
+      "importance": 92.49999998842593,
+      "created": "2025-09-12T22:35:23.005Z",
+      "updated": "2025-09-12T22:35:23.005Z",
+      "metadata": {
+        "agent_id": "test-runner",
+        "tags": [
+          "agent-memory",
+          "test-runner",
+          "test-user-bridge"
+        ],
+        "dependencies": [],
+        "retention_policy": "long-term",
+        "user_id": "test-user-bridge",
+        "session_id": "test-session-bridge",
+        "interaction_count": 1,
+        "success_rate": 1,
+        "knowledge_domains": 1
+      }
     }
   },
-  "lastRebuild": "2025-09-12T22:34:40.667Z"
+  "lastRebuild": "2025-09-12T22:38:33.840Z"
 }

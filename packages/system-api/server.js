@@ -486,7 +486,7 @@ class AgentHiveSystemAPI {
     // Smart Memory Index API endpoints
     this.app.post('/api/memory', async (req, res) => {
       try {
-        const memory = await this.memoryIndex.addMemory(req.body);
+        const memory = await this.orchestrator.smartMemoryIndex.addMemory(req.body);
         res.json({
           success: true,
           memory,
@@ -505,7 +505,7 @@ class AgentHiveSystemAPI {
     // Analytics endpoint must come before :id route to avoid parameter matching
     this.app.get('/api/memory/analytics', async (req, res) => {
       try {
-        const analytics = await this.memoryIndex.getAnalytics();
+        const analytics = await this.orchestrator.smartMemoryIndex.getAnalytics();
         
         res.json({
           success: true,
@@ -525,7 +525,7 @@ class AgentHiveSystemAPI {
     this.app.get('/api/memory/:id', async (req, res) => {
       try {
         const { id } = req.params;
-        const memory = await this.memoryIndex.getMemory(id);
+        const memory = await this.orchestrator.smartMemoryIndex.getMemory(id);
         
         if (!memory) {
           return res.status(404).json({
@@ -553,7 +553,7 @@ class AgentHiveSystemAPI {
     this.app.put('/api/memory/:id', async (req, res) => {
       try {
         const { id } = req.params;
-        const memory = await this.memoryIndex.updateMemory(id, req.body);
+        const memory = await this.orchestrator.smartMemoryIndex.updateMemory(id, req.body);
         
         res.json({
           success: true,
@@ -573,7 +573,7 @@ class AgentHiveSystemAPI {
     this.app.delete('/api/memory/:id', async (req, res) => {
       try {
         const { id } = req.params;
-        const deleted = await this.memoryIndex.deleteMemory(id);
+        const deleted = await this.orchestrator.smartMemoryIndex.deleteMemory(id);
         
         res.json({
           success: true,
@@ -602,7 +602,7 @@ class AgentHiveSystemAPI {
           });
         }
         
-        const results = await this.memoryIndex.searchMemories(query, options);
+        const results = await this.orchestrator.smartMemoryIndex.searchMemories(query, options);
         
         res.json({
           success: true,
