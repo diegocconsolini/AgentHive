@@ -79,7 +79,15 @@ class SSPService {
 
   async getAllAgentAnalytics(): Promise<SSPAnalytics[]> {
     // Get analytics for common agents based on our known data
-    const knownAgents = ['frontend-developer', 'python-pro', 'backend-architect', 'security-auditor'];
+    const knownAgents = [
+      'frontend-developer', 
+      'python-pro', 
+      'backend-architect', 
+      'security-auditor',
+      'typescript-pro',
+      'debugger',
+      'database-optimizer'
+    ];
     
     const analyticsPromises = knownAgents.map(async (agentId) => {
       try {

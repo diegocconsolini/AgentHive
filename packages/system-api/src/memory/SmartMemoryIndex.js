@@ -581,10 +581,8 @@ class SmartMemoryIndex {
     try {
       console.log('💾 Loading persisted SmartMemoryIndex memories...');
       
-      // Search for SmartMemoryIndex memories in storage
-      const persistedMemories = await this.storageManager.search({
-        type: 'smart-memory'
-      });
+      // Get SmartMemoryIndex memories by hierarchy
+      const persistedMemories = await this.storageManager.getByHierarchy(['smart-memories'], true);
       
       console.log(`Found ${persistedMemories.length} persisted SmartMemoryIndex memories`);
       
