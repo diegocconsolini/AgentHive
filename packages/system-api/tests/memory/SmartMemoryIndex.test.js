@@ -3,19 +3,42 @@
  * Comprehensive test suite for AI-powered memory management system
  */
 
+// Set up test environment variables before any imports
+process.env.NODE_ENV = 'test';
+process.env.AI_PROVIDER_ENABLED = 'true';
+process.env.AI_PROVIDER_ENDPOINT = 'http://localhost:8080/v1';
+process.env.AI_PROVIDER_API_KEY = 'test-api-key';
+
 const SmartMemoryIndex = require('../../src/memory/SmartMemoryIndex');
 const AgentMemory = require('../../src/models/AgentMemory');
 
-// Mock AI Provider Service
+// Enhanced Mock AI Provider Service with complete interface
 const mockAIProvider = {
-  getAvailableProviders: jest.fn().mockReturnValue([{ name: 'test-provider' }]),
-  checkProviderHealth: jest.fn().mockResolvedValue({ healthy: true, latency: 0 }),
+  getAvailableProviders: jest.fn().mockReturnValue([
+    { name: 'test-provider', type: 'openai-compatible', enabled: true }
+  ]),
+  checkProviderHealth: jest.fn().mockResolvedValue({ 
+    healthy: true, 
+    latency: 0,
+    error: undefined
+  }),
   generateResponse: jest.fn().mockResolvedValue({
-    response: 'knowledge'
-  })
+    response: 'knowledge',
+    provider: 'test-provider',
+    tokens: { total: 50 },
+    duration: 100
+  }),
+  selectOptimalProvider: jest.fn().mockReturnValue('test-provider'),
+  updateMetrics: jest.fn(),
+  getMetrics: jest.fn().mockReturnValue([])
 };
 
-// Mock AgentMemory for testing
+// Mock dotenv config loading
+jest.mock('dotenv', () => ({
+  config: jest.fn()
+}));
+
+// Mock AI Provider Service with enhanced methods
 jest.mock('../../ai-providers.js', () => ({
   AIProviderService: jest.fn(() => mockAIProvider)
 }));
@@ -566,6 +589,304 @@ describe('SmartMemoryIndex', () => {
       expect(typeof content).toBe('string');
       // Should return empty string or minimal content
       expect(content.length).toBe(0);
+    });
+  });
+
+  describe('Environment Edge Cases', () => {
+    test('should handle missing environment variables', async () => {
+      // Temporarily clear environment variables
+      const originalEnv = { ...process.env };
+      delete process.env.AI_PROVIDER_ENABLED;
+      delete process.env.AI_PROVIDER_ENDPOINT;
+      
+      const newIndex = new SmartMemoryIndex();
+      await expect(newIndex.initialize()).resolves.not.toThrow();
+      
+      // Restore environment
+      process.env = originalEnv;
+    });
+
+    test('should handle AI provider unavailable conditions', async () => {
+      const failingProvider = {
+        getAvailableProviders: jest.fn().mockReturnValue([]),
+        checkProviderHealth: jest.fn().mockResolvedValue({ healthy: false, error: 'Connection failed' })
+      };
+      
+      const newIndex = new SmartMemoryIndex();
+      newIndex.aiProvider = failingProvider;
+      
+      // Should still initialize with graceful degradation
+      await expect(newIndex.initialize()).resolves.not.toThrow();
+      expect(newIndex.initialized).toBe(true);
+    });
+
+    test('should handle network timeout scenarios', async () => {
+      const timeoutProvider = {
+        getAvailableProviders: jest.fn().mockReturnValue([{ name: 'timeout-provider' }]),
+        checkProviderHealth: jest.fn().mockRejectedValue(new Error('Request timeout')),
+        generateResponse: jest.fn().mockRejectedValue(new Error('Request timeout'))
+      };
+      
+      const newIndex = new SmartMemoryIndex();
+      newIndex.aiProvider = timeoutProvider;
+      
+      await newIndex.initialize();
+      
+      // Should use fallback methods when AI provider times out
+      const memory = await newIndex.addMemory(testMemoryData);
+      expect(memory).toBeDefined();
+      expect(newIndex.categories.has(memory.id)).toBe(true);
+    });
+  });
+
+  describe('Memory Edge Cases', () => {
+    test('should handle extremely large memory objects', async () => {
+      const largeMemory = {
+        agentId: 'test-agent-large',
+        userId: 'test-user-large',
+        knowledge: {
+          concepts: new Array(1000).fill().map((_, i) => `concept-${i}`),
+          relationships: new Array(500).fill().map((_, i) => `relationship-${i}`)
+        },
+        interactions: new Array(100).fill().map((_, i) => ({
+          timestamp: new Date().toISOString(),
+          content: `Large interaction content ${i}`.repeat(100),
+          summary: `Summary ${i}`
+        })),
+        patterns: {
+          behavior: 'x'.repeat(10000),
+          preferences: new Array(200).fill().map((_, i) => `preference-${i}`)
+        }
+      };
+
+      const { result, metrics } = await global.testUtils.measurePerformance(
+        async () => await memoryIndex.addMemory(largeMemory)
+      );
+
+      expect(result).toBeDefined();
+      expect(metrics.duration).toBeLessThan(5000); // Should complete within 5 seconds
+      expect(metrics.memoryDelta).toBeWithinMemoryLimit(50 * 1024 * 1024); // Within 50MB
+    });
+
+    test('should handle circular reference scenarios', async () => {
+      const circularMemory = {
+        agentId: 'test-agent-circular',
+        userId: 'test-user-circular',
+        knowledge: { concepts: ['test'] },
+        interactions: [],
+        patterns: {}
+      };
+      
+      // Create circular reference
+      circularMemory.self = circularMemory;
+      
+      // Should not crash but handle gracefully
+      await expect(memoryIndex.addMemory(circularMemory)).resolves.not.toThrow();
+    });
+
+    test('should handle memory corruption scenarios', async () => {
+      const memory = await memoryIndex.addMemory(testMemoryData);
+      
+      // Simulate corruption by modifying internal state
+      memoryIndex.semanticVectors.set(memory.id, null);
+      memoryIndex.categories.set(memory.id, undefined);
+      
+      // Should handle corrupted data gracefully
+      const retrievedMemory = await memoryIndex.getMemory(memory.id);
+      expect(retrievedMemory).toBeDefined();
+      
+      const searchResults = await memoryIndex.searchMemories('test query');
+      expect(Array.isArray(searchResults)).toBe(true);
+    });
+  });
+
+  describe('Concurrency and Performance', () => {
+    test('should handle concurrent memory operations safely', async () => {
+      const concurrentOperations = Array(10).fill().map(async (_, i) => {
+        const memData = {
+          ...testMemoryData,
+          agentId: `concurrent-agent-${i}`,
+          userId: `concurrent-user-${i}`
+        };
+        return memoryIndex.addMemory(memData);
+      });
+
+      const results = await Promise.all(concurrentOperations);
+      
+      expect(results.length).toBe(10);
+      results.forEach(memory => expect(memory).toBeDefined());
+      
+      // Verify all memories are properly indexed
+      const analytics = await memoryIndex.getAnalytics();
+      expect(analytics.totalMemories).toBeGreaterThanOrEqual(10);
+    });
+
+    test('should detect race conditions in relationship updates', async () => {
+      const memory1 = await memoryIndex.addMemory({
+        ...testMemoryData,
+        agentId: 'race-agent-1'
+      });
+      
+      const memory2 = await memoryIndex.addMemory({
+        ...testMemoryData,
+        agentId: 'race-agent-2'
+      });
+
+      // Simulate concurrent relationship updates
+      const updates = [
+        memoryIndex.updateMemory(memory1.id, { patterns: { updated: 'version1' } }),
+        memoryIndex.updateMemory(memory2.id, { patterns: { updated: 'version2' } })
+      ];
+
+      const updatedMemories = await Promise.all(updates);
+      expect(updatedMemories[0].patterns.updated).toBe('version1');
+      expect(updatedMemories[1].patterns.updated).toBe('version2');
+    });
+
+    test('should handle resource contention gracefully', async () => {
+      const heavyOperations = Array(20).fill().map(async (_, i) => {
+        const searchQuery = `search query ${i}`;
+        return memoryIndex.searchMemories(searchQuery, { limit: 50 });
+      });
+
+      const { result: searchResults, metrics } = await global.testUtils.measurePerformance(
+        async () => await Promise.all(heavyOperations)
+      );
+
+      expect(searchResults.length).toBe(20);
+      expect(metrics.duration).toBeLessThan(10000); // Should complete within 10 seconds
+    });
+  });
+
+  describe('Resource Management and Cleanup', () => {
+    test('should properly clean up resources during shutdown', async () => {
+      const newIndex = new SmartMemoryIndex();
+      await newIndex.initialize();
+      
+      // Add some data to create resources
+      await newIndex.addMemory(testMemoryData);
+      
+      // Simulate cleanup
+      newIndex.cleanup();
+      
+      // Verify cleanup
+      expect(newIndex.maintenanceIntervals).toEqual([]);
+    });
+
+    test('should detect memory leaks during operations', async () => {
+      const initialMemory = process.memoryUsage();
+      
+      // Perform many operations
+      for (let i = 0; i < 100; i++) {
+        const memory = await memoryIndex.addMemory({
+          ...testMemoryData,
+          agentId: `leak-test-${i}`
+        });
+        await memoryIndex.searchMemories(`query ${i}`);
+        await memoryIndex.deleteMemory(memory.id);
+      }
+      
+      // Force garbage collection if available
+      if (global.gc) global.gc();
+      
+      const finalMemory = process.memoryUsage();
+      const memoryGrowth = finalMemory.heapUsed - initialMemory.heapUsed;
+      
+      // Memory growth should be reasonable (less than 50MB for 100 operations)
+      expect(memoryGrowth).toBeLessThan(50 * 1024 * 1024);
+    });
+
+    test('should handle timer cleanup correctly', async () => {
+      const newIndex = new SmartMemoryIndex();
+      await newIndex.initialize();
+      
+      // Verify intervals are set up
+      expect(newIndex.maintenanceIntervals).toBeDefined();
+      
+      // Clean up should clear intervals
+      newIndex.cleanup();
+      expect(newIndex.maintenanceIntervals).toEqual([]);
+    });
+  });
+
+  describe('Integration Scenarios', () => {
+    test('should integrate with real AgentMemory instances', async () => {
+      const realAgentMemory = new AgentMemory(testMemoryData);
+      const memory = await memoryIndex.addMemory(realAgentMemory);
+      
+      expect(memory.id).toBeDefined();
+      expect(memory.agentId).toBe(testMemoryData.agentId);
+      
+      const retrieved = await memoryIndex.getMemory(memory.id);
+      expect(retrieved).toEqual(memory);
+    });
+
+    test('should maintain consistency across complex operations', async () => {
+      const memories = [];
+      
+      // Create multiple related memories
+      for (let i = 0; i < 5; i++) {
+        const memory = await memoryIndex.addMemory({
+          ...testMemoryData,
+          agentId: `integration-agent-${i}`,
+          knowledge: {
+            ...testMemoryData.knowledge,
+            concepts: [`concept-${i}`, 'shared-concept']
+          }
+        });
+        memories.push(memory);
+      }
+      
+      // Search should find related memories
+      const searchResults = await memoryIndex.searchMemories('shared-concept', {
+        includeRelated: true
+      });
+      
+      expect(searchResults.length).toBeGreaterThan(0);
+      
+      // Update one memory and verify relationships are maintained
+      const updatedMemory = await memoryIndex.updateMemory(memories[0].id, {
+        knowledge: {
+          ...memories[0].knowledge,
+          concepts: [...memories[0].knowledge.concepts, 'new-concept']
+        }
+      });
+      
+      expect(updatedMemory.updated).not.toBe(memories[0].updated);
+      
+      // Analytics should reflect all operations
+      const analytics = await memoryIndex.getAnalytics();
+      expect(analytics.totalMemories).toBeGreaterThanOrEqual(5);
+    });
+
+    test('should handle system stress scenarios', async () => {
+      const stressTest = async () => {
+        const operations = [];
+        
+        // Mix of different operations
+        for (let i = 0; i < 50; i++) {
+          operations.push(memoryIndex.addMemory({
+            ...testMemoryData,
+            agentId: `stress-agent-${i}`
+          }));
+          
+          if (i % 5 === 0) {
+            operations.push(memoryIndex.searchMemories(`stress query ${i}`));
+          }
+          
+          if (i % 10 === 0) {
+            operations.push(memoryIndex.getAnalytics());
+          }
+        }
+        
+        return Promise.all(operations);
+      };
+      
+      const { result, metrics } = await global.testUtils.measurePerformance(stressTest);
+      
+      expect(result.length).toBeGreaterThan(0);
+      expect(metrics.duration).toBeLessThan(30000); // Should complete within 30 seconds
+      expect(metrics.memoryDelta).toBeWithinMemoryLimit(100 * 1024 * 1024); // Within 100MB
     });
   });
 });
