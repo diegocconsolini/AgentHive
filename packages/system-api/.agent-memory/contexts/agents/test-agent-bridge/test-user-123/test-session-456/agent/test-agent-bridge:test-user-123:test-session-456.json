@@ -1,0 +1,34 @@
+{
+  "id": "test-agent-bridge:test-user-123:test-session-456",
+  "type": "agent",
+  "hierarchy": [
+    "agents",
+    "test-agent-bridge",
+    "test-user-123",
+    "test-session-456"
+  ],
+  "importance": 92.5,
+  "created": "2025-09-12T23:24:09.486Z",
+  "updated": "2025-09-12T23:24:09.561Z",
+  "content": "{\"id\":\"d6c0124c-4d05-4aa1-8394-62f220b1da04\",\"agentId\":\"test-agent-bridge\",\"userId\":\"test-user-123\",\"sessionId\":\"test-session-456\",\"created\":\"2025-09-12T23:24:09.425Z\",\"updated\":\"2025-09-12T23:24:09.486Z\",\"lastAccessed\":\"2025-09-12T23:24:09.486Z\",\"interactions\":[{\"id\":\"08e744f7-8050-4bdb-a8f8-c783711b5b5f\",\"timestamp\":\"2025-09-12T23:24:09.424Z\",\"prompt\":\"Test integration bridge between AgentOrchestrator and SmartMemoryIndex\",\"response\":\"Successfully tested the integration bridge functionality\",\"success\":\"Successfully tested the integration bridge functionality\",\"duration\":1234,\"tokens\":200,\"contextId\":\"test-context-id\",\"feedback\":null,\"tags\":[\"testing\",\"testing\"]}],\"patterns\":{\"keywords\":{\"test\":1,\"integration\":1,\"bridge\":1,\"between\":1,\"agentorchestrator\":1,\"smartmemoryindex\":1},\"commonHours\":{\"1\":1},\"lastUpdated\":\"2025-09-12T23:24:09.425Z\"},\"knowledge\":{\"testing\":{\"test\":{\"value\":\"Successfully tested the integration bridge functionality\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:24:09.486Z\",\"reinforcements\":0,\"tags\":[\"testing\",\"test\",\"integration\",\"bridge\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":1234,\"totalInteractions\":1,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"testing\":[{\"concept\":\"test\",\"value\":\"Successfully tested the integration bridge functionality\",\"confidence\":0.7,\"reinforcements\":1,\"timestamp\":\"2025-09-12T23:24:09.486Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
+  "metadata": {
+    "agent_id": "test-agent-bridge",
+    "tags": [
+      "agent-memory",
+      "test-agent-bridge",
+      "test-user-123"
+    ],
+    "dependencies": [],
+    "retention_policy": "long-term",
+    "user_id": "test-user-123",
+    "session_id": "test-session-456",
+    "interaction_count": 1,
+    "success_rate": 1,
+    "knowledge_domains": 1
+  },
+  "relationships": {
+    "parent": null,
+    "children": [],
+    "references": []
+  }
+}

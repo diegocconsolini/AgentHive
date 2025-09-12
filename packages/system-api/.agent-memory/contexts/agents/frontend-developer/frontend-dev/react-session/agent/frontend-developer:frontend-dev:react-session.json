@@ -1,0 +1,34 @@
+{
+  "id": "frontend-developer:frontend-dev:react-session",
+  "type": "agent",
+  "hierarchy": [
+    "agents",
+    "frontend-developer",
+    "frontend-dev",
+    "react-session"
+  ],
+  "importance": 92.5,
+  "created": "2025-09-12T23:24:11.884Z",
+  "updated": "2025-09-12T23:24:11.923Z",
+  "content": "{\"id\":\"ccb8ad3e-d1d3-4bd7-924e-ec08b099ef9c\",\"agentId\":\"frontend-developer\",\"userId\":\"frontend-dev\",\"sessionId\":\"react-session\",\"created\":\"2025-09-12T23:24:11.818Z\",\"updated\":\"2025-09-12T23:24:11.884Z\",\"lastAccessed\":\"2025-09-12T23:24:11.884Z\",\"interactions\":[{\"id\":\"ba2b62a3-34aa-46b2-b8b5-942f1aee7332\",\"timestamp\":\"2025-09-12T23:24:11.818Z\",\"prompt\":\"Build a React component with TypeScript\",\"response\":\"Created TypeScript React component with proper types\",\"success\":\"Created TypeScript React component with proper types\",\"duration\":2000,\"tokens\":300,\"contextId\":null,\"feedback\":null,\"tags\":[\"development\",\"frontend\"]}],\"patterns\":{\"keywords\":{\"build\":1,\"react\":1,\"component\":1,\"with\":1,\"typescript\":1},\"commonHours\":{\"1\":1},\"lastUpdated\":\"2025-09-12T23:24:11.818Z\"},\"knowledge\":{\"development\":{\"build\":{\"value\":\"Created TypeScript React component with proper types\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:24:11.884Z\",\"reinforcements\":0,\"tags\":[\"development\",\"build\",\"react\",\"component\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":2000,\"totalInteractions\":1,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"development\":[{\"concept\":\"build\",\"value\":\"Created TypeScript React component with proper types\",\"confidence\":0.7,\"reinforcements\":1,\"timestamp\":\"2025-09-12T23:24:11.884Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
+  "metadata": {
+    "agent_id": "frontend-developer",
+    "tags": [
+      "agent-memory",
+      "frontend-developer",
+      "frontend-dev"
+    ],
+    "dependencies": [],
+    "retention_policy": "long-term",
+    "user_id": "frontend-dev",
+    "session_id": "react-session",
+    "interaction_count": 1,
+    "success_rate": 1,
+    "knowledge_domains": 1
+  },
+  "relationships": {
+    "parent": null,
+    "children": [],
+    "references": []
+  }
+}

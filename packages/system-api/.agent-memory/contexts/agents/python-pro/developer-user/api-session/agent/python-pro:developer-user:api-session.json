@@ -1,0 +1,34 @@
+{
+  "id": "python-pro:developer-user:api-session",
+  "type": "agent",
+  "hierarchy": [
+    "agents",
+    "python-pro",
+    "developer-user",
+    "api-session"
+  ],
+  "importance": 92.5,
+  "created": "2025-09-12T23:24:11.131Z",
+  "updated": "2025-09-12T23:24:11.223Z",
+  "content": "{\"id\":\"37496119-7393-457d-9cdd-46ef0af580ab\",\"agentId\":\"python-pro\",\"userId\":\"developer-user\",\"sessionId\":\"api-session\",\"created\":\"2025-09-12T23:24:11.071Z\",\"updated\":\"2025-09-12T23:24:11.131Z\",\"lastAccessed\":\"2025-09-12T23:24:11.131Z\",\"interactions\":[{\"id\":\"2b52a7bc-3374-4df3-8a29-2b4cb82cd53b\",\"timestamp\":\"2025-09-12T23:24:11.071Z\",\"prompt\":\"Create a Python API endpoint for user authentication\",\"response\":\"Created FastAPI endpoint with JWT authentication and password hashing\",\"success\":\"Created FastAPI endpoint with JWT authentication and password hashing\",\"duration\":3500,\"tokens\":450,\"contextId\":\"python-api-context\",\"feedback\":null,\"tags\":[\"development\",\"development\"]}],\"patterns\":{\"keywords\":{\"create\":1,\"python\":1,\"endpoint\":1,\"user\":1,\"authentication\":1},\"commonHours\":{\"1\":1},\"lastUpdated\":\"2025-09-12T23:24:11.072Z\"},\"knowledge\":{\"development\":{\"create\":{\"value\":\"Created FastAPI endpoint with JWT authentication and password hashing\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:24:11.131Z\",\"reinforcements\":0,\"tags\":[\"development\",\"create\",\"python\",\"endpoint\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":3500,\"totalInteractions\":1,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"development\":[{\"concept\":\"create\",\"value\":\"Created FastAPI endpoint with JWT authentication and password hashing\",\"confidence\":0.7,\"reinforcements\":1,\"timestamp\":\"2025-09-12T23:24:11.131Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
+  "metadata": {
+    "agent_id": "python-pro",
+    "tags": [
+      "agent-memory",
+      "python-pro",
+      "developer-user"
+    ],
+    "dependencies": [],
+    "retention_policy": "long-term",
+    "user_id": "developer-user",
+    "session_id": "api-session",
+    "interaction_count": 1,
+    "success_rate": 1,
+    "knowledge_domains": 1
+  },
+  "relationships": {
+    "parent": null,
+    "children": [],
+    "references": []
+  }
+}

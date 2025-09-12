@@ -16,22 +16,29 @@ class SSPService {
   /**
    * Record a procedure execution in the database
    */
-  async recordProcedureExecution(contextId, agentId, sessionId, success, executionTime, patternId = null) {
+  async recordProcedureExecution(contextId, agentId, sessionId, success, executionTime, patternId = null, response = null) {
+    // Apply realistic failure detection
+    const failureResult = this.detectRealisticFailure(response, executionTime, agentId);
+    const actualSuccess = success && !failureResult.failed;
+    
     const execution = {
       id: `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       context_id: contextId,
       agent_id: agentId,
       session_id: sessionId,
-      success: success ? 1 : 0,
+      success: actualSuccess ? 1 : 0,
       execution_time: executionTime,
       pattern_id: patternId,
+      execution_quality: failureResult.quality,
+      failure_reason: failureResult.reason,
+      success_score: failureResult.score,
       created_at: Date.now()
     };
 
     const insertQuery = `
       INSERT INTO procedure_executions 
-      (id, context_id, agent_id, session_id, success, execution_time, pattern_id, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      (id, context_id, agent_id, session_id, success, execution_time, pattern_id, execution_quality, failure_reason, success_score, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await this.storage.indexStorage.runQuery(insertQuery, [
@@ -42,6 +49,9 @@ class SSPService {
       execution.success,
       execution.execution_time,
       execution.pattern_id,
+      execution.execution_quality,
+      execution.failure_reason,
+      execution.success_score,
       execution.created_at
     ]);
 

@@ -1,0 +1,34 @@
+{
+  "id": "concurrent-agent-2:concurrent-user:concurrent-session",
+  "type": "agent",
+  "hierarchy": [
+    "agents",
+    "concurrent-agent-2",
+    "concurrent-user",
+    "concurrent-session"
+  ],
+  "importance": 92.5,
+  "created": "2025-09-12T23:24:19.892Z",
+  "updated": "2025-09-12T23:24:20.027Z",
+  "content": "{\"id\":\"146ba147-63ee-4c79-9ac5-015414ff0274\",\"agentId\":\"concurrent-agent-2\",\"userId\":\"concurrent-user\",\"sessionId\":\"concurrent-session\",\"created\":\"2025-09-12T23:24:19.591Z\",\"updated\":\"2025-09-12T23:24:19.892Z\",\"lastAccessed\":\"2025-09-12T23:24:19.892Z\",\"interactions\":[{\"id\":\"c87875ec-3e0a-4856-aac9-dfd292ef00a8\",\"timestamp\":\"2025-09-12T23:24:19.582Z\",\"prompt\":\"Concurrent test operation 2\",\"response\":\"Result for operation 2\",\"success\":\"Result for operation 2\",\"duration\":1887.3295850524894,\"tokens\":241,\"contextId\":null,\"feedback\":null,\"tags\":[\"testing\",\"testing\"]}],\"patterns\":{\"keywords\":{\"concurrent\":1,\"test\":1,\"operation\":1},\"commonHours\":{\"1\":1},\"lastUpdated\":\"2025-09-12T23:24:19.591Z\"},\"knowledge\":{\"testing\":{\"concurrent\":{\"value\":\"Result for operation 2\",\"confidence\":0.7,\"source\":\"interaction\",\"timestamp\":\"2025-09-12T23:24:19.892Z\",\"reinforcements\":0,\"tags\":[\"testing\",\"concurrent\",\"test\",\"operation\"]}}},\"preferences\":{},\"performance\":{\"successRate\":1,\"averageResponseTime\":1887.3295850524894,\"totalInteractions\":1,\"errorCount\":0,\"improvementTrend\":\"insufficient_data\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{\"testing\":[{\"concept\":\"concurrent\",\"value\":\"Result for operation 2\",\"confidence\":0.7,\"reinforcements\":1,\"timestamp\":\"2025-09-12T23:24:19.892Z\"}]},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]}}",
+  "metadata": {
+    "agent_id": "concurrent-agent-2",
+    "tags": [
+      "agent-memory",
+      "concurrent-agent-2",
+      "concurrent-user"
+    ],
+    "dependencies": [],
+    "retention_policy": "long-term",
+    "user_id": "concurrent-user",
+    "session_id": "concurrent-session",
+    "interaction_count": 1,
+    "success_rate": 1,
+    "knowledge_domains": 1
+  },
+  "relationships": {
+    "parent": null,
+    "children": [],
+    "references": []
+  }
+}

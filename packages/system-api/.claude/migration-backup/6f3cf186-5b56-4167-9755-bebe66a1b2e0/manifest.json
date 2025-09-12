@@ -1,0 +1,23 @@
+{
+  "migrationId": "6f3cf186-5b56-4167-9755-bebe66a1b2e0",
+  "timestamp": "2025-09-12T23:24:09.608Z",
+  "claudePath": "/home/diegocc/AgentHive/packages/system-api/tests/temp/ea01f6aa-df2a-417f-9ee3-1f260549624b/.claude",
+  "files": [
+    {
+      "original": "/home/diegocc/AgentHive/packages/system-api/tests/temp/ea01f6aa-df2a-417f-9ee3-1f260549624b/.claude/context/progress.md",
+      "backup": ".claude/migration-backup/6f3cf186-5b56-4167-9755-bebe66a1b2e0/context/progress.md"
+    },
+    {
+      "original": "/home/diegocc/AgentHive/packages/system-api/tests/temp/ea01f6aa-df2a-417f-9ee3-1f260549624b/.claude/context/project-brief.md",
+      "backup": ".claude/migration-backup/6f3cf186-5b56-4167-9755-bebe66a1b2e0/context/project-brief.md"
+    },
+    {
+      "original": "/home/diegocc/AgentHive/packages/system-api/tests/temp/ea01f6aa-df2a-417f-9ee3-1f260549624b/.claude/context/settings.json",
+      "backup": ".claude/migration-backup/6f3cf186-5b56-4167-9755-bebe66a1b2e0/context/settings.json"
+    },
+    {
+      "original": "/home/diegocc/AgentHive/packages/system-api/tests/temp/ea01f6aa-df2a-417f-9ee3-1f260549624b/.claude/context/tech-context.md",
+      "backup": ".claude/migration-backup/6f3cf186-5b56-4167-9755-bebe66a1b2e0/context/tech-context.md"
+    }
+  ]
+}
