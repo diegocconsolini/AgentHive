@@ -134,13 +134,17 @@ export const MemoryManager: React.FC = () => {
   const fetchMemories = async () => {
     setLoading(true);
     try {
-      // TODO: Replace with actual GraphQL query
-      const response = await fetch('/api/memory/analytics');
+      const response = await fetch('http://localhost:4001/api/memory/analytics');
       if (!response.ok) throw new Error('Failed to fetch memories');
       
-      // Mock data for now
-      setMemories([]);
-      setError(null);
+      const data = await response.json();
+      if (data.success) {
+        // For now, just show empty state until we have actual memories
+        setMemories([]);
+        setError(null);
+      } else {
+        throw new Error('Failed to fetch memory analytics');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
@@ -157,8 +161,7 @@ export const MemoryManager: React.FC = () => {
 
     setLoading(true);
     try {
-      // TODO: Replace with actual GraphQL query
-      const response = await fetch('/api/memory/search', {
+      const response = await fetch('http://localhost:4001/api/memory/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, limit: 10, threshold: 0.3 }),
@@ -166,9 +169,19 @@ export const MemoryManager: React.FC = () => {
       
       if (!response.ok) throw new Error('Search failed');
       
-      // Mock data for now
-      setSearchResults([]);
-      setError(null);
+      const data = await response.json();
+      if (data.success) {
+        const formattedResults = data.results.map((result: any) => ({
+          memory: result.memory,
+          similarity: result.similarity,
+          category: result.category,
+          relationships: result.relationships || []
+        }));
+        setSearchResults(formattedResults);
+        setError(null);
+      } else {
+        throw new Error('Search failed');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Search failed');
     } finally {
@@ -180,26 +193,32 @@ export const MemoryManager: React.FC = () => {
   const fetchAnalytics = async () => {
     setLoading(true);
     try {
-      // TODO: Replace with actual GraphQL query
-      const response = await fetch('/api/memory/analytics');
+      const response = await fetch('http://localhost:4001/api/memory/analytics');
       if (!response.ok) throw new Error('Failed to fetch analytics');
       
-      // Mock data for now
-      const mockAnalytics: MemoryAnalytics = {
-        totalMemories: 0,
-        categoryDistribution: [],
-        topAccessedMemories: [],
-        averageRelationships: 0,
-        memoryHealth: {
-          indexingHealth: 1.0,
-          categorizationHealth: 1.0,
-          relationshipHealth: 1.0,
-          overallHealth: 1.0,
-        },
-      };
-      
-      setAnalytics(mockAnalytics);
-      setError(null);
+      const data = await response.json();
+      if (data.success) {
+        const analytics: MemoryAnalytics = {
+          totalMemories: data.analytics.totalMemories,
+          categoryDistribution: Object.entries(data.analytics.categoryDistribution || {}).map(([category, count]) => ({
+            category,
+            count: count as number
+          })),
+          topAccessedMemories: data.analytics.topAccessedMemories || [],
+          averageRelationships: data.analytics.averageRelationships || 0,
+          memoryHealth: {
+            indexingHealth: data.analytics.memoryHealth?.indexingHealth || 1.0,
+            categorizationHealth: data.analytics.memoryHealth?.categorizationHealth || 1.0,
+            relationshipHealth: data.analytics.memoryHealth?.relationshipHealth || 1.0,
+            overallHealth: data.analytics.memoryHealth?.overallHealth || 1.0,
+          },
+        };
+        
+        setAnalytics(analytics);
+        setError(null);
+      } else {
+        throw new Error('Failed to fetch analytics');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch analytics');
     } finally {
