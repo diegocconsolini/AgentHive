@@ -3,9 +3,9 @@
  * Common testing utilities and mocks
  */
 
-import { EventEmitter } from 'events';
-import path from 'path';
-import fs from 'fs/promises';
+const { EventEmitter } = require('events');
+const path = require('path');
+const fs = require('fs/promises');
 
 export class MockStorageManager extends EventEmitter {
   constructor() {

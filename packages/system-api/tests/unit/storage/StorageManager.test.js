@@ -3,9 +3,9 @@
  * Tests core storage operations, caching, and error handling
  */
 
-import { StorageManager } from '../../../src/storage/StorageManager.js';
-import { TestDataFactory } from '../../fixtures/testData.js';
-import { MockStorageManager, MemoryProfiler } from '../../utils/testHelpers.js';
+const { StorageManager } = require('../../../src/storage/StorageManager.js');
+const { TestDataFactory } = require('../../fixtures/testData.js');
+const { MockStorageManager, MemoryProfiler } = require('../../utils/testHelpers.js');
 
 describe('StorageManager', () => {
   let storageManager;

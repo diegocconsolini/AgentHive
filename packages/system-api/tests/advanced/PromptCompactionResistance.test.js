@@ -3,8 +3,8 @@
  * Comprehensive tests for prompt compaction resistance system
  */
 
-import PromptCompactionResistance from '../../src/advanced/PromptCompactionResistance.js';
-import crypto from 'crypto';
+const PromptCompactionResistance = require('../../src/advanced/PromptCompactionResistance.js');
+const crypto = require('crypto');
 
 describe('PromptCompactionResistance', () => {
   let resistance;

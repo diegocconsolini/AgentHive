@@ -3,12 +3,12 @@
  * Tests multi-agent scenarios, conflict resolution, and coordination protocols
  */
 
-import { AgentRegistry } from '../../src/agents/AgentRegistry.js';
-import { AgentCapabilityManager } from '../../src/agents/AgentCapabilityManager.js';
-import { LoadBalancer } from '../../src/agents/LoadBalancer.js';
-import { StorageManager } from '../../src/storage/StorageManager.js';
-import { TestDataFactory, CONFLICT_SCENARIO } from '../fixtures/testData.js';
-import { MockStorageManager, MockAgentRegistry, waitForEvent } from '../utils/testHelpers.js';
+const { AgentRegistry } = require('../../src/agents/AgentRegistry.js');
+const { AgentCapabilityManager } = require('../../src/agents/AgentCapabilityManager.js');
+const { LoadBalancer } = require('../../src/agents/LoadBalancer.js');
+const { StorageManager } = require('../../src/storage/StorageManager.js');
+const { TestDataFactory, CONFLICT_SCENARIO } = require('../fixtures/testData.js');
+const { MockStorageManager, MockAgentRegistry, waitForEvent } = require('../utils/testHelpers.js');
 
 describe('Agent Coordination Integration Tests', () => {
   let agentRegistry;
