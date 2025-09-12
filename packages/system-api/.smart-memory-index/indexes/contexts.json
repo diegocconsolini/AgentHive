@@ -1,4 +1,33 @@
 {
-  "contexts": {},
+  "contexts": {
+    "smart-memory-864b9ae2-9a73-47b4-a378-2b2a83244afd": {
+      "id": "smart-memory-864b9ae2-9a73-47b4-a378-2b2a83244afd",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "test-runner",
+        "anonymous"
+      ],
+      "importance": 0.7,
+      "created": "2025-09-12T23:17:18.558Z",
+      "updated": "2025-09-12T23:17:18.558Z",
+      "metadata": {
+        "agent_id": "test-runner",
+        "tags": [
+          "smart-memory",
+          "test-runner",
+          "anonymous"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "864b9ae2-9a73-47b4-a378-2b2a83244afd",
+        "user_id": "anonymous",
+        "category": "general",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 0
+      }
+    }
+  },
   "lastRebuild": "2025-09-12T23:15:36.837Z"
 }
