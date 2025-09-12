@@ -1044,72 +1044,77 @@ hive health                        # Ollama connection status`}</CodeBlock>
         <div className="space-y-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-              SessionManager System
+              SessionManager User Guide
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              The SessionManager is AgentHive's comprehensive development workflow orchestrator, providing 
-              session-resilient development with automatic backups, validation, and enterprise-grade reliability.
+              SessionManager helps you manage development projects by tracking phases, components, and progress 
+              while providing automatic backups and validation. Think of it as a project management tool for developers.
             </p>
           </div>
 
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-3">
-              ✅ System Status: PRODUCTION READY
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
+              🎯 What SessionManager Does For You
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-green-800 dark:text-green-200">
-              <ul className="space-y-2">
-                <li>• <strong>Reliability Score</strong>: 10/10</li>
-                <li>• <strong>Atomic File Operations</strong>: ✅</li>
-                <li>• <strong>Auto-Backup System</strong>: ✅</li>
-                <li>• <strong>File Locking</strong>: ✅</li>
-              </ul>
-              <ul className="space-y-2">
-                <li>• <strong>Cross-Platform</strong>: ✅</li>
-                <li>• <strong>Process Cleanup</strong>: ✅</li>
-                <li>• <strong>Race Condition Safe</strong>: ✅</li>
-                <li>• <strong>Enterprise Grade</strong>: ✅</li>
-              </ul>
-            </div>
+            <ul className="space-y-2 text-blue-800 dark:text-blue-200">
+              <li>• Tracks your project progress through phases and components</li>
+              <li>• Automatically backs up your work before major changes</li>
+              <li>• Validates your code meets quality standards</li>
+              <li>• Prevents data loss with atomic file operations</li>
+              <li>• Helps teams coordinate without conflicts</li>
+            </ul>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              🔄 Core Development Workflow
+              🚀 Getting Started - Your First Session
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              SessionManager orchestrates the complete development lifecycle with automatic state management:
+              Here's how to use SessionManager for a typical development workflow:
             </p>
             
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">1. Start Development Session</h4>
-                <CodeBlock>{`node session-manager.js start`}</CodeBlock>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Initializes project session, creates automatic backup, validates dependencies
+            <div className="space-y-6">
+              <div className="border-l-4 border-blue-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 1: Check What You're Working On</h4>
+                <CodeBlock>{`node session-manager.js status`}</CodeBlock>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  This shows you which phase and components you're currently working on. If you're just starting, 
+                  it will show you the next component that needs to be built.
                 </p>
               </div>
 
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">2. Begin Component Development</h4>
+              <div className="border-l-4 border-green-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 2: Start Working on a Component</h4>
                 <CodeBlock>{`node session-manager.js component SmartMemoryIndex`}</CodeBlock>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Starts component development with safety checks and validation
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  This tells SessionManager "I'm starting work on SmartMemoryIndex". It will automatically 
+                  create a backup of your current work and set up tracking for this component.
                 </p>
               </div>
 
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">3. Validate Component Quality</h4>
+              <div className="border-l-4 border-yellow-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 3: Build Your Component</h4>
+                <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-sm text-gray-600 dark:text-gray-400">
+                  Now you write your actual code. SessionManager doesn't watch your files - you work normally in your editor.
+                  Create files, write functions, test your code as usual.
+                </div>
+              </div>
+
+              <div className="border-l-4 border-purple-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 4: Check Your Work Quality</h4>
                 <CodeBlock>{`node session-manager.js validate component SmartMemoryIndex`}</CodeBlock>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Runs comprehensive quality gates and validation checks
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  This runs checks on your component to make sure it meets quality standards. 
+                  If something's wrong, it will tell you what needs fixing.
                 </p>
               </div>
 
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">4. Complete Component</h4>
+              <div className="border-l-4 border-indigo-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 5: Mark Component Done</h4>
                 <CodeBlock>{`node session-manager.js complete SmartMemoryIndex`}</CodeBlock>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Marks component complete, updates tracking, creates checkpoint
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  When you're satisfied with your component, this marks it as complete and moves you to the next one.
+                  It also creates a checkpoint so you can always come back to this point.
                 </p>
               </div>
             </div>
