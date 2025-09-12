@@ -164,9 +164,16 @@ class SafeFileOperations {
           const lockAge = Date.now() - new Date(lockData.timestamp).getTime();
           
           if (lockAge > 30000) { // 30 seconds = stale lock
-            console.warn(`⚠️  Removing stale lock for ${identifier} (${lockAge}ms old)`);
-            fs.unlinkSync(lockPath);
-            break;
+            // Check if process actually exists before removing lock
+            try {
+              process.kill(lockData.pid, 0); // Test if process exists
+              // Process exists, lock is not stale - continue waiting
+            } catch (error) {
+              // Process doesn't exist, safe to remove stale lock
+              console.warn(`⚠️  Removing stale lock for ${identifier} (process ${lockData.pid} not found)`);
+              fs.unlinkSync(lockPath);
+              break;
+            }
           }
         } catch (e) {
           // Corrupted lock file, remove it
@@ -178,8 +185,12 @@ class SafeFileOperations {
         throw new Error(`Lock timeout for ${identifier} after ${timeout}ms`);
       }
       
-      // Wait 50ms and retry
-      require('child_process').execSync('sleep 0.05');
+      // Wait 50ms and retry (cross-platform)
+      const { performance } = require('perf_hooks');
+      const start = performance.now();
+      while (performance.now() - start < 50) {
+        // Busy wait for 50ms
+      }
     }
 
     try {

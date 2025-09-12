@@ -16,6 +16,7 @@
 const SessionManager = require('./session-manager');
 const safeFileOps = require('./safe-file-operations');
 const validationHelpers = require('./validation-helpers');
+const { safeExit } = require('./process-cleanup');
 const path = require('path');
 const fs = require('fs');
 
@@ -78,14 +79,14 @@ class ResilientSessionManager extends SessionManager {
       console.error('💥 Uncaught exception:', error.message);
       this.log(`FATAL: ${error.message}\\n${error.stack}`);
       cleanup();
-      process.exit(1);
+      safeExit(1);
     });
     
     process.on('unhandledRejection', (reason, promise) => {
       console.error('💥 Unhandled rejection:', reason);
       this.log(`UNHANDLED REJECTION: ${reason}`);
       cleanup();
-      process.exit(1);
+      safeExit(1);
     });
   }
 
@@ -685,7 +686,7 @@ if (require.main === module) {
     case 'start':
       manager.startSession().catch(error => {
         console.error('❌ Resilient session start failed:', error.message);
-        process.exit(1);
+        safeExit(1);
       });
       break;
     
@@ -696,76 +697,76 @@ if (require.main === module) {
     case 'component':
       if (arg1) {
         manager.startComponent(arg1).then(success => {
-          process.exit(success ? 0 : 1);
+          safeExit(success ? 0 : 1);
         }).catch(error => {
           console.error('❌ Resilient component start failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else {
         console.error('❌ Please specify component name');
-        process.exit(1);
+        safeExit(1);
       }
       break;
     
     case 'complete':
       if (arg1) {
         manager.completeComponent(arg1).then(success => {
-          process.exit(success ? 0 : 1);
+          safeExit(success ? 0 : 1);
         }).catch(error => {
           console.error('❌ Resilient component completion failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else {
         console.error('❌ Please specify component name');
-        process.exit(1);
+        safeExit(1);
       }
       break;
     
     case 'checkpoint':
       manager.createCheckpoint(arg1 || 'manual').then(() => {
         console.log('✅ Resilient checkpoint operation completed');
-        process.exit(0);
+        safeExit(0);
       }).catch(error => {
         console.error('❌ Resilient checkpoint creation failed:', error.message);
-        process.exit(1);
+        safeExit(1);
       });
       break;
     
     case 'validate':
       if (arg1 === 'component' && arg2) {
         manager.validator.validateComponent(arg2).then(success => {
-          process.exit(success ? 0 : 1);
+          safeExit(success ? 0 : 1);
         }).catch(error => {
           console.error('❌ Component validation failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else if (arg1 === 'week' && arg2 && arg3) {
         manager.validator.validateWeek(parseInt(arg2), parseInt(arg3)).then(success => {
-          process.exit(success ? 0 : 1);
+          safeExit(success ? 0 : 1);
         }).catch(error => {
           console.error('❌ Week validation failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else if (arg1 === 'phase' && arg2) {
         manager.validator.validatePhase(parseInt(arg2)).then(success => {
-          process.exit(success ? 0 : 1);
+          safeExit(success ? 0 : 1);
         }).catch(error => {
           console.error('❌ Phase validation failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else {
         console.error('❌ Usage: validate [component <name> | week <phase> <week> | phase <num>]');
-        process.exit(1);
+        safeExit(1);
       }
       break;
     
     case 'backup':
       manager.backup.createFullBackup('manual').then(() => {
         console.log('✅ Backup completed');
-        process.exit(0);
+        safeExit(0);
       }).catch(error => {
         console.error('❌ Backup failed:', error.message);
-        process.exit(1);
+        safeExit(1);
       });
       break;
     
@@ -781,15 +782,15 @@ if (require.main === module) {
         
         manager.backup.restoreFromBackup(arg1, options).then(() => {
           console.log('✅ Restore completed');
-          process.exit(0);
+          safeExit(0);
         }).catch(error => {
           console.error('❌ Restore failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else {
         console.error('❌ Please specify backup ID');
         console.log('Available options: --dry-run, --force, --auto-stash, --no-code, --no-database, --no-config');
-        process.exit(1);
+        safeExit(1);
       }
       break;
     

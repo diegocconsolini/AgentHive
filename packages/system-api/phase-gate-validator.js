@@ -8,6 +8,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const validationHelpers = require('../../validation-helpers');
 const safeFileOps = require('../../safe-file-operations');
+const { safeExit } = require('../../process-cleanup');
 
 class PhaseGateValidator {
   constructor() {
@@ -20,7 +21,7 @@ class PhaseGateValidator {
       return JSON.parse(fs.readFileSync(this.trackerPath, 'utf8'));
     } catch (error) {
       console.error('❌ Failed to load phase tracker:', error.message);
-      process.exit(1);
+      safeExit(1);
     }
   }
 
@@ -530,19 +531,19 @@ if (require.main === module) {
   switch (command) {
     case 'component':
       validator.validateComponent(arg1).then(success => {
-        process.exit(success ? 0 : 1);
+        safeExit(success ? 0 : 1);
       });
       break;
     
     case 'week':
       validator.validateWeek(parseInt(arg1), parseInt(arg2)).then(success => {
-        process.exit(success ? 0 : 1);
+        safeExit(success ? 0 : 1);
       });
       break;
     
     case 'phase':
       validator.validatePhase(parseInt(arg1)).then(success => {
-        process.exit(success ? 0 : 1);
+        safeExit(success ? 0 : 1);
       });
       break;
     

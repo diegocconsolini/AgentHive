@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const safeFileOps = require('./safe-file-operations');
+const { safeExit } = require('./process-cleanup');
 const validationHelpers = require('./validation-helpers');
 
 class BackupSystem {
@@ -1029,7 +1030,7 @@ if (require.main === module) {
     case 'restore':
       if (!arg1) {
         console.error('❌ Please specify backup ID');
-        process.exit(1);
+        safeExit(1);
       }
       backup.restoreFromBackup(arg1).catch(console.error);
       break;

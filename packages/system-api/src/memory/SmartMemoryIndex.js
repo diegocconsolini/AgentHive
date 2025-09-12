@@ -19,6 +19,7 @@ class SmartMemoryIndex {
     this.memoryRelationships = new Map();
     this.categories = new Map();
     this.accessPatterns = new Map();
+    this.maintenanceIntervals = [];
     this.initialized = false;
   }
 

@@ -8,6 +8,7 @@ const PhaseGateValidator = require('./packages/system-api/phase-gate-validator')
 const BackupSystem = require('./backup-system');
 const validationHelpers = require('./validation-helpers');
 const safeFileOps = require('./safe-file-operations');
+const { safeExit } = require('./process-cleanup');
 
 class SessionManager {
   constructor() {
@@ -504,7 +505,7 @@ if (require.main === module) {
     case 'start':
       manager.startSession().catch(error => {
         console.error('❌ Session start failed:', error.message);
-        process.exit(1);
+        safeExit(1);
       });
       break;
     
@@ -515,38 +516,38 @@ if (require.main === module) {
     case 'component':
       if (arg1) {
         manager.startComponent(arg1).then(success => {
-          process.exit(success ? 0 : 1);
+          safeExit(success ? 0 : 1);
         }).catch(error => {
           console.error('❌ Component start failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else {
         console.error('❌ Please specify component name');
-        process.exit(1);
+        safeExit(1);
       }
       break;
     
     case 'complete':
       if (arg1) {
         manager.completeComponent(arg1).then(success => {
-          process.exit(success ? 0 : 1);
+          safeExit(success ? 0 : 1);
         }).catch(error => {
           console.error('❌ Component completion failed:', error.message);
-          process.exit(1);
+          safeExit(1);
         });
       } else {
         console.error('❌ Please specify component name');
-        process.exit(1);
+        safeExit(1);
       }
       break;
     
     case 'checkpoint':
       manager.createCheckpoint(arg1 || 'manual').then(() => {
         console.log('✅ Checkpoint operation completed');
-        process.exit(0);
+        safeExit(0);
       }).catch(error => {
         console.error('❌ Checkpoint creation failed:', error.message);
-        process.exit(1);
+        safeExit(1);
       });
       break;
     
