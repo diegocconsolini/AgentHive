@@ -162,6 +162,37 @@ class SQLiteStorage extends IContextStorage {
     for (const query of queries) {
       await this.runQuery(query);
     }
+
+    // Run schema migrations
+    await this.runMigrations();
+  }
+
+  /**
+   * Run database schema migrations for SSP failure tracking
+   */
+  async runMigrations() {
+    try {
+      // Migration: Add failure tracking columns to procedure_executions table
+      const migrationQueries = [
+        `ALTER TABLE procedure_executions ADD COLUMN execution_quality REAL DEFAULT 1.0`,
+        `ALTER TABLE procedure_executions ADD COLUMN failure_reason TEXT DEFAULT NULL`,
+        `ALTER TABLE procedure_executions ADD COLUMN success_score REAL DEFAULT 1.0`
+      ];
+
+      for (const query of migrationQueries) {
+        try {
+          await this.runQuery(query);
+          console.log(`SSP Migration: Successfully added failure tracking column`);
+        } catch (error) {
+          // Column might already exist, which is fine
+          if (!error.message.includes('duplicate column name')) {
+            console.warn(`SSP Migration warning: ${error.message}`);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('SSP Migration error:', error);
+    }
   }
 
   /**
