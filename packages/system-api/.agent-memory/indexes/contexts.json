@@ -27,6 +27,34 @@
         "success_rate": 1,
         "knowledge_domains": 1
       }
+    },
+    "python-pro:test-python-user:python-session": {
+      "id": "python-pro:test-python-user:python-session",
+      "type": "agent",
+      "hierarchy": [
+        "agents",
+        "python-pro",
+        "test-python-user",
+        "python-session"
+      ],
+      "importance": 92.5,
+      "created": "2025-09-12T22:37:31.244Z",
+      "updated": "2025-09-12T22:37:31.244Z",
+      "metadata": {
+        "agent_id": "python-pro",
+        "tags": [
+          "agent-memory",
+          "python-pro",
+          "test-python-user"
+        ],
+        "dependencies": [],
+        "retention_policy": "long-term",
+        "user_id": "test-python-user",
+        "session_id": "python-session",
+        "interaction_count": 1,
+        "success_rate": 1,
+        "knowledge_domains": 1
+      }
     }
   },
   "lastRebuild": "2025-09-12T22:34:40.667Z"
