@@ -19,6 +19,9 @@ export interface SSPAnalytics {
   avgExecutionTime: number;
   uniqueSessions: number;
   uniqueProcedures: number;
+  avgQuality?: number;
+  avgSuccessScore?: number;
+  failureReasons?: { [key: string]: number };
   timestamp: string;
 }
 
