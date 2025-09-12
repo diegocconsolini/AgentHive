@@ -13,7 +13,8 @@
       "Bash(curl:*)",
       "Bash(npm run dev:*)",
       "Read(//home/diegocc/epic-memory-manager-frontend-and-cli/**)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": []

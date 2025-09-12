@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   testEnvironment: 'node',
   setupFiles: ['<rootDir>/tests/jest.setup.js'],
   roots: ['<rootDir>/tests', '<rootDir>/src'],
@@ -20,16 +20,7 @@ module.exports = {
   clearMocks: true,
   restoreMocks: true,
   moduleFileExtensions: ['js', 'json', 'node'],
-  extensionsToTreatAsEsm: ['.js'],
-  globals: {
-    'ts-jest': {
-      useESM: true
-    }
-  },
-  preset: '@babel/preset-env',
-  transform: {
-    '^.+\\.js$': ['babel-jest', { presets: [['@babel/preset-env', { targets: { node: 'current' } }]] }]
-  },
+  transform: {},
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
