@@ -1817,41 +1817,54 @@ sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"`}</CodeBlock>
   ];
 
   return (
-    <div className="fixed inset-0 flex bg-gray-50 dark:bg-gray-900" style={{ left: '256px' }}>
-      {/* Sidebar Navigation */}
-      <div className="w-80 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-            <Book className="w-5 h-5 mr-2" />
-            Application Manual
-          </h2>
-          <nav className="space-y-2">
-            {manualSections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg text-left transition-colors ${
-                  activeSection === section.id
-                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-400'
-                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-                }`}
-              >
-                {section.icon}
-                <span className="ml-3 flex-1">{section.title}</span>
-                <ChevronRight className={`w-4 h-4 transition-transform ${
-                  activeSection === section.id ? 'rotate-90' : ''
-                }`} />
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
+    <div className="min-h-screen w-full bg-gray-50 dark:bg-gray-900" 
+         style={{ 
+           marginLeft: 'calc(-50vw + 50%)', 
+           marginRight: 'calc(-50vw + 50%)',
+           width: '100vw',
+           maxWidth: 'none'
+         }}>
+      <div className="grid grid-cols-[320px_1fr] h-screen">
+        {/* Manual Navigation Sidebar */}
+        <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+          <div className="p-6">
+            <header className="mb-6">
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center">
+                <Book className="w-5 h-5 mr-2" />
+                Application Manual
+              </h1>
+            </header>
+            <nav className="space-y-2">
+              {manualSections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg text-left transition-colors ${
+                    activeSection === section.id
+                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-400'
+                      : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+                  }`}
+                  aria-current={activeSection === section.id ? 'page' : undefined}
+                >
+                  {section.icon}
+                  <span className="ml-3 flex-1">{section.title}</span>
+                  <ChevronRight className={`w-4 h-4 transition-transform ${
+                    activeSection === section.id ? 'rotate-90' : ''
+                  }`} />
+                </button>
+              ))}
+            </nav>
+          </div>
+        </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 bg-white dark:bg-gray-800 overflow-y-auto">
-        <div className="p-8">
-          {manualSections.find(s => s.id === activeSection)?.content}
-        </div>
+        {/* Main Content Area */}
+        <main className="bg-white dark:bg-gray-800 overflow-y-auto">
+          <div className="p-8 max-w-none">
+            <div className="prose prose-gray dark:prose-invert max-w-none">
+              {manualSections.find(s => s.id === activeSection)?.content}
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
