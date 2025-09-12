@@ -1044,30 +1044,164 @@ hive health                        # Ollama connection status`}</CodeBlock>
         <div className="space-y-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-              SessionManager User Guide
+              SessionManager: Development Workflow Management
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              SessionManager helps you manage development projects by tracking phases, components, and progress 
-              while providing automatic backups and validation. Think of it as a project management tool for developers.
+              SessionManager is a command-line tool that helps software developers manage complex projects 
+              by breaking them into phases and tracking progress automatically.
             </p>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
-              🎯 What SessionManager Does For You
+          <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-3">
+              🤔 What Is This For?
             </h3>
-            <ul className="space-y-2 text-blue-800 dark:text-blue-200">
-              <li>• Tracks your project progress through phases and components</li>
-              <li>• Automatically backs up your work before major changes</li>
-              <li>• Validates your code meets quality standards</li>
-              <li>• Prevents data loss with atomic file operations</li>
-              <li>• Helps teams coordinate without conflicts</li>
-            </ul>
+            <div className="space-y-4 text-orange-800 dark:text-orange-200">
+              <div>
+                <strong>Problem it solves:</strong> Large software projects have dozens of components to build. 
+                It's easy to lose track of what's done, what needs work, and what comes next.
+              </div>
+              <div>
+                <strong>What SessionManager does:</strong> It keeps a checklist of your project components, 
+                automatically backs up your work, and makes sure you don't lose progress if something goes wrong.
+              </div>
+            </div>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              🚀 Getting Started - Your First Session
+              🌍 Where Can You Use This?
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">✅ Works With</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                  <li>• Any Node.js project</li>
+                  <li>• Any JavaScript/TypeScript codebase</li>
+                  <li>• React, Vue, Angular applications</li>
+                  <li>• Express/NestJS backends</li>
+                  <li>• Any Git repository</li>
+                  <li>• Windows, macOS, Linux</li>
+                </ul>
+              </div>
+              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">❌ Not For</h4>
+                <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                  <div>
+                    <strong>• Python/Java/C# projects</strong><br/>
+                    SessionManager is written in Node.js and expects JavaScript project structure. 
+                    It won't understand Python imports, Java packages, or C# namespaces.
+                  </div>
+                  <div>
+                    <strong>• Simple single-file scripts</strong><br/>
+                    If your project is just one HTML file or one Python script, SessionManager is overkill. 
+                    It's designed for projects with multiple components and phases.
+                  </div>
+                  <div>
+                    <strong>• Projects without package.json</strong><br/>
+                    SessionManager expects a Node.js project structure with package.json for dependency management. 
+                    It won't work in projects that don't use npm/yarn.
+                  </div>
+                  <div>
+                    <strong>• Non-Git repositories</strong><br/>
+                    SessionManager creates backups using Git commands. If your project isn't in a Git repository, 
+                    the backup system won't work.
+                  </div>
+                  <div>
+                    <strong>• Mobile app development</strong><br/>
+                    React Native, iOS, Android, or Flutter projects have their own build systems and project management. 
+                    SessionManager doesn't understand mobile app structures.
+                  </div>
+                  <div>
+                    <strong>• Database-only projects</strong><br/>
+                    If you're just writing SQL scripts or managing database schemas, SessionManager isn't useful. 
+                    It's designed for application development with multiple code components.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-3">
+              💡 Real-World Example
+            </h3>
+            <div className="text-green-800 dark:text-green-200 space-y-3">
+              <p>
+                <strong>Scenario:</strong> You're building an e-commerce website with a team. The project has 
+                15 different components: user authentication, product catalog, shopping cart, payment processing, etc.
+              </p>
+              <p>
+                <strong>Without SessionManager:</strong> You use sticky notes, spreadsheets, or just remember what's done. 
+                Team members accidentally work on the same thing. You lose work when something crashes.
+              </p>
+              <p>
+                <strong>With SessionManager:</strong> Everyone knows exactly what to work on next. 
+                Your work is automatically backed up. The system prevents conflicts and tracks quality.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              📦 How to Install and Set Up
+            </h3>
+            <div className="space-y-4">
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                <h4 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">Prerequisites</h4>
+                <div className="text-yellow-800 dark:text-yellow-200 text-sm">
+                  Before you can use SessionManager, you need:
+                  <ul className="list-disc ml-5 mt-2 space-y-1">
+                    <li>Node.js installed (version 16 or higher)</li>
+                    <li>A JavaScript/TypeScript project with package.json</li>
+                    <li>Git repository initialized (SessionManager uses Git for backups)</li>
+                    <li>Terminal/Command Prompt access</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 1: Copy SessionManager Files</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  SessionManager isn't an npm package - it's a set of JavaScript files you copy into your project:
+                </p>
+                <CodeBlock>{`# Copy these files to your project root:
+session-manager.js
+backup-system.js  
+safe-file-operations.js
+validation-helpers.js
+process-cleanup.js`}</CodeBlock>
+                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                  You can download these files from the AgentHive repository or copy them from an existing project.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 2: Create Your Project Structure</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  SessionManager expects a specific folder structure:
+                </p>
+                <CodeBlock>{`# Create these folders in your project:
+mkdir -p packages/system-api
+mkdir -p tests
+mkdir -p src
+
+# SessionManager will create phase-tracker.json automatically`}</CodeBlock>
+              </div>
+
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Step 3: Test the Installation</h4>
+                <CodeBlock>{`node session-manager.js help`}</CodeBlock>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  If you see the help text, SessionManager is ready to use!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              🚀 Your First Development Session
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Here's how to use SessionManager for a typical development workflow:
@@ -1122,45 +1256,54 @@ hive health                        # Ollama connection status`}</CodeBlock>
 
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              📊 Status & Monitoring Commands
+              🗂️ Understanding Your Project Status
             </h3>
             
             <div className="space-y-4">
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Current Project Status</h4>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">What Am I Working On Right Now?</h4>
                 <CodeBlock>{`node session-manager.js status`}</CodeBlock>
-                <div className="bg-gray-900 rounded-lg p-4 mt-2">
-                  <pre className="text-sm text-gray-300 text-xs">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-3">
+                  This is your most important command. Run it anytime to see:
+                </p>
+                <div className="bg-gray-900 rounded-lg p-4">
+                  <pre className="text-sm text-gray-300">
 {`📊 CURRENT STATUS
-═════════════════
 Phase: 2 (Intelligent Memory & Collaboration)
-Week: 1 (Smart Memory System (Full Stack))
+Week: 1 (Smart Memory System)
 Status: in_progress
-Last Update: 2025-09-12T20:07:00.241Z
 
-📋 Components:
-  🔄 SmartMemoryIndex
-  🔄 MemorySearch
-  ⏳ MemoryImportExport
-
-🧪 Baseline: 9/9`}
+📋 Your Components:
+  🔄 SmartMemoryIndex    ← You're working on this
+  🔄 MemorySearch        ← Started but not complete  
+  ⏳ MemoryImportExport  ← Not started yet`}
                   </pre>
+                </div>
+                <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                  <strong>What this means:</strong>
+                  <ul className="list-disc ml-5 mt-2 space-y-1">
+                    <li>You're in Phase 2 of the project</li>
+                    <li>🔄 = Component is in progress</li>
+                    <li>⏳ = Component is waiting to be started</li>
+                    <li>✅ = Component is completed (you'll see this later)</li>
+                  </ul>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Detailed System Status</h4>
-                <CodeBlock>{`node phase-gate-validator.js status`}</CodeBlock>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Shows detailed validation status, quality gates, and system health
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Are My Tests Still Passing?</h4>
+                <CodeBlock>{`node session-manager.js test`}</CodeBlock>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Run this periodically to make sure your changes haven't broken anything. 
+                  It will run all the project tests and tell you if anything failed.
                 </p>
               </div>
 
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Run Baseline Tests</h4>
-                <CodeBlock>{`node session-manager.js test`}</CodeBlock>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Executes comprehensive test suite with multiple fallback strategies
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Get Help</h4>
+                <CodeBlock>{`node session-manager.js help`}</CodeBlock>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Shows you all available commands with examples of how to use them.
                 </p>
               </div>
             </div>
@@ -1426,21 +1569,96 @@ const validation = await manager.validator.validateComponent('MyComponent');`}</
             </div>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-            <div className="flex items-start">
-              <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Production-Ready Reliability</h4>
-                <p className="text-blue-800 dark:text-blue-200 mb-3">
-                  The SessionManager system provides enterprise-grade reliability with comprehensive safety features:
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              🚨 Common Problems and Solutions
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="border border-red-200 dark:border-red-800 rounded-lg p-4">
+                <h4 className="font-semibold text-red-900 dark:text-red-100 mb-2">
+                  "Cannot find module" error
+                </h4>
+                <p className="text-sm text-red-800 dark:text-red-200 mb-2">
+                  This means you're missing one of the SessionManager files.
                 </p>
-                <ul className="space-y-1 text-blue-800 dark:text-blue-200 text-sm">
-                  <li>• Atomic file operations prevent data corruption</li>
-                  <li>• Automatic backup creation before critical operations</li>
-                  <li>• File locking prevents concurrent access issues</li>
-                  <li>• Process cleanup ensures no dangling resources</li>
-                  <li>• Cross-platform compatibility (Windows, macOS, Linux)</li>
-                  <li>• Comprehensive error handling with graceful degradation</li>
+                <CodeBlock>{`# Check all required files are in your project root:
+ls -la session-manager.js backup-system.js safe-file-operations.js
+
+# If missing, copy them from AgentHive repository`}</CodeBlock>
+              </div>
+
+              <div className="border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                <h4 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">
+                  "Lock timeout" error when multiple people work
+                </h4>
+                <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-2">
+                  This happens when someone else is using SessionManager at the same time.
+                </p>
+                <CodeBlock>{`# Check who has the lock
+node safe-file-operations.js locks
+
+# Wait for them to finish, or ask them to complete their work`}</CodeBlock>
+              </div>
+
+              <div className="border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">
+                  "Tracker file corrupted" error
+                </h4>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-2">
+                  SessionManager automatically fixes this, but you can also restore from backup:
+                </p>
+                <CodeBlock>{`# List available backups
+node backup-system.js list
+
+# Restore from most recent backup
+node backup-system.js restore auto-2025-09-12T10-00-00-000Z`}</CodeBlock>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              🤝 Working with Teams
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Team Coordination</h4>
+                <ul className="space-y-2 text-blue-800 dark:text-blue-200 text-sm">
+                  <li>• Only one person can use SessionManager at a time per project</li>
+                  <li>• Share the phase-tracker.json file via Git so everyone sees progress</li>
+                  <li>• Use backups to restore if someone accidentally breaks the tracker</li>
+                  <li>• Communicate who's working on which components</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              📚 Summary: Is SessionManager Right For You?
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold text-green-600 mb-2">✅ Use SessionManager If:</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                  <li>• You have a complex project with many components</li>
+                  <li>• You work in a team and need to coordinate progress</li>
+                  <li>• You want automatic backups and safety features</li>
+                  <li>• You're building a Node.js/JavaScript application</li>
+                  <li>• You like command-line tools</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-red-600 mb-2">❌ Don't Use If:</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                  <li>• You have a simple single-file project</li>
+                  <li>• You prefer graphical project management tools</li>
+                  <li>• You're not comfortable with command line</li>
+                  <li>• Your project isn't JavaScript/Node.js</li>
+                  <li>• You already have a project management system that works</li>
                 </ul>
               </div>
             </div>

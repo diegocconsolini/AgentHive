@@ -1,51 +1,8 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import React, { useState, useEffect } from 'react';
 import { Brain, Plus, Search, Filter, Tag, Calendar, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 
-// GraphQL Queries and Mutations
-const GET_MEMORIES = gql`
-  query GetMemories($filter: MemoryFilter) {
-    memories(filter: $filter) {
-      id
-      title
-      content
-      tags
-      createdAt
-      updatedAt
-      userId
-    }
-  }
-`;
-
-const CREATE_MEMORY = gql`
-  mutation CreateMemory($input: CreateMemoryInput!) {
-    createMemory(input: $input) {
-      id
-      title
-      content
-      tags
-      createdAt
-    }
-  }
-`;
-
-const UPDATE_MEMORY = gql`
-  mutation UpdateMemory($id: ID!, $input: UpdateMemoryInput!) {
-    updateMemory(id: $id, input: $input) {
-      id
-      title
-      content
-      tags
-      updatedAt
-    }
-  }
-`;
-
-const DELETE_MEMORY = gql`
-  mutation DeleteMemory($id: ID!) {
-    deleteMemory(id: $id)
-  }
-`;
+// SmartMemoryIndex API Configuration
+const SMARTMEMORY_API_URL = 'http://localhost:4001/api/memory';
 
 interface Memory {
   id: string;
@@ -56,6 +13,55 @@ interface Memory {
   updatedAt: string;
   userId: string;
 }
+
+// AgentMemory interface from SmartMemoryIndex
+interface AgentMemory {
+  id: string;
+  agentId: string;
+  userId: string;
+  created: string;
+  updated: string;
+  interactions: Array<{
+    timestamp: string;
+    summary: string;
+  }>;
+  knowledge: {
+    concepts: string[];
+    expertise: string;
+  };
+  patterns: {
+    userPreferences: string[];
+  };
+}
+
+// Transform AgentMemory to frontend Memory format
+const transformAgentMemoryToMemory = (agentMemory: AgentMemory): Memory => {
+  // Extract title from first interaction or knowledge
+  const title = agentMemory.interactions[0]?.summary || 
+               agentMemory.knowledge.expertise || 
+               'Memory';
+  
+  // Create content from knowledge and patterns
+  const content = [
+    `Expertise: ${agentMemory.knowledge.expertise}`,
+    `Concepts: ${agentMemory.knowledge.concepts.join(', ')}`,
+    ...(agentMemory.patterns.userPreferences?.length > 0 ? 
+        [`Preferences: ${agentMemory.patterns.userPreferences.join(', ')}`] : [])
+  ].join('\n');
+  
+  // Use concepts as tags
+  const tags = agentMemory.knowledge.concepts || [];
+  
+  return {
+    id: agentMemory.id,
+    title,
+    content,
+    tags,
+    createdAt: agentMemory.created,
+    updatedAt: agentMemory.updated,
+    userId: agentMemory.userId
+  };
+};
 
 export const MemoriesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -68,24 +74,68 @@ export const MemoriesPage: React.FC = () => {
   const [newContent, setNewContent] = useState('');
   const [newTags, setNewTags] = useState('');
 
-  // GraphQL queries and mutations
-  const { data, loading, error, refetch } = useQuery(GET_MEMORIES, {
-    variables: {
-      filter: {
-        search: searchQuery || undefined,
-        tags: selectedTags.length > 0 ? selectedTags : undefined,
-        limit: 50,
-        offset: 0,
-      }
-    },
-    errorPolicy: 'all',
-  });
-  
-  const [createMemory] = useMutation(CREATE_MEMORY);
-  const [updateMemory] = useMutation(UPDATE_MEMORY);
-  const [deleteMemory] = useMutation(DELETE_MEMORY);
+  // REST API state
+  const [memories, setMemories] = useState<Memory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const memories: Memory[] = data?.memories || [];
+  // Fetch memories from SmartMemoryIndex API
+  const fetchMemories = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Get analytics to find memory IDs
+      const analyticsResponse = await fetch(`${SMARTMEMORY_API_URL}/analytics`);
+      const analyticsData = await analyticsResponse.json();
+      
+      if (!analyticsData.success) {
+        throw new Error('Failed to fetch memory analytics');
+      }
+      
+      const memoryIds = analyticsData.analytics.topAccessedMemories.map((item: [string, number]) => item[0]);
+      
+      // Fetch individual memories
+      const memoryPromises = memoryIds.map(async (id: string) => {
+        const response = await fetch(`${SMARTMEMORY_API_URL}/${id}`);
+        const data = await response.json();
+        if (data.success) {
+          return transformAgentMemoryToMemory(data.memory);
+        }
+        return null;
+      });
+      
+      const fetchedMemories = (await Promise.all(memoryPromises)).filter(Boolean) as Memory[];
+      
+      // Apply filtering
+      let filteredMemories = fetchedMemories;
+      
+      if (searchQuery) {
+        filteredMemories = filteredMemories.filter(memory => 
+          memory.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          memory.content.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+      
+      if (selectedTags.length > 0) {
+        filteredMemories = filteredMemories.filter(memory =>
+          selectedTags.some(tag => memory.tags.includes(tag))
+        );
+      }
+      
+      setMemories(filteredMemories);
+    } catch (err) {
+      console.error('Error fetching memories:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch memories');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Fetch memories on component mount and when filters change
+  useEffect(() => {
+    fetchMemories();
+  }, [searchQuery, selectedTags]);
 
   // Get all unique tags from memories
   const allTags = Array.from(new Set(memories.flatMap(memory => memory.tags)));
@@ -95,24 +145,48 @@ export const MemoriesPage: React.FC = () => {
     if (!newTitle.trim() || !newContent.trim()) return;
 
     try {
-      await createMemory({
-        variables: {
-          input: {
-            title: newTitle.trim(),
-            content: newContent.trim(),
-            tags: newTags.split(',').map(t => t.trim()).filter(t => t.length > 0),
-          }
+      // Transform frontend memory to AgentMemory format for SmartMemoryIndex
+      const agentMemoryData = {
+        agentId: 'frontend-user',
+        userId: 'current-user', // In real app, get from auth
+        interactions: [{
+          timestamp: new Date().toISOString(),
+          summary: newTitle.trim()
+        }],
+        knowledge: {
+          concepts: newTags.split(',').map(t => t.trim()).filter(t => t.length > 0),
+          expertise: newContent.trim()
+        },
+        patterns: {
+          userPreferences: []
         }
+      };
+
+      const response = await fetch(`${SMARTMEMORY_API_URL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(agentMemoryData)
       });
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create memory');
+      }
       
       // Reset form and close modal
       setNewTitle('');
       setNewContent('');
       setNewTags('');
       setShowNewMemoryForm(false);
-      refetch();
+      
+      // Refresh memories
+      await fetchMemories();
     } catch (err) {
       console.error('Failed to create memory:', err);
+      setError(err instanceof Error ? err.message : 'Failed to create memory');
     }
   };
 
