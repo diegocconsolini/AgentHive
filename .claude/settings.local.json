@@ -18,7 +18,8 @@
       "Bash(find:*)",
       "Bash(timeout 30s npm test tests/unit/agents/AgentMemoryManager.test.js -- --verbose --maxWorkers=1)",
       "WebFetch(domain:localhost)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []
