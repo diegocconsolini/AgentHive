@@ -6,6 +6,8 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const validationHelpers = require('../../validation-helpers');
+const safeFileOps = require('../../safe-file-operations');
 
 class PhaseGateValidator {
   constructor() {
