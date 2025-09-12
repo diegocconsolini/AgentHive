@@ -149,10 +149,14 @@ expect.extend({
   },
   
   toBeWithinMemoryLimit(received, limit) {
-    const pass = received <= limit;
+    // Handle the case where received might be an object with memory delta
+    const memoryUsage = typeof received === 'object' && received.heapUsed !== undefined 
+      ? Math.abs(received.heapUsed) 
+      : Math.abs(received || 0);
+    const pass = memoryUsage <= limit;
     return {
       message: () => 
-        `expected memory usage ${received} bytes to be ${pass ? 'greater than' : 'within'} ${limit} bytes`,
+        `expected memory usage ${memoryUsage} bytes to be ${pass ? 'greater than' : 'within'} ${limit} bytes`,
       pass
     };
   }
