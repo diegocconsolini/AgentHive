@@ -171,8 +171,12 @@ export const memoryResolvers = {
           throw new Error(`Failed to fetch memory analytics: ${response.statusText}`);
         }
         
-        const analytics = await response.json();
-        return analytics;
+        const result = await response.json();
+        if (result.success) {
+          return result.analytics;
+        } else {
+          throw new Error(result.error || 'Failed to fetch analytics');
+        }
       } catch (error) {
         console.error('Error fetching memory analytics:', error);
         throw new GraphQLError('Failed to fetch memory analytics');
