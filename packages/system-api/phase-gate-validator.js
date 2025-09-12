@@ -152,15 +152,10 @@ class PhaseGateValidator {
 
     // Check no regression (run baseline tests)
     try {
-      const testResult = execSync('cd /home/diegocc/AgentHive && npm test -- --silent', { 
-        encoding: 'utf8',
-        timeout: 30000
-      });
-      if (testResult.includes('9 passing') || testResult.includes('passing')) {
-        results.noRegression = true;
-      }
+      results.noRegression = await this.runRegressionTests();
     } catch (error) {
-      console.warn('⚠️  Could not verify baseline tests');
+      console.warn('⚠️  Could not verify baseline tests:', error.message);
+      results.noRegression = false;
     }
 
     // Update component quality gates
@@ -187,38 +182,26 @@ class PhaseGateValidator {
       console.log(`🎉 Component ${componentName} passed quality gates!`);
     } else {
       component.status = 'in_progress';
-      console.log(`⚠️  Component ${componentName} needs more work (${passRate.toFixed(1)}% passed)`);
+      console.log(`⚠️  Component ${componentName} needs more work`);
     }
 
-    // Update tracker with results
-    try {
-      this.updateLastUpdate();
-      this.saveTracker();
-    } catch (saveError) {
-      console.warn(`⚠️  Failed to save validation results: ${saveError.message}`);
-      console.log('Validation completed but results not persisted');
-      component.status = previousStatus; // Revert status if save failed
-    }
+    this.updateLastUpdate();
+    this.saveTracker();
 
     return passRate >= 80;
-    
-  } catch (error) {
-    console.error(`❌ Component validation failed: ${error.message}`);
-    return false;
   }
-}
 
-/**
- * Run regression tests with multiple fallback strategies
- */
-async runRegressionTests() {
-  const testStrategies = [
+  /**
+   * Run regression tests with multiple fallback strategies
+   */
+  async runRegressionTests() {
+    const testStrategies = [
     () => this.runNpmTest(),
     () => this.runMeshIntegrationTest(),
     () => this.runBasicSystemCheck()
-  ];
+    ];
 
-  for (const strategy of testStrategies) {
+    for (const strategy of testStrategies) {
     try {
       const result = await strategy();
       if (result !== null) {
@@ -228,13 +211,13 @@ async runRegressionTests() {
       console.warn(`Test strategy failed: ${error.message}`);
       continue;
     }
+    }
+
+    console.warn('⚠️  All regression test strategies failed');
+    return false;
   }
 
-  console.warn('⚠️  All regression test strategies failed');
-  return false;
-}
-
-async runNpmTest() {
+  async runNpmTest() {
   try {
     const testResult = execSync('cd /home/diegocc/AgentHive && timeout 60s npm test --silent', { 
       encoding: 'utf8',
@@ -259,9 +242,9 @@ async runNpmTest() {
     console.warn(`NPM test failed: ${error.message}`);
     return null;
   }
-}
+  }
 
-async runMeshIntegrationTest() {
+  async runMeshIntegrationTest() {
   try {
     const testPath = '/home/diegocc/AgentHive/packages/system-api/src/mesh/test-mesh-integration.js';
     
@@ -286,9 +269,9 @@ async runMeshIntegrationTest() {
     console.warn(`Mesh integration test failed: ${error.message}`);
     return null;
   }
-}
+  }
 
-async runBasicSystemCheck() {
+  async runBasicSystemCheck() {
   try {
     // Basic system health check
     if (!this.tracker) {
@@ -304,7 +287,8 @@ async runBasicSystemCheck() {
     return true;
   } catch (error) {
     console.warn(`Basic system check failed: ${error.message}`);
-    return false;
+      return false;
+    }
   }
 
   /**

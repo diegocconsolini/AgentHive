@@ -8,9 +8,10 @@ const AgentMemory = require('../../src/models/AgentMemory');
 
 // Mock AI Provider Service
 const mockAIProvider = {
-  validateConnection: jest.fn().mockResolvedValue(true),
-  sendMessage: jest.fn().mockResolvedValue({
-    content: 'knowledge'
+  getAvailableProviders: jest.fn().mockReturnValue([{ name: 'test-provider' }]),
+  checkProviderHealth: jest.fn().mockResolvedValue({ healthy: true, latency: 0 }),
+  generateResponse: jest.fn().mockResolvedValue({
+    response: 'knowledge'
   })
 };
 
@@ -76,7 +77,8 @@ describe('SmartMemoryIndex', () => {
       
       // Should not throw on second initialization
       await expect(memoryIndex.initialize()).resolves.not.toThrow();
-      expect(mockAIProvider.validateConnection).toHaveBeenCalledTimes(1);
+      // Since it's already initialized, checkProviderHealth should only be called once
+      expect(mockAIProvider.checkProviderHealth).toHaveBeenCalledTimes(1);
     });
 
     test('should handle AI provider initialization failure gracefully', async () => {

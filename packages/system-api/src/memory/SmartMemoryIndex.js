@@ -26,7 +26,10 @@ class SmartMemoryIndex {
    * Initialize the Smart Memory Index
    */
   async initialize() {
-    if (this.initialized) return;
+    if (this.initialized) {
+      console.log('🧠 Smart Memory Index already initialized');
+      return;
+    }
 
     try {
       console.log('🧠 Initializing Smart Memory Index...');
@@ -47,7 +50,9 @@ class SmartMemoryIndex {
       console.log('✅ Smart Memory Index initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize Smart Memory Index:', error);
-      throw error;
+      // Don't throw in graceful degradation mode
+      this.initialized = true; // Mark as initialized even if AI provider fails
+      console.log('⚠️ Smart Memory Index initialized with limited functionality');
     }
   }
 
@@ -56,6 +61,11 @@ class SmartMemoryIndex {
    */
   async addMemory(memoryData) {
     await this.ensureInitialized();
+
+    // Validate input
+    if (!memoryData || memoryData === null || memoryData === undefined) {
+      throw new Error('Memory data is required');
+    }
 
     try {
       // Create memory instance
@@ -320,15 +330,10 @@ class SmartMemoryIndex {
    */
   async generateTextEmbedding(text) {
     try {
-      const response = await this.aiProvider.sendMessage({
-        messages: [{
-          role: 'user',
-          content: `Generate semantic embedding vector for: ${text.substring(0, 500)}`
-        }],
-        options: {
-          temperature: 0.1,
-          max_tokens: 1000
-        }
+      const response = await this.aiProvider.generateResponse({
+        prompt: `Generate semantic embedding vector for: ${text.substring(0, 500)}`,
+        temperature: 0.1,
+        maxTokens: 1000
       });
 
       // For now, create a simple hash-based vector
@@ -350,22 +355,17 @@ class SmartMemoryIndex {
     try {
       const content = this.extractMemoryContent(memory);
       
-      const response = await this.aiProvider.sendMessage({
-        messages: [{
-          role: 'user',
-          content: `Categorize this memory content into one of these categories: interaction, pattern, knowledge, performance, context, preference. 
+      const response = await this.aiProvider.generateResponse({
+        prompt: `Categorize this memory content into one of these categories: interaction, pattern, knowledge, performance, context, preference. 
           
           Content: ${content.substring(0, 300)}
           
-          Return only the category name.`
-        }],
-        options: {
-          temperature: 0.1,
-          max_tokens: 50
-        }
+          Return only the category name.`,
+        temperature: 0.1,
+        maxTokens: 50
       });
 
-      const category = response.content?.trim().toLowerCase();
+      const category = response.response?.trim().toLowerCase();
       
       // Validate category
       const validCategories = ['interaction', 'pattern', 'knowledge', 'performance', 'context', 'preference'];
