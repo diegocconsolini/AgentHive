@@ -83,14 +83,17 @@ describe('SmartMemoryIndex', () => {
 
     test('should handle AI provider initialization failure gracefully', async () => {
       const failingProvider = {
-        validateConnection: jest.fn().mockRejectedValue(new Error('Connection failed'))
+        getAvailableProviders: jest.fn().mockReturnValue([{ name: 'failing-provider' }]),
+        checkProviderHealth: jest.fn().mockRejectedValue(new Error('Connection failed'))
       };
       
       // Create a new instance with the failing provider
       const newIndex = new SmartMemoryIndex();
       newIndex.aiProvider = failingProvider;
       
-      await expect(newIndex.initialize()).rejects.toThrow('Connection failed');
+      // Should not throw due to graceful degradation - just mark as initialized with limited functionality
+      await expect(newIndex.initialize()).resolves.not.toThrow();
+      expect(newIndex.initialized).toBe(true);
     });
   });
 
