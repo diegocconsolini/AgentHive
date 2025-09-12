@@ -2464,6 +2464,34 @@
         "relationship_count": 5
       }
     },
+    "smart-memory-7ce6a256-f6c2-4e1a-ab6a-e972ad9a21e7": {
+      "id": "smart-memory-7ce6a256-f6c2-4e1a-ab6a-e972ad9a21e7",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "failure-test-agent",
+        "test-user"
+      ],
+      "importance": 0.7,
+      "created": "2025-09-12T23:33:01.016Z",
+      "updated": "2025-09-12T23:33:01.016Z",
+      "metadata": {
+        "agent_id": "failure-test-agent",
+        "tags": [
+          "smart-memory",
+          "failure-test-agent",
+          "test-user"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "7ce6a256-f6c2-4e1a-ab6a-e972ad9a21e7",
+        "user_id": "test-user",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
+      }
+    },
     "smart-memory-420bc5be-1b29-4d4e-bafb-412550b36bea": {
       "id": "smart-memory-420bc5be-1b29-4d4e-bafb-412550b36bea",
       "type": "agent",
@@ -2485,6 +2513,34 @@
         "dependencies": [],
         "retention_policy": "default",
         "memory_id": "420bc5be-1b29-4d4e-bafb-412550b36bea",
+        "user_id": "frontend-dev",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
+      }
+    },
+    "smart-memory-8d77a5f1-4882-464d-8d67-05fc8a73bf47": {
+      "id": "smart-memory-8d77a5f1-4882-464d-8d67-05fc8a73bf47",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "frontend-developer",
+        "frontend-dev"
+      ],
+      "importance": 0.8999999999999999,
+      "created": "2025-09-12T23:32:25.522Z",
+      "updated": "2025-09-12T23:32:25.522Z",
+      "metadata": {
+        "agent_id": "frontend-developer",
+        "tags": [
+          "smart-memory",
+          "frontend-developer",
+          "frontend-dev"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "8d77a5f1-4882-464d-8d67-05fc8a73bf47",
         "user_id": "frontend-dev",
         "category": "interaction",
         "interaction_count": 1,
@@ -2576,6 +2632,62 @@
         "relationship_count": 5
       }
     },
+    "smart-memory-94b39df8-77e4-4388-8ccd-a0567a7f51c6": {
+      "id": "smart-memory-94b39df8-77e4-4388-8ccd-a0567a7f51c6",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "minimal-agent",
+        "system"
+      ],
+      "importance": 0.8999999999999999,
+      "created": "2025-09-12T23:32:56.967Z",
+      "updated": "2025-09-12T23:32:56.967Z",
+      "metadata": {
+        "agent_id": "minimal-agent",
+        "tags": [
+          "smart-memory",
+          "minimal-agent",
+          "system"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "94b39df8-77e4-4388-8ccd-a0567a7f51c6",
+        "user_id": "system",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
+      }
+    },
+    "smart-memory-0f9b7081-5621-479b-ae27-04e644f44ca7": {
+      "id": "smart-memory-0f9b7081-5621-479b-ae27-04e644f44ca7",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "python-pro",
+        "developer-user"
+      ],
+      "importance": 0.7,
+      "created": "2025-09-12T23:32:20.451Z",
+      "updated": "2025-09-12T23:32:20.451Z",
+      "metadata": {
+        "agent_id": "python-pro",
+        "tags": [
+          "smart-memory",
+          "python-pro",
+          "developer-user"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "0f9b7081-5621-479b-ae27-04e644f44ca7",
+        "user_id": "developer-user",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 0
+      }
+    },
     "smart-memory-37830aa4-315d-4c5d-b05a-9c79658a59f5": {
       "id": "smart-memory-37830aa4-315d-4c5d-b05a-9c79658a59f5",
       "type": "agent",
@@ -2660,6 +2772,34 @@
         "relationship_count": 5
       }
     },
+    "smart-memory-14513697-3f76-4af3-b449-6ad90eab969a": {
+      "id": "smart-memory-14513697-3f76-4af3-b449-6ad90eab969a",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "test-agent-1",
+        "test-user-1"
+      ],
+      "importance": 0.7,
+      "created": "2025-09-12T23:32:56.106Z",
+      "updated": "2025-09-12T23:32:56.106Z",
+      "metadata": {
+        "agent_id": "test-agent-1",
+        "tags": [
+          "smart-memory",
+          "test-agent-1",
+          "test-user-1"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "14513697-3f76-4af3-b449-6ad90eab969a",
+        "user_id": "test-user-1",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
+      }
+    },
     "smart-memory-304b7be3-9561-4bc9-90b9-c5020ed22403": {
       "id": "smart-memory-304b7be3-9561-4bc9-90b9-c5020ed22403",
       "type": "agent",
@@ -2686,6 +2826,34 @@
         "interaction_count": 1,
         "has_semantic_vector": true,
         "relationship_count": 4
+      }
+    },
+    "smart-memory-3faedf39-6aef-4e10-ac0e-96ff20ba042c": {
+      "id": "smart-memory-3faedf39-6aef-4e10-ac0e-96ff20ba042c",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "test-agent-1",
+        "test-user-1"
+      ],
+      "importance": 0.7,
+      "created": "2025-09-12T23:32:45.291Z",
+      "updated": "2025-09-12T23:32:45.291Z",
+      "metadata": {
+        "agent_id": "test-agent-1",
+        "tags": [
+          "smart-memory",
+          "test-agent-1",
+          "test-user-1"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "3faedf39-6aef-4e10-ac0e-96ff20ba042c",
+        "user_id": "test-user-1",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
       }
     },
     "smart-memory-49135c29-0f53-4ae4-b2c6-3dfd9ac85d79": {
@@ -2744,6 +2912,34 @@
         "relationship_count": 5
       }
     },
+    "smart-memory-9529ffbd-131e-4ce6-b905-4c948a61feeb": {
+      "id": "smart-memory-9529ffbd-131e-4ce6-b905-4c948a61feeb",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "test-agent-1",
+        "test-user-1"
+      ],
+      "importance": 0.7,
+      "created": "2025-09-12T23:33:04.390Z",
+      "updated": "2025-09-12T23:33:04.390Z",
+      "metadata": {
+        "agent_id": "test-agent-1",
+        "tags": [
+          "smart-memory",
+          "test-agent-1",
+          "test-user-1"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "9529ffbd-131e-4ce6-b905-4c948a61feeb",
+        "user_id": "test-user-1",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
+      }
+    },
     "smart-memory-a0b1c0a7-447f-4624-a754-810c5cfd18d2": {
       "id": "smart-memory-a0b1c0a7-447f-4624-a754-810c5cfd18d2",
       "type": "agent",
@@ -2770,6 +2966,34 @@
         "interaction_count": 1,
         "has_semantic_vector": true,
         "relationship_count": 5
+      }
+    },
+    "smart-memory-a9af6789-6151-43b3-a30f-a8b059b8f418": {
+      "id": "smart-memory-a9af6789-6151-43b3-a30f-a8b059b8f418",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "test-agent-1",
+        "test-user-1"
+      ],
+      "importance": 0.5,
+      "created": "2025-09-12T23:32:39.596Z",
+      "updated": "2025-09-12T23:32:39.596Z",
+      "metadata": {
+        "agent_id": "test-agent-1",
+        "tags": [
+          "smart-memory",
+          "test-agent-1",
+          "test-user-1"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "a9af6789-6151-43b3-a30f-a8b059b8f418",
+        "user_id": "test-user-1",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 0
       }
     },
     "smart-memory-b2df3b50-6678-4aae-96d6-fa771322838f": {
@@ -2968,6 +3192,34 @@
         "relationship_count": 5
       }
     },
+    "smart-memory-502f4e2d-6f8e-47dd-b549-77dc76397cb2": {
+      "id": "smart-memory-502f4e2d-6f8e-47dd-b549-77dc76397cb2",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "test-agent-bridge",
+        "test-user-123"
+      ],
+      "importance": 0.8999999999999999,
+      "created": "2025-09-12T23:32:11.479Z",
+      "updated": "2025-09-12T23:32:11.479Z",
+      "metadata": {
+        "agent_id": "test-agent-bridge",
+        "tags": [
+          "smart-memory",
+          "test-agent-bridge",
+          "test-user-123"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "502f4e2d-6f8e-47dd-b549-77dc76397cb2",
+        "user_id": "test-user-123",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
+      }
+    },
     "smart-memory-8f429fdd-a9fb-42ca-8540-80ecbf05cd8d": {
       "id": "smart-memory-8f429fdd-a9fb-42ca-8540-80ecbf05cd8d",
       "type": "agent",
@@ -3053,5 +3305,5 @@
       }
     }
   },
-  "lastRebuild": "2025-09-12T23:31:37.599Z"
+  "lastRebuild": "2025-09-12T23:33:37.850Z"
 }
