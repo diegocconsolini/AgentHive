@@ -27,6 +27,85 @@ export const typeDefs = `
     user: User!
   }
 
+  type AgentMemory {
+    id: ID!
+    agentId: String!
+    userId: String!
+    knowledge: MemoryKnowledge!
+    interactions: [MemoryInteraction!]!
+    patterns: MemoryPatterns!
+    performance: MemoryPerformance!
+    created: DateTime!
+    updated: DateTime!
+    lastAccessed: DateTime
+  }
+
+  type MemoryKnowledge {
+    concepts: [String!]!
+    relationships: [String!]!
+    confidence: Float!
+  }
+
+  type MemoryInteraction {
+    id: ID!
+    timestamp: DateTime!
+    summary: String!
+    success: Boolean!
+    duration: Int
+    tokens: Int
+  }
+
+  type MemoryPatterns {
+    successPatterns: [String!]!
+    preferences: [String!]!
+    commonTasks: [String!]!
+  }
+
+  type MemoryPerformance {
+    successRate: Float!
+    averageTime: Int!
+    totalInteractions: Int!
+    lastPerformanceUpdate: DateTime!
+  }
+
+  type MemorySearchResult {
+    memory: AgentMemory!
+    similarity: Float!
+    category: String!
+    relationships: [MemoryRelationship!]!
+  }
+
+  type MemoryRelationship {
+    memoryId: String!
+    similarity: Float!
+    relationshipType: String!
+  }
+
+  type MemoryAnalytics {
+    totalMemories: Int!
+    categoryDistribution: [CategoryCount!]!
+    topAccessedMemories: [AccessCount!]!
+    averageRelationships: Float!
+    memoryHealth: MemoryHealth!
+  }
+
+  type CategoryCount {
+    category: String!
+    count: Int!
+  }
+
+  type AccessCount {
+    memoryId: String!
+    accessCount: Int!
+  }
+
+  type MemoryHealth {
+    indexingHealth: Float!
+    categorizationHealth: Float!
+    relationshipHealth: Float!
+    overallHealth: Float!
+  }
+
   type AuthTokens {
     accessToken: String!
     refreshToken: String!
@@ -59,6 +138,49 @@ export const typeDefs = `
     title: String
     content: String
     tags: [String!]
+  }
+
+  input CreateAgentMemoryInput {
+    agentId: String!
+    userId: String!
+    knowledge: MemoryKnowledgeInput!
+    interactions: [MemoryInteractionInput!] = []
+    patterns: MemoryPatternsInput!
+  }
+
+  input UpdateAgentMemoryInput {
+    knowledge: MemoryKnowledgeInput
+    interactions: [MemoryInteractionInput!]
+    patterns: MemoryPatternsInput
+  }
+
+  input MemoryKnowledgeInput {
+    concepts: [String!]!
+    relationships: [String!]!
+    confidence: Float!
+  }
+
+  input MemoryInteractionInput {
+    timestamp: DateTime!
+    summary: String!
+    success: Boolean!
+    duration: Int
+    tokens: Int
+  }
+
+  input MemoryPatternsInput {
+    successPatterns: [String!]!
+    preferences: [String!]!
+    commonTasks: [String!]!
+  }
+
+  input MemorySearchInput {
+    query: String!
+    limit: Int = 10
+    threshold: Float = 0.3
+    agentId: String
+    category: String
+    includeRelated: Boolean = false
   }
 
   input MemoryFilter {
@@ -307,6 +429,12 @@ export const typeDefs = `
     memories(filter: MemoryFilter): [Memory!]!
     memory(id: ID!): Memory
 
+    # Smart Memory Index queries
+    agentMemory(id: ID!): AgentMemory
+    agentMemories(agentId: String!, userId: String!): [AgentMemory!]!
+    searchAgentMemories(input: MemorySearchInput!): [MemorySearchResult!]!
+    memoryAnalytics: MemoryAnalytics!
+
     # Context queries
     contexts(filter: ContextFilter): [Context!]!
     context(id: ID!): Context
@@ -331,6 +459,11 @@ export const typeDefs = `
     createMemory(input: CreateMemoryInput!): Memory!
     updateMemory(id: ID!, input: UpdateMemoryInput!): Memory!
     deleteMemory(id: ID!): Boolean!
+
+    # Smart Memory Index management
+    createAgentMemory(input: CreateAgentMemoryInput!): AgentMemory!
+    updateAgentMemory(id: ID!, input: UpdateAgentMemoryInput!): AgentMemory!
+    deleteAgentMemory(id: ID!): Boolean!
 
     # Context management
     createContext(input: CreateContextInput!): Context!
