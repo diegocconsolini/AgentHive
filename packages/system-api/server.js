@@ -502,6 +502,26 @@ class AgentHiveSystemAPI {
       }
     });
 
+    // Analytics endpoint must come before :id route to avoid parameter matching
+    this.app.get('/api/memory/analytics', async (req, res) => {
+      try {
+        const analytics = await this.memoryIndex.getAnalytics();
+        
+        res.json({
+          success: true,
+          analytics,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory analytics error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to get memory analytics',
+          message: error.message
+        });
+      }
+    });
+
     this.app.get('/api/memory/:id', async (req, res) => {
       try {
         const { id } = req.params;
@@ -596,25 +616,6 @@ class AgentHiveSystemAPI {
         res.status(500).json({
           success: false,
           error: 'Failed to search memories',
-          message: error.message
-        });
-      }
-    });
-
-    this.app.get('/api/memory/analytics', async (req, res) => {
-      try {
-        const analytics = await this.memoryIndex.getAnalytics();
-        
-        res.json({
-          success: true,
-          analytics,
-          timestamp: new Date().toISOString()
-        });
-      } catch (error) {
-        console.error('❌ Memory analytics error:', error);
-        res.status(500).json({
-          success: false,
-          error: 'Failed to get memory analytics',
           message: error.message
         });
       }

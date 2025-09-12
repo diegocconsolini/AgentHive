@@ -100,10 +100,10 @@ export const typeDefs = `
   }
 
   type MemoryHealth {
-    indexingHealth: Float!
-    categorizationHealth: Float!
-    relationshipHealth: Float!
-    overallHealth: Float!
+    indexingHealth: Float
+    categorizationHealth: Float
+    relationshipHealth: Float
+    overallHealth: Float
   }
 
   type AuthTokens {
