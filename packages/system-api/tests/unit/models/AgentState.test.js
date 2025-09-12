@@ -3,8 +3,8 @@
  * Tests agent state management, capability tracking, and performance metrics
  */
 
-import { AgentState } from '../../../src/models/AgentState.js';
-import { TestDataFactory } from '../../fixtures/testData.js';
+const { AgentState } = require('../../../src/models/AgentState.js');
+const { TestDataFactory } = require('../../fixtures/testData.js');
 
 describe('AgentState Model', () => {
   describe('Creation and Validation', () => {

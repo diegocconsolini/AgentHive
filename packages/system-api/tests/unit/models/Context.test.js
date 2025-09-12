@@ -3,8 +3,8 @@
  * Tests context creation, validation, and transformation
  */
 
-import { Context } from '../../../src/models/Context.js';
-import { TestDataFactory } from '../../fixtures/testData.js';
+const { Context } = require('../../../src/models/Context.js');
+const { TestDataFactory } = require('../../fixtures/testData.js');
 
 describe('Context Model', () => {
   describe('Creation and Validation', () => {
