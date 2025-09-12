@@ -20,8 +20,15 @@ module.exports = {
   clearMocks: true,
   restoreMocks: true,
   moduleFileExtensions: ['js', 'json', 'node'],
+  extensionsToTreatAsEsm: ['.js'],
+  globals: {
+    'ts-jest': {
+      useESM: true
+    }
+  },
+  preset: '@babel/preset-env',
   transform: {
-    '^.+\\.js$': 'babel-jest'
+    '^.+\\.js$': ['babel-jest', { presets: [['@babel/preset-env', { targets: { node: 'current' } }]] }]
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
