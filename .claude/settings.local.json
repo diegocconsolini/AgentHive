@@ -15,7 +15,8 @@
       "Read(//home/diegocc/epic-memory-manager-frontend-and-cli/**)",
       "Bash(node:*)",
       "Bash(npm test:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(timeout 30s npm test tests/unit/agents/AgentMemoryManager.test.js -- --verbose --maxWorkers=1)"
     ],
     "deny": [],
     "ask": []
