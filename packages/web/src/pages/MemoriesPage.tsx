@@ -1,8 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { Brain, Plus, Search, Filter, Tag, Calendar, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 
-// SmartMemoryIndex API Configuration
-const SMARTMEMORY_API_URL = 'http://localhost:4001/api/memory';
+// GraphQL Queries using EXISTING SmartMemoryIndex integration
+const GET_MEMORY_ANALYTICS = gql`
+  query GetMemoryAnalytics {
+    memoryAnalytics {
+      totalMemories
+      categoryDistribution
+      topAccessedMemories
+      averageRelationships
+      memoryHealth {
+        indexingHealth
+        categorizationHealth
+        relationshipHealth
+        overallHealth
+      }
+    }
+  }
+`;
+
+const SEARCH_AGENT_MEMORIES = gql`
+  query SearchAgentMemories($input: SearchInput!) {
+    searchAgentMemories(input: $input) {
+      success
+      results {
+        id
+        agentId
+        userId
+        created
+        updated
+        interactions {
+          timestamp
+          summary
+        }
+        knowledge {
+          concepts
+          expertise
+        }
+        patterns {
+          userPreferences
+        }
+        similarity
+      }
+    }
+  }
+`;
+
+const CREATE_AGENT_MEMORY = gql`
+  mutation CreateAgentMemory($input: CreateAgentMemoryInput!) {
+    createAgentMemory(input: $input) {
+      success
+      memory {
+        id
+        agentId
+        userId
+        created
+        updated
+        interactions {
+          timestamp
+          summary
+        }
+        knowledge {
+          concepts
+          expertise
+        }
+        patterns {
+          userPreferences
+        }
+      }
+    }
+  }
+`;
 
 interface Memory {
   id: string;
@@ -14,43 +83,19 @@ interface Memory {
   userId: string;
 }
 
-// AgentMemory interface from SmartMemoryIndex
-interface AgentMemory {
-  id: string;
-  agentId: string;
-  userId: string;
-  created: string;
-  updated: string;
-  interactions: Array<{
-    timestamp: string;
-    summary: string;
-  }>;
-  knowledge: {
-    concepts: string[];
-    expertise: string;
-  };
-  patterns: {
-    userPreferences: string[];
-  };
-}
-
 // Transform AgentMemory to frontend Memory format
-const transformAgentMemoryToMemory = (agentMemory: AgentMemory): Memory => {
-  // Extract title from first interaction or knowledge
-  const title = agentMemory.interactions[0]?.summary || 
-               agentMemory.knowledge.expertise || 
-               'Memory';
+const transformAgentMemoryToMemory = (agentMemory: any): Memory => {
+  const title = agentMemory.interactions?.[0]?.summary || 
+               agentMemory.knowledge?.expertise || 
+               'AI Memory';
   
-  // Create content from knowledge and patterns
   const content = [
-    `Expertise: ${agentMemory.knowledge.expertise}`,
-    `Concepts: ${agentMemory.knowledge.concepts.join(', ')}`,
-    ...(agentMemory.patterns.userPreferences?.length > 0 ? 
-        [`Preferences: ${agentMemory.patterns.userPreferences.join(', ')}`] : [])
-  ].join('\n');
+    agentMemory.knowledge?.expertise ? `Expertise: ${agentMemory.knowledge.expertise}` : '',
+    agentMemory.knowledge?.concepts?.length > 0 ? `Concepts: ${agentMemory.knowledge.concepts.join(', ')}` : '',
+    agentMemory.patterns?.userPreferences?.length > 0 ? `Preferences: ${agentMemory.patterns.userPreferences.join(', ')}` : ''
+  ].filter(Boolean).join('\n');
   
-  // Use concepts as tags
-  const tags = agentMemory.knowledge.concepts || [];
+  const tags = agentMemory.knowledge?.concepts || [];
   
   return {
     id: agentMemory.id,
