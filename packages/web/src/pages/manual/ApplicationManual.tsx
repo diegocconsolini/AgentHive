@@ -1,4 +1,47 @@
 import React, { useState } from 'react';
+
+// Professional CSS for full viewport manual layout
+const manualStyles = `
+  .manual-viewport-breakout {
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    width: 100vw;
+    max-width: none;
+    min-height: 100vh;
+    background: rgb(249 250 251);
+  }
+
+  .dark .manual-viewport-breakout {
+    background: rgb(17 24 39);
+  }
+
+  .manual-layout {
+    display: grid;
+    grid-template-columns: 20rem 1fr;
+    height: 100vh;
+  }
+
+  @media (max-width: 1024px) {
+    .manual-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .manual-navigation-sidebar {
+      display: none;
+    }
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleId = 'manual-viewport-styles';
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = manualStyles;
+    document.head.appendChild(style);
+  }
+}
 import { 
   Book, 
   ChevronRight, 
@@ -1817,16 +1860,10 @@ sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"`}</CodeBlock>
   ];
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 dark:bg-gray-900" 
-         style={{ 
-           marginLeft: 'calc(-50vw + 50%)', 
-           marginRight: 'calc(-50vw + 50%)',
-           width: '100vw',
-           maxWidth: 'none'
-         }}>
-      <div className="grid grid-cols-[320px_1fr] h-screen">
+    <div className="manual-viewport-breakout">
+      <div className="manual-layout">
         {/* Manual Navigation Sidebar */}
-        <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+        <aside className="manual-navigation-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
           <div className="p-6">
             <header className="mb-6">
               <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center">
