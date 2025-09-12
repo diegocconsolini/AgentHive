@@ -3,7 +3,7 @@
  * Provides consistent test data for all test suites
  */
 
-export class TestDataFactory {
+class TestDataFactory {
   static createContext(options = {}) {
     const defaults = {
       id: `context-${Date.now()}-${Math.random()}`,

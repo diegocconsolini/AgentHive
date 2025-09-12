@@ -7,7 +7,7 @@ const { EventEmitter } = require('events');
 const path = require('path');
 const fs = require('fs/promises');
 
-export class MockStorageManager extends EventEmitter {
+class MockStorageManager extends EventEmitter {
   constructor() {
     super();
     this.storage = new Map();
@@ -103,7 +103,7 @@ export class MockStorageManager extends EventEmitter {
   }
 }
 
-export class MockAgentRegistry extends EventEmitter {
+class MockAgentRegistry extends EventEmitter {
   constructor() {
     super();
     this.agents = new Map();
@@ -182,7 +182,7 @@ export class MockAgentRegistry extends EventEmitter {
   }
 }
 
-export class TestRunner {
+class TestRunner {
   constructor() {
     this.results = [];
     this.startTime = null;
@@ -264,7 +264,7 @@ export class TestRunner {
   }
 }
 
-export class MemoryProfiler {
+class MemoryProfiler {
   constructor() {
     this.snapshots = [];
   }
