@@ -1085,61 +1085,43 @@ hive health                        # Ollama connection status`}</CodeBlock>
                 </ul>
               </div>
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">❌ Not For</h4>
-                <div className="space-y-4 text-sm">
-                  <div className="flex">
-                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
-                      Python/Java/C# projects
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">❌ Not Suitable For These Project Types</h4>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  {[
+                    {
+                      type: "Python/Java/C# Projects",
+                      reason: "SessionManager is built for Node.js ecosystem and won't understand Python imports, Java packages, or C# namespaces."
+                    },
+                    {
+                      type: "Simple Single-File Scripts", 
+                      reason: "If your project is just one HTML file or Python script, SessionManager adds unnecessary complexity."
+                    },
+                    {
+                      type: "Projects Without package.json",
+                      reason: "Requires Node.js project structure with npm/yarn for dependency management and testing."
+                    },
+                    {
+                      type: "Non-Git Repositories",
+                      reason: "The backup system depends on Git commands - it won't work in SVN, Mercurial, or no version control."
+                    },
+                    {
+                      type: "Mobile App Development",
+                      reason: "React Native, iOS, Android, Flutter have specialized build tools and project management already."
+                    },
+                    {
+                      type: "Database-Only Projects",
+                      reason: "Designed for application development, not useful for SQL scripts or database schema management."
+                    }
+                  ].map((item, index) => (
+                    <div key={index} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border-l-4 border-red-400">
+                      <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                        {item.type}
+                      </div>
+                      <div className="text-gray-600 dark:text-gray-400">
+                        {item.reason}
+                      </div>
                     </div>
-                    <div className="flex-1 text-gray-600 dark:text-gray-400">
-                      Written for Node.js - won't understand Python imports, Java packages, or C# namespaces
-                    </div>
-                  </div>
-                  
-                  <div className="flex">
-                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
-                      Simple single-file scripts
-                    </div>
-                    <div className="flex-1 text-gray-600 dark:text-gray-400">
-                      Overkill for one HTML file or Python script - designed for multi-component projects
-                    </div>
-                  </div>
-                  
-                  <div className="flex">
-                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
-                      Projects without package.json
-                    </div>
-                    <div className="flex-1 text-gray-600 dark:text-gray-400">
-                      Expects Node.js structure with npm/yarn dependency management
-                    </div>
-                  </div>
-                  
-                  <div className="flex">
-                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
-                      Non-Git repositories
-                    </div>
-                    <div className="flex-1 text-gray-600 dark:text-gray-400">
-                      Backup system relies on Git commands - won't work without Git
-                    </div>
-                  </div>
-                  
-                  <div className="flex">
-                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
-                      Mobile app development
-                    </div>
-                    <div className="flex-1 text-gray-600 dark:text-gray-400">
-                      React Native, iOS, Android have their own build systems and project management
-                    </div>
-                  </div>
-                  
-                  <div className="flex">
-                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
-                      Database-only projects
-                    </div>
-                    <div className="flex-1 text-gray-600 dark:text-gray-400">
-                      Not useful for SQL scripts or database schema management
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>

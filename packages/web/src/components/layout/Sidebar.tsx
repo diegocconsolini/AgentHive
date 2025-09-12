@@ -18,35 +18,62 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { clsx } from 'clsx';
-import { useQuery, gql } from '@apollo/client';
 import type { NavItem, SidebarState } from '../../types';
-
-const GET_SIDEBAR_COUNTS = gql`
-  query GetSidebarCounts {
-    analyticsOverview {
-      totalMemories
-      totalContexts
-      totalAgents
-    }
-  }
-`;
+import { useState, useEffect } from 'react';
 
 interface SidebarProps {
   sidebarState: SidebarState;
   onToggleCollapse: () => void;
 }
 
-// Hook to get real sidebar counts
+// Hook to get real sidebar counts from SmartMemoryIndex and other APIs
 const useSidebarCounts = () => {
-  const { data, loading, error } = useQuery(GET_SIDEBAR_COUNTS, {
-    errorPolicy: 'all',
-    pollInterval: 30000, // Update every 30 seconds
+  const [counts, setCounts] = useState({
+    memoriesCount: 0,
+    contextsCount: 0,
+    agentsCount: 0,
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCounts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Fetch memory count from SmartMemoryIndex
+      const memoryResponse = await fetch('http://localhost:4001/api/memory/analytics');
+      const memoryData = await memoryResponse.json();
+      
+      // For now, we'll use placeholder values for contexts and agents
+      // These should be updated when those systems are integrated
+      const memoriesCount = memoryData.success ? memoryData.analytics.totalMemories : 0;
+      
+      setCounts({
+        memoriesCount,
+        contextsCount: 0, // TODO: Integrate with actual context API
+        agentsCount: 88, // From the agents registry
+      });
+      
+    } catch (err) {
+      console.error('Failed to fetch sidebar counts:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch counts');
+      // Keep previous counts on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts();
+    
+    // Poll every 30 seconds
+    const interval = setInterval(fetchCounts, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return {
-    memoriesCount: data?.analyticsOverview?.totalMemories || 0,
-    contextsCount: data?.analyticsOverview?.totalContexts || 0,
-    agentsCount: data?.analyticsOverview?.totalAgents || 0,
+    ...counts,
     loading,
     error,
   };
