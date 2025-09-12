@@ -3,10 +3,10 @@
  * Tests multi-agent scenarios, conflict resolution, and coordination protocols
  */
 
-const { AgentRegistry } = require('../../src/agents/AgentRegistry.js');
-const { AgentCapabilityManager } = require('../../src/agents/AgentCapabilityManager.js');
-const { LoadBalancer } = require('../../src/agents/LoadBalancer.js');
-const { StorageManager } = require('../../src/storage/StorageManager.js');
+const AgentRegistry = require('../../src/agents/AgentRegistry.js');
+const AgentCapabilityManager = require('../../src/agents/AgentCapabilityManager.js');
+const LoadBalancer = require('../../src/agents/LoadBalancer.js');
+const StorageManager = require('../../src/storage/StorageManager.js');
 const { TestDataFactory, CONFLICT_SCENARIO } = require('../fixtures/testData.js');
 const { MockStorageManager, MockAgentRegistry, waitForEvent } = require('../utils/testHelpers.js');
 
