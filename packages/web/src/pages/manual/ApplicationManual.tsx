@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Professional CSS for full viewport manual layout
 const manualStyles = `
+  :root {
+    --agenthive-sidebar-expanded: 16rem;
+    --agenthive-sidebar-collapsed: 4rem;
+  }
+
   .manual-viewport-breakout {
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    width: 100vw;
-    max-width: none;
-    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: var(--agenthive-sidebar-expanded);
+    right: 0;
+    bottom: 0;
+    height: 100vh;
     background: rgb(249 250 251);
+    z-index: 10;
+    overflow: hidden;
   }
 
   .dark .manual-viewport-breakout {
@@ -19,9 +27,24 @@ const manualStyles = `
     display: grid;
     grid-template-columns: 20rem 1fr;
     height: 100vh;
+    width: 100%;
+  }
+
+  .manual-sidebar-collapsed .manual-viewport-breakout {
+    left: var(--agenthive-sidebar-collapsed);
   }
 
   @media (max-width: 1024px) {
+    .manual-viewport-breakout {
+      left: 0;
+    }
+    
+    .manual-layout {
+      grid-template-columns: 16rem 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {    
     .manual-layout {
       grid-template-columns: 1fr;
     }
@@ -74,6 +97,41 @@ interface ManualSection {
 const ApplicationManual: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [copiedText, setCopiedText] = useState<string>('');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+
+  // Monitor main sidebar state
+  useEffect(() => {
+    const checkSidebarState = () => {
+      const sidebar = document.querySelector('[class*="w-16"], [class*="w-64"]');
+      if (sidebar) {
+        const isCollapsed = sidebar.classList.contains('w-16');
+        setSidebarCollapsed(isCollapsed);
+        
+        // Apply CSS class to body for styling
+        if (isCollapsed) {
+          document.body.classList.add('manual-sidebar-collapsed');
+        } else {
+          document.body.classList.remove('manual-sidebar-collapsed');
+        }
+      }
+    };
+
+    // Initial check
+    checkSidebarState();
+    
+    // Monitor for changes with MutationObserver
+    const observer = new MutationObserver(checkSidebarState);
+    observer.observe(document.body, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => {
+      observer.disconnect();
+      document.body.classList.remove('manual-sidebar-collapsed');
+    };
+  }, []);
 
   const copyToClipboard = async (text: string, label: string) => {
     try {
