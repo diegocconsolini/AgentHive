@@ -28,6 +28,34 @@
         "knowledge_domains": 1
       }
     },
+    "test-runner:anonymous:default": {
+      "id": "test-runner:anonymous:default",
+      "type": "agent",
+      "hierarchy": [
+        "agents",
+        "test-runner",
+        "anonymous",
+        "default"
+      ],
+      "importance": 92.5,
+      "created": "2025-09-12T23:15:01.177Z",
+      "updated": "2025-09-12T23:15:01.177Z",
+      "metadata": {
+        "agent_id": "test-runner",
+        "tags": [
+          "agent-memory",
+          "test-runner",
+          "anonymous"
+        ],
+        "dependencies": [],
+        "retention_policy": "long-term",
+        "user_id": "anonymous",
+        "session_id": "default",
+        "interaction_count": 1,
+        "success_rate": 1,
+        "knowledge_domains": 1
+      }
+    },
     "test-runner:test-user-bridge:test-session-bridge": {
       "id": "test-runner:test-user-bridge:test-session-bridge",
       "type": "agent",
@@ -57,5 +85,5 @@
       }
     }
   },
-  "lastRebuild": "2025-09-12T23:12:40.766Z"
+  "lastRebuild": "2025-09-12T23:15:36.839Z"
 }

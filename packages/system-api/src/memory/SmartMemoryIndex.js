@@ -754,6 +754,7 @@ class SmartMemoryIndex {
    */
   async persistMemory(memoryId) {
     try {
+      console.log(`💾 Persisting memory ${memoryId} to storage...`);
       const memory = this.memoryIndex.get(memoryId);
       if (!memory) {
         throw new Error(`Memory ${memoryId} not found in index`);
@@ -762,7 +763,7 @@ class SmartMemoryIndex {
       // Create storage context with memory data and metadata
       const contextData = {
         id: `smart-memory-${memoryId}`,
-        type: 'smart-memory',
+        type: 'agent',
         hierarchy: ['smart-memories', memory.agentId, memory.userId || 'system'],
         importance: this.calculateMemoryImportance(memory),
         content: JSON.stringify({
@@ -790,6 +791,7 @@ class SmartMemoryIndex {
 
       // Save to storage
       await this.storageManager.create(contextData);
+      console.log(`✅ Memory ${memoryId} successfully persisted to storage with hierarchy: ${JSON.stringify(contextData.hierarchy)}`);
       
     } catch (error) {
       console.error(`Failed to persist memory ${memoryId}:`, error);
