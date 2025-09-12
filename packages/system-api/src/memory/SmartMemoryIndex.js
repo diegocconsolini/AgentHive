@@ -35,7 +35,7 @@ class SmartMemoryIndex {
       await this.loadExistingMemories();
       
       // Initialize AI provider
-      await this.aiProvider.validateConnection();
+      await this.validateAIProvider();
       
       // Set up memory categories
       this.initializeCategories();
@@ -642,6 +642,30 @@ class SmartMemoryIndex {
   async ensureInitialized() {
     if (!this.initialized) {
       await this.initialize();
+    }
+  }
+
+  /**
+   * Validate AI provider connection
+   */
+  async validateAIProvider() {
+    try {
+      const providers = this.aiProvider.getAvailableProviders();
+      if (providers.length === 0) {
+        throw new Error('No AI providers available');
+      }
+
+      // Test the first available provider
+      const primaryProvider = providers[0];
+      const healthCheck = await this.aiProvider.checkProviderHealth(primaryProvider.name);
+      
+      if (!healthCheck.healthy) {
+        console.warn(`⚠️ Primary AI provider ${primaryProvider.name} unhealthy: ${healthCheck.error}`);
+      }
+      
+      console.log(`✅ AI provider ${primaryProvider.name} validated (latency: ${healthCheck.latency || 0}ms)`);
+    } catch (error) {
+      console.warn('⚠️ AI provider validation failed, using fallback mode:', error.message);
     }
   }
 }
