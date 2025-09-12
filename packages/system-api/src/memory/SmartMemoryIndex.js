@@ -113,6 +113,9 @@ class SmartMemoryIndex {
       // Update related memories' relationships
       await this.updateRelatedMemoryRelationships(memory.id, relationships);
 
+      // Persist to storage
+      await this.persistMemory(memory.id);
+
       console.log(`✅ Added memory ${memory.id} to Smart Index (category: ${category})`);
       return memory;
 
@@ -717,6 +720,9 @@ class SmartMemoryIndex {
       accessHistory: []
     });
 
+    // Persist to storage (for migrated memories)
+    await this.persistMemory(memoryId);
+
     return memoryId;
   }
 
@@ -743,6 +749,80 @@ class SmartMemoryIndex {
         }, 6 * 60 * 60 * 1000)
       ];
     }
+  }
+
+  /**
+   * Persist memory to storage
+   */
+  async persistMemory(memoryId) {
+    try {
+      const memory = this.memoryIndex.get(memoryId);
+      if (!memory) {
+        throw new Error(`Memory ${memoryId} not found in index`);
+      }
+
+      // Create storage context with memory data and metadata
+      const contextData = {
+        id: `smart-memory-${memoryId}`,
+        type: 'smart-memory',
+        hierarchy: ['smart-memories', memory.agentId, memory.userId || 'system'],
+        importance: this.calculateMemoryImportance(memory),
+        content: JSON.stringify({
+          ...memory,
+          semanticVector: this.semanticVectors.get(memoryId),
+          category: this.categories.get(memoryId),
+          relationships: this.memoryRelationships.get(memoryId),
+          accessCount: this.accessPatterns.get(memoryId)?.accessCount || 0,
+          lastAccessed: this.accessPatterns.get(memoryId)?.lastAccessed,
+          accessHistory: this.accessPatterns.get(memoryId)?.accessHistory || []
+        }),
+        metadata: {
+          memory_id: memoryId,
+          agent_id: memory.agentId,
+          user_id: memory.userId,
+          category: this.categories.get(memoryId),
+          created_at: memory.createdAt,
+          updated_at: memory.updatedAt,
+          interaction_count: memory.interactions?.length || 0,
+          has_semantic_vector: !!this.semanticVectors.get(memoryId),
+          relationship_count: this.memoryRelationships.get(memoryId)?.length || 0,
+          tags: ['smart-memory', memory.agentId, ...(memory.userId ? [memory.userId] : [])]
+        }
+      };
+
+      // Save to storage
+      await this.storageManager.create(contextData);
+      
+    } catch (error) {
+      console.error(`Failed to persist memory ${memoryId}:`, error);
+      // Don't throw - allow memory to exist in-memory even if persistence fails
+    }
+  }
+
+  /**
+   * Calculate memory importance for storage prioritization
+   */
+  calculateMemoryImportance(memory) {
+    let importance = 0.5; // Base importance
+
+    // Factor in interaction success rate
+    if (memory.performance?.successRate) {
+      importance += memory.performance.successRate * 0.2;
+    }
+
+    // Factor in relationship count
+    const relationships = this.memoryRelationships.get(memory.id);
+    if (relationships && relationships.length > 0) {
+      importance += Math.min(relationships.length * 0.1, 0.2);
+    }
+
+    // Factor in access patterns
+    const access = this.accessPatterns.get(memory.id);
+    if (access && access.accessCount > 1) {
+      importance += Math.min(access.accessCount * 0.05, 0.1);
+    }
+
+    return Math.min(importance, 1.0);
   }
 
   /**
