@@ -1,0 +1,10 @@
+{
+  "project": "test-migration",
+  "version": "1.0.0",
+  "author": "test-user",
+  "features": [
+    "migration",
+    "validation",
+    "rollback"
+  ]
+}
