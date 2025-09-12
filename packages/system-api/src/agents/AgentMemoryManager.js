@@ -117,7 +117,7 @@ class AgentMemoryManager {
     // Create context object for storage
     const contextData = {
       id: memoryKey,
-      type: 'agent-memory',
+      type: 'agent',
       hierarchy: ['agents', memory.agentId, memory.userId || 'global', memory.sessionId || 'general'],
       importance: this._calculateMemoryImportance(memory),
       content: JSON.stringify(memory.export()),
