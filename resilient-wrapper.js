@@ -640,7 +640,15 @@ class ResilientSessionManager extends SessionManager {
     console.log('');
     
     // Show base status
-    super.validator.getStatus();
+    try {
+      if (this.validator) {
+        this.validator.getStatus();
+      } else {
+        console.log('📊 Base validator not initialized');
+      }
+    } catch (error) {
+      console.warn(`⚠️  Could not show base status: ${error.message}`);
+    }
   }
 
   /**

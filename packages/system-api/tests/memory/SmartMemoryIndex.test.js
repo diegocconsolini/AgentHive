@@ -75,10 +75,13 @@ describe('SmartMemoryIndex', () => {
     test('should not initialize twice', async () => {
       expect(memoryIndex.initialized).toBe(true);
       
+      // Reset call count to track just this test
+      mockAIProvider.checkProviderHealth.mockClear();
+      
       // Should not throw on second initialization
       await expect(memoryIndex.initialize()).resolves.not.toThrow();
-      // Since it's already initialized, checkProviderHealth should only be called once
-      expect(mockAIProvider.checkProviderHealth).toHaveBeenCalledTimes(1);
+      // Since it's already initialized, checkProviderHealth should not be called again
+      expect(mockAIProvider.checkProviderHealth).toHaveBeenCalledTimes(0);
     });
 
     test('should handle AI provider initialization failure gracefully', async () => {
@@ -415,7 +418,7 @@ describe('SmartMemoryIndex', () => {
 
   describe('Error Handling', () => {
     test('should handle AI provider failures gracefully in categorization', async () => {
-      mockAIProvider.sendMessage.mockRejectedValueOnce(new Error('AI provider error'));
+      mockAIProvider.generateResponse.mockRejectedValueOnce(new Error('AI provider error'));
       
       // Should still add memory using fallback categorization
       const memory = await memoryIndex.addMemory(testMemoryData);
