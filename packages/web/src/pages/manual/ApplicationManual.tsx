@@ -2,69 +2,56 @@ import React, { useState, useEffect } from 'react';
 
 // Professional CSS for full viewport manual layout
 const manualStyles = `
-  :root {
-    --agenthive-sidebar-expanded: 16rem;
-    --agenthive-sidebar-collapsed: 4rem;
-  }
-
-  .manual-viewport-breakout {
-    position: fixed;
-    top: 0;
-    left: var(--agenthive-sidebar-expanded);
-    right: 0;
-    bottom: 0;
-    height: 100vh;
+  .manual-full-width {
+    margin-left: calc(-100vw / 2 + 100% / 2);
+    margin-right: calc(-100vw / 2 + 100% / 2);
+    max-width: 100vw;
+    width: 100vw;
+    min-height: 100vh;
     background: rgb(249 250 251);
-    z-index: 10;
-    overflow: hidden;
   }
 
-  .dark .manual-viewport-breakout {
+  .dark .manual-full-width {
     background: rgb(17 24 39);
   }
 
-  .manual-layout {
+  .manual-grid-layout {
     display: grid;
     grid-template-columns: 20rem 1fr;
-    height: 100vh;
-    width: 100%;
-  }
-
-  .manual-sidebar-collapsed .manual-viewport-breakout {
-    left: var(--agenthive-sidebar-collapsed);
+    min-height: 100vh;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   @media (max-width: 1024px) {
-    .manual-viewport-breakout {
-      left: 0;
-    }
-    
-    .manual-layout {
-      grid-template-columns: 16rem 1fr;
+    .manual-grid-layout {
+      grid-template-columns: 18rem 1fr;
     }
   }
 
-  @media (max-width: 768px) {    
-    .manual-layout {
+  @media (max-width: 768px) {
+    .manual-grid-layout {
       grid-template-columns: 1fr;
     }
     
-    .manual-navigation-sidebar {
+    .manual-nav-sidebar {
       display: none;
     }
   }
 `;
 
-// Inject styles
-if (typeof document !== 'undefined') {
+// Safe style injection for client-side only
+const injectStyles = () => {
+  if (typeof window === 'undefined') return;
+  
   const styleId = 'manual-viewport-styles';
-  if (!document.getElementById(styleId)) {
-    const style = document.createElement('style');
-    style.id = styleId;
-    style.textContent = manualStyles;
-    document.head.appendChild(style);
-  }
-}
+  if (document.getElementById(styleId)) return;
+  
+  const style = document.createElement('style');
+  style.id = styleId;
+  style.textContent = manualStyles;
+  document.head.appendChild(style);
+};
 import { 
   Book, 
   ChevronRight, 
@@ -99,8 +86,11 @@ const ApplicationManual: React.FC = () => {
   const [copiedText, setCopiedText] = useState<string>('');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
 
-  // Monitor main sidebar state
+  // Monitor main sidebar state and inject styles
   useEffect(() => {
+    // Inject styles on mount
+    injectStyles();
+    
     const checkSidebarState = () => {
       const sidebar = document.querySelector('[class*="w-16"], [class*="w-64"]');
       if (sidebar) {
@@ -1918,10 +1908,10 @@ sqlite3 database.sqlite "SELECT COUNT(*) FROM agents;"`}</CodeBlock>
   ];
 
   return (
-    <div className="manual-viewport-breakout">
-      <div className="manual-layout">
+    <div className="manual-full-width">
+      <div className="manual-grid-layout">
         {/* Manual Navigation Sidebar */}
-        <aside className="manual-navigation-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+        <aside className="manual-nav-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
           <div className="p-6">
             <header className="mb-6">
               <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center">

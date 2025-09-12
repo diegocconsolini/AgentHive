@@ -3,6 +3,7 @@ const { AIProviderService } = require('../../ai-providers');
 const AgentMemory = require('../models/AgentMemory');
 const MemoryTransformer = require('./MemoryTransformer');
 const AgentMemoryManager = require('../agents/AgentMemoryManager');
+const StorageManager = require('../storage/StorageManager');
 
 /**
  * Smart Memory Index - AI-powered memory management system
@@ -23,6 +24,12 @@ class SmartMemoryIndex {
     this.accessPatterns = new Map();
     this.maintenanceIntervals = [];
     this.initialized = false;
+    
+    // Persistent storage
+    this.storageManager = new StorageManager({
+      baseDir: '.smart-memory-index',
+      dbPath: '.smart-memory-index/memories.db'
+    });
   }
 
   /**
@@ -37,7 +44,13 @@ class SmartMemoryIndex {
     try {
       console.log('🧠 Initializing Smart Memory Index...');
       
-      // Load existing memories
+      // Initialize persistent storage
+      await this.storageManager.initialize();
+      
+      // Load persisted memories first
+      await this.loadPersistedMemories();
+      
+      // Then load from AgentMemoryManager (for migration)
       await this.loadExistingMemories();
       
       // Initialize AI provider
@@ -561,9 +574,66 @@ class SmartMemoryIndex {
     return expanded;
   }
 
+  async loadPersistedMemories() {
+    try {
+      console.log('💾 Loading persisted SmartMemoryIndex memories...');
+      
+      // Search for SmartMemoryIndex memories in storage
+      const persistedMemories = await this.storageManager.search({
+        type: 'smart-memory'
+      });
+      
+      console.log(`Found ${persistedMemories.length} persisted SmartMemoryIndex memories`);
+      
+      let loadedCount = 0;
+      for (const memoryData of persistedMemories) {
+        try {
+          // Parse stored memory content
+          const smartMemory = JSON.parse(memoryData.content);
+          
+          // Restore to in-memory maps
+          this.memoryIndex.set(smartMemory.id, smartMemory);
+          
+          // Restore semantic vectors if available
+          if (smartMemory.semanticVector) {
+            this.semanticVectors.set(smartMemory.id, smartMemory.semanticVector);
+          }
+          
+          // Restore category
+          if (smartMemory.category) {
+            this.categories.set(smartMemory.id, smartMemory.category);
+          }
+          
+          // Initialize access pattern
+          this.accessPatterns.set(smartMemory.id, {
+            accessCount: smartMemory.accessCount || 0,
+            lastAccessed: smartMemory.lastAccessed || null,
+            accessHistory: smartMemory.accessHistory || []
+          });
+          
+          loadedCount++;
+          
+          if (loadedCount % 10 === 0) {
+            console.log(`Restored ${loadedCount}/${persistedMemories.length} memories...`);
+          }
+          
+        } catch (parseError) {
+          console.error(`Failed to restore memory ${memoryData.id}:`, parseError.message);
+          continue;
+        }
+      }
+      
+      console.log(`✅ Successfully restored ${loadedCount} SmartMemoryIndex memories from storage`);
+      
+    } catch (error) {
+      console.error('Failed to load persisted memories:', error);
+      // Don't throw - allow initialization to continue
+    }
+  }
+
   async loadExistingMemories() {
     try {
-      console.log('📚 Loading existing memories from storage...');
+      console.log('📚 Loading existing memories from AgentMemoryManager (migration)...');
       
       // Initialize a temporary AgentMemoryManager to access storage
       const agentMemoryManager = new AgentMemoryManager();
@@ -574,7 +644,7 @@ class SmartMemoryIndex {
         type: 'agent-memory' 
       });
       
-      console.log(`Found ${allMemories.length} existing agent memories`);
+      console.log(`Found ${allMemories.length} existing agent memories for migration`);
       
       // Transform and add each memory to SmartMemoryIndex
       let loadedCount = 0;
@@ -596,22 +666,22 @@ class SmartMemoryIndex {
           
           // Progress indicator for large datasets
           if (loadedCount % 10 === 0) {
-            console.log(`Loaded ${loadedCount}/${allMemories.length} memories...`);
+            console.log(`Migrated ${loadedCount}/${allMemories.length} memories...`);
           }
           
         } catch (parseError) {
-          console.error(`Failed to load memory ${memoryData.id}:`, parseError.message);
+          console.error(`Failed to migrate memory ${memoryData.id}:`, parseError.message);
           continue; // Skip invalid memories
         }
       }
       
-      console.log(`✅ Successfully loaded ${loadedCount} existing memories into SmartMemoryIndex`);
+      console.log(`✅ Successfully migrated ${loadedCount} agent memories into SmartMemoryIndex`);
       
       // Clean up temporary manager
       await agentMemoryManager.close();
       
     } catch (error) {
-      console.error('Failed to load existing memories:', error);
+      console.error('Failed to load existing memories for migration:', error);
       // Don't throw - allow SmartMemoryIndex to continue without existing memories
     }
   }
