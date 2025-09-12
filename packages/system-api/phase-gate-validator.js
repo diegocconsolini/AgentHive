@@ -85,10 +85,10 @@ class PhaseGateValidator {
     }
 
     // Check GraphQL schema
-    const schemaPath = 'packages/user-api/src/schema.graphql';
+    const schemaPath = 'packages/user-api/src/schema/type-defs.ts';
     if (fs.existsSync(schemaPath)) {
       const schemaContent = fs.readFileSync(schemaPath, 'utf8');
-      if (schemaContent.includes('Memory') || schemaContent.includes('Workflow')) {
+      if (schemaContent.includes('AgentMemory') || schemaContent.includes('Memory') || schemaContent.includes('Workflow')) {
         results.graphqlSchema = true;
       }
     }
