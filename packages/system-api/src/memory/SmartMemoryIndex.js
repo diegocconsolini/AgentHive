@@ -1,6 +1,8 @@
 const { randomUUID } = require('crypto');
 const { AIProviderService } = require('../../ai-providers');
 const AgentMemory = require('../models/AgentMemory');
+const MemoryTransformer = require('./MemoryTransformer');
+const AgentMemoryManager = require('../agents/AgentMemoryManager');
 
 /**
  * Smart Memory Index - AI-powered memory management system
@@ -560,8 +562,92 @@ class SmartMemoryIndex {
   }
 
   async loadExistingMemories() {
-    // TODO: Load from persistent storage
-    console.log('📚 Loading existing memories from storage...');
+    try {
+      console.log('📚 Loading existing memories from storage...');
+      
+      // Initialize a temporary AgentMemoryManager to access storage
+      const agentMemoryManager = new AgentMemoryManager();
+      await agentMemoryManager.initialize();
+      
+      // Get all agent memories from storage
+      const allMemories = await agentMemoryManager.storageManager.search({ 
+        type: 'agent-memory' 
+      });
+      
+      console.log(`Found ${allMemories.length} existing agent memories`);
+      
+      // Transform and add each memory to SmartMemoryIndex
+      let loadedCount = 0;
+      for (const memoryData of allMemories) {
+        try {
+          // Parse stored memory content
+          const agentMemoryContent = JSON.parse(memoryData.content);
+          
+          // Create AgentMemory instance from stored data
+          const agentMemory = new AgentMemory(agentMemoryContent);
+          
+          // Transform to SmartMemoryIndex format
+          const transformedMemory = MemoryTransformer.agentMemoryToSmartMemoryIndex(agentMemoryContent);
+          
+          // Add to SmartMemoryIndex (skip initialization check for loading)
+          await this._addMemoryToIndex(transformedMemory);
+          
+          loadedCount++;
+          
+          // Progress indicator for large datasets
+          if (loadedCount % 10 === 0) {
+            console.log(`Loaded ${loadedCount}/${allMemories.length} memories...`);
+          }
+          
+        } catch (parseError) {
+          console.error(`Failed to load memory ${memoryData.id}:`, parseError.message);
+          continue; // Skip invalid memories
+        }
+      }
+      
+      console.log(`✅ Successfully loaded ${loadedCount} existing memories into SmartMemoryIndex`);
+      
+      // Clean up temporary manager
+      await agentMemoryManager.close();
+      
+    } catch (error) {
+      console.error('Failed to load existing memories:', error);
+      // Don't throw - allow SmartMemoryIndex to continue without existing memories
+    }
+  }
+
+  /**
+   * Internal method to add memory to index without initialization checks
+   */
+  async _addMemoryToIndex(memoryData) {
+    const memoryId = randomUUID();
+    
+    // Store memory
+    this.memoryIndex.set(memoryId, {
+      id: memoryId,
+      ...memoryData,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+
+    // Add to category index
+    const category = this.categorizeMemory(memoryData);
+    this.categories.set(memoryId, category);
+
+    // Generate and store semantic embedding
+    const embedding = await this.generateSemanticEmbedding(memoryData);
+    if (embedding) {
+      this.semanticVectors.set(memoryId, embedding);
+    }
+
+    // Initialize access pattern
+    this.accessPatterns.set(memoryId, {
+      accessCount: 0,
+      lastAccessed: null,
+      accessHistory: []
+    });
+
+    return memoryId;
   }
 
   initializeCategories() {
