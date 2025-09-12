@@ -3,6 +3,7 @@ import { db } from '../db/config.js';
 import { memories, users } from '../db/schema.js';
 import { eq, and, like, desc, asc, or } from 'drizzle-orm';
 import type { GraphQLContext } from '../context.js';
+import fetch from 'node-fetch';
 
 function requireAuth(context: GraphQLContext) {
   if (!context.isAuthenticated || !context.user) {
@@ -12,6 +13,9 @@ function requireAuth(context: GraphQLContext) {
   }
   return context.user;
 }
+
+// SmartMemoryIndex System API URL
+const SYSTEM_API_URL = process.env.SYSTEM_API_URL || 'http://localhost:4001';
 
 export const memoryResolvers = {
   Query: {
@@ -94,6 +98,85 @@ export const memoryResolvers = {
         createdAt: new Date(memory.createdAt).toISOString(),
         updatedAt: new Date(memory.updatedAt).toISOString(),
       };
+    },
+
+    // SmartMemoryIndex queries
+    async agentMemory(_: any, { id }: { id: string }, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/agent/${id}`);
+        if (!response.ok) {
+          if (response.status === 404) {
+            return null;
+          }
+          throw new Error(`Failed to fetch agent memory: ${response.statusText}`);
+        }
+        
+        const agentMemory = await response.json();
+        return agentMemory;
+      } catch (error) {
+        console.error('Error fetching agent memory:', error);
+        throw new GraphQLError('Failed to fetch agent memory');
+      }
+    },
+
+    async agentMemories(_: any, { agentId, userId }: { agentId: string; userId: string }, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/agent?agentId=${agentId}&userId=${userId}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch agent memories: ${response.statusText}`);
+        }
+        
+        const agentMemories = await response.json();
+        return agentMemories;
+      } catch (error) {
+        console.error('Error fetching agent memories:', error);
+        throw new GraphQLError('Failed to fetch agent memories');
+      }
+    },
+
+    async searchAgentMemories(_: any, { input }: { input: any }, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/search`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(input),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to search agent memories: ${response.statusText}`);
+        }
+        
+        const searchResults = await response.json();
+        return searchResults;
+      } catch (error) {
+        console.error('Error searching agent memories:', error);
+        throw new GraphQLError('Failed to search agent memories');
+      }
+    },
+
+    async memoryAnalytics(_: any, args: any, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/analytics`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch memory analytics: ${response.statusText}`);
+        }
+        
+        const analytics = await response.json();
+        return analytics;
+      } catch (error) {
+        console.error('Error fetching memory analytics:', error);
+        throw new GraphQLError('Failed to fetch memory analytics');
+      }
     },
   },
 
@@ -183,6 +266,74 @@ export const memoryResolvers = {
       );
       
       return true;
+    },
+
+    // SmartMemoryIndex mutations
+    async createAgentMemory(_: any, { input }: { input: any }, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/agent`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(input),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to create agent memory: ${response.statusText}`);
+        }
+        
+        const agentMemory = await response.json();
+        return agentMemory;
+      } catch (error) {
+        console.error('Error creating agent memory:', error);
+        throw new GraphQLError('Failed to create agent memory');
+      }
+    },
+
+    async updateAgentMemory(_: any, { id, input }: { id: string; input: any }, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/agent/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(input),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to update agent memory: ${response.statusText}`);
+        }
+        
+        const agentMemory = await response.json();
+        return agentMemory;
+      } catch (error) {
+        console.error('Error updating agent memory:', error);
+        throw new GraphQLError('Failed to update agent memory');
+      }
+    },
+
+    async deleteAgentMemory(_: any, { id }: { id: string }, context: GraphQLContext) {
+      const user = requireAuth(context);
+      
+      try {
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/agent/${id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to delete agent memory: ${response.statusText}`);
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('Error deleting agent memory:', error);
+        throw new GraphQLError('Failed to delete agent memory');
+      }
     },
   },
 
