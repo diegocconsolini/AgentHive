@@ -5,7 +5,7 @@
     "currentPhase": 2,
     "currentWeek": 1,
     "currentDay": 1,
-    "lastUpdate": "2025-09-12T15:17:00.172Z",
+    "lastUpdate": "2025-09-12T15:33:32.899Z",
     "totalSessions": 1
   },
   "baselineStatus": {
@@ -80,8 +80,8 @@
                 "backendComplete": false,
                 "apiEndpoints": true,
                 "graphqlSchema": false,
-                "frontendComponent": false,
-                "cliCommands": false,
+                "frontendComponent": true,
+                "cliCommands": true,
                 "testsWritten": false,
                 "integrationTested": false,
                 "backendImplementation": true,
