@@ -1085,37 +1085,60 @@ hive health                        # Ollama connection status`}</CodeBlock>
                 </ul>
               </div>
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">❌ Not For</h4>
-                <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                  <div>
-                    <strong>• Python/Java/C# projects</strong><br/>
-                    SessionManager is written in Node.js and expects JavaScript project structure. 
-                    It won't understand Python imports, Java packages, or C# namespaces.
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">❌ Not For</h4>
+                <div className="space-y-4 text-sm">
+                  <div className="flex">
+                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
+                      Python/Java/C# projects
+                    </div>
+                    <div className="flex-1 text-gray-600 dark:text-gray-400">
+                      Written for Node.js - won't understand Python imports, Java packages, or C# namespaces
+                    </div>
                   </div>
-                  <div>
-                    <strong>• Simple single-file scripts</strong><br/>
-                    If your project is just one HTML file or one Python script, SessionManager is overkill. 
-                    It's designed for projects with multiple components and phases.
+                  
+                  <div className="flex">
+                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
+                      Simple single-file scripts
+                    </div>
+                    <div className="flex-1 text-gray-600 dark:text-gray-400">
+                      Overkill for one HTML file or Python script - designed for multi-component projects
+                    </div>
                   </div>
-                  <div>
-                    <strong>• Projects without package.json</strong><br/>
-                    SessionManager expects a Node.js project structure with package.json for dependency management. 
-                    It won't work in projects that don't use npm/yarn.
+                  
+                  <div className="flex">
+                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
+                      Projects without package.json
+                    </div>
+                    <div className="flex-1 text-gray-600 dark:text-gray-400">
+                      Expects Node.js structure with npm/yarn dependency management
+                    </div>
                   </div>
-                  <div>
-                    <strong>• Non-Git repositories</strong><br/>
-                    SessionManager creates backups using Git commands. If your project isn't in a Git repository, 
-                    the backup system won't work.
+                  
+                  <div className="flex">
+                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
+                      Non-Git repositories
+                    </div>
+                    <div className="flex-1 text-gray-600 dark:text-gray-400">
+                      Backup system relies on Git commands - won't work without Git
+                    </div>
                   </div>
-                  <div>
-                    <strong>• Mobile app development</strong><br/>
-                    React Native, iOS, Android, or Flutter projects have their own build systems and project management. 
-                    SessionManager doesn't understand mobile app structures.
+                  
+                  <div className="flex">
+                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
+                      Mobile app development
+                    </div>
+                    <div className="flex-1 text-gray-600 dark:text-gray-400">
+                      React Native, iOS, Android have their own build systems and project management
+                    </div>
                   </div>
-                  <div>
-                    <strong>• Database-only projects</strong><br/>
-                    If you're just writing SQL scripts or managing database schemas, SessionManager isn't useful. 
-                    It's designed for application development with multiple code components.
+                  
+                  <div className="flex">
+                    <div className="w-48 font-medium text-gray-900 dark:text-gray-100">
+                      Database-only projects
+                    </div>
+                    <div className="flex-1 text-gray-600 dark:text-gray-400">
+                      Not useful for SQL scripts or database schema management
+                    </div>
                   </div>
                 </div>
               </div>

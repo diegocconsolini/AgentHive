@@ -195,25 +195,19 @@ export const MemoriesPage: React.FC = () => {
     if (!editingMemory || !newTitle.trim() || !newContent.trim()) return;
 
     try {
-      await updateMemory({
-        variables: {
-          id: editingMemory.id,
-          input: {
-            title: newTitle.trim(),
-            content: newContent.trim(),
-            tags: newTags.split(',').map(t => t.trim()).filter(t => t.length > 0),
-          }
-        }
-      });
+      // SmartMemoryIndex doesn't currently support direct updates
+      // For now, we'll skip this functionality or implement via delete+create
+      console.warn('Memory update not yet implemented in SmartMemoryIndex API');
+      setError('Update functionality not available yet - coming soon!');
       
       // Reset form and close modal
       setEditingMemory(null);
       setNewTitle('');
       setNewContent('');
       setNewTags('');
-      refetch();
     } catch (err) {
       console.error('Failed to update memory:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update memory');
     }
   };
 
@@ -221,12 +215,13 @@ export const MemoriesPage: React.FC = () => {
     if (!confirm('Are you sure you want to delete this memory?')) return;
 
     try {
-      await deleteMemory({
-        variables: { id: memoryId }
-      });
-      refetch();
+      // SmartMemoryIndex doesn't currently support direct deletes
+      // For now, we'll skip this functionality
+      console.warn('Memory delete not yet implemented in SmartMemoryIndex API');
+      setError('Delete functionality not available yet - coming soon!');
     } catch (err) {
       console.error('Failed to delete memory:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete memory');
     }
   };
 
@@ -278,8 +273,17 @@ export const MemoriesPage: React.FC = () => {
       <div className="space-y-6">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
           <div className="text-red-600 dark:text-red-400">
-            Error loading memories: {error.message}
+            Error loading memories: {error}
           </div>
+          <button 
+            onClick={() => {
+              setError(null);
+              fetchMemories();
+            }}
+            className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
