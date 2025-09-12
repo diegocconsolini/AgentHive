@@ -169,9 +169,15 @@ class TestDataFactory {
 }
 
 // Export commonly used test data as constants
-export const SAMPLE_CONTEXT = TestDataFactory.createContext();
-export const SAMPLE_AGENT_STATE = TestDataFactory.createAgentState();
-export const PERFORMANCE_TEST_DATA = TestDataFactory.createPerformanceTestData();
-export const CONFLICT_SCENARIO = TestDataFactory.createConflictScenario();
+const SAMPLE_CONTEXT = TestDataFactory.createContext();
+const SAMPLE_AGENT_STATE = TestDataFactory.createAgentState();
+const PERFORMANCE_TEST_DATA = TestDataFactory.createPerformanceTestData();
+const CONFLICT_SCENARIO = TestDataFactory.createConflictScenario();
 
-export default TestDataFactory;
+module.exports = {
+  TestDataFactory,
+  SAMPLE_CONTEXT,
+  SAMPLE_AGENT_STATE,
+  PERFORMANCE_TEST_DATA,
+  CONFLICT_SCENARIO
+};
