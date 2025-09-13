@@ -310,12 +310,28 @@ class SSPService {
           SUM(success) as successful_executions,
           AVG(execution_time) as avg_execution_time,
           COUNT(DISTINCT session_id) as unique_sessions,
-          COUNT(DISTINCT context_id) as unique_procedures
+          COUNT(DISTINCT context_id) as unique_procedures,
+          AVG(execution_quality) as avg_quality,
+          AVG(success_score) as avg_success_score
         FROM procedure_executions 
         WHERE agent_id = ?
       `;
 
       const stats = await this.storage.indexStorage.getQuery(query, [agentId]);
+      
+      // Get failure reasons breakdown
+      const failureQuery = `
+        SELECT failure_reason, COUNT(*) as count
+        FROM procedure_executions 
+        WHERE agent_id = ? AND failure_reason IS NOT NULL
+        GROUP BY failure_reason
+      `;
+      
+      const failureData = await this.storage.indexStorage.allQuery(failureQuery, [agentId]);
+      const failureReasons = {};
+      failureData.forEach(row => {
+        failureReasons[row.failure_reason] = row.count;
+      });
       
       const successRate = stats.total_executions > 0 ? 
         (stats.successful_executions / stats.total_executions) : 0;
@@ -327,7 +343,11 @@ class SSPService {
         successRate: successRate,
         avgExecutionTime: Math.round(stats.avg_execution_time || 0),
         uniqueSessions: stats.unique_sessions || 0,
-        uniqueProcedures: stats.unique_procedures || 0
+        uniqueProcedures: stats.unique_procedures || 0,
+        avgQuality: stats.avg_quality ? Math.round(stats.avg_quality * 100) / 100 : null,
+        avgSuccessScore: stats.avg_success_score ? Math.round(stats.avg_success_score * 100) / 100 : null,
+        failureReasons: Object.keys(failureReasons).length > 0 ? failureReasons : null,
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       console.error('SSP: Analytics error:', error);
@@ -338,7 +358,11 @@ class SSPService {
         successRate: 0,
         avgExecutionTime: 0,
         uniqueSessions: 0,
-        uniqueProcedures: 0
+        uniqueProcedures: 0,
+        avgQuality: null,
+        avgSuccessScore: null,
+        failureReasons: null,
+        timestamp: new Date().toISOString()
       };
     }
   }
