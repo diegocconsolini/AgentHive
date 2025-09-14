@@ -11,7 +11,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:19.890Z",
-      "updated": "2025-09-14T14:05:12.701Z",
+      "updated": "2025-09-14T16:11:29.981Z",
       "metadata": {
         "agent_id": "concurrent-agent-0",
         "tags": [
@@ -23,7 +23,7 @@
         "retention_policy": "long-term",
         "user_id": "concurrent-user",
         "session_id": "concurrent-session",
-        "interaction_count": 3,
+        "interaction_count": 4,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -39,7 +39,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:19.634Z",
-      "updated": "2025-09-14T14:05:12.701Z",
+      "updated": "2025-09-14T16:11:29.981Z",
       "metadata": {
         "agent_id": "concurrent-agent-1",
         "tags": [
@@ -51,7 +51,7 @@
         "retention_policy": "long-term",
         "user_id": "concurrent-user",
         "session_id": "concurrent-session",
-        "interaction_count": 3,
+        "interaction_count": 4,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -67,7 +67,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:19.892Z",
-      "updated": "2025-09-14T14:05:12.702Z",
+      "updated": "2025-09-14T16:11:29.981Z",
       "metadata": {
         "agent_id": "concurrent-agent-2",
         "tags": [
@@ -79,7 +79,7 @@
         "retention_policy": "long-term",
         "user_id": "concurrent-user",
         "session_id": "concurrent-session",
-        "interaction_count": 3,
+        "interaction_count": 4,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -95,7 +95,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:19.671Z",
-      "updated": "2025-09-14T14:05:12.702Z",
+      "updated": "2025-09-14T16:11:29.981Z",
       "metadata": {
         "agent_id": "concurrent-agent-3",
         "tags": [
@@ -107,7 +107,7 @@
         "retention_policy": "long-term",
         "user_id": "concurrent-user",
         "session_id": "concurrent-session",
-        "interaction_count": 3,
+        "interaction_count": 4,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -123,7 +123,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:19.672Z",
-      "updated": "2025-09-14T14:05:12.702Z",
+      "updated": "2025-09-14T16:11:29.981Z",
       "metadata": {
         "agent_id": "concurrent-agent-4",
         "tags": [
@@ -135,7 +135,7 @@
         "retention_policy": "long-term",
         "user_id": "concurrent-user",
         "session_id": "concurrent-session",
-        "interaction_count": 3,
+        "interaction_count": 4,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -151,7 +151,7 @@
       ],
       "importance": 60.499997291666666,
       "created": "2025-09-12T23:24:17.058Z",
-      "updated": "2025-09-14T14:05:02.104Z",
+      "updated": "2025-09-14T16:11:25.671Z",
       "metadata": {
         "agent_id": "failure-test-agent",
         "tags": [
@@ -163,7 +163,7 @@
         "retention_policy": "long-term",
         "user_id": "test-user",
         "session_id": "fail-session",
-        "interaction_count": 3,
+        "interaction_count": 4,
         "success_rate": 0,
         "knowledge_domains": 0
       }
@@ -179,7 +179,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:11.884Z",
-      "updated": "2025-09-14T14:06:35.196Z",
+      "updated": "2025-09-14T16:11:16.073Z",
       "metadata": {
         "agent_id": "frontend-developer",
         "tags": [
@@ -191,7 +191,7 @@
         "retention_policy": "long-term",
         "user_id": "frontend-dev",
         "session_id": "react-session",
-        "interaction_count": 5,
+        "interaction_count": 6,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -207,7 +207,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:15.342Z",
-      "updated": "2025-09-14T14:04:58.290Z",
+      "updated": "2025-09-14T16:11:23.581Z",
       "metadata": {
         "agent_id": "minimal-agent",
         "tags": [
@@ -218,7 +218,7 @@
         "retention_policy": "long-term",
         "user_id": null,
         "session_id": null,
-        "interaction_count": 4,
+        "interaction_count": 5,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -234,7 +234,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:11.131Z",
-      "updated": "2025-09-14T14:06:30.922Z",
+      "updated": "2025-09-14T16:11:14.935Z",
       "metadata": {
         "agent_id": "python-pro",
         "tags": [
@@ -246,7 +246,7 @@
         "retention_policy": "long-term",
         "user_id": "developer-user",
         "session_id": "api-session",
-        "interaction_count": 5,
+        "interaction_count": 6,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -290,7 +290,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:09.486Z",
-      "updated": "2025-09-14T14:06:18.181Z",
+      "updated": "2025-09-14T16:11:11.903Z",
       "metadata": {
         "agent_id": "test-agent-bridge",
         "tags": [
@@ -302,7 +302,7 @@
         "retention_policy": "long-term",
         "user_id": "test-user-123",
         "session_id": "test-session-456",
-        "interaction_count": 5,
+        "interaction_count": 6,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -318,7 +318,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:10.389Z",
-      "updated": "2025-09-14T14:06:23.526Z",
+      "updated": "2025-09-14T16:11:14.133Z",
       "metadata": {
         "agent_id": "test-agent-graceful",
         "tags": [
@@ -330,7 +330,7 @@
         "retention_policy": "long-term",
         "user_id": "test-user",
         "session_id": "test-session",
-        "interaction_count": 5,
+        "interaction_count": 6,
         "success_rate": 1,
         "knowledge_domains": 1
       }
@@ -402,7 +402,7 @@
       ],
       "importance": 92.5,
       "created": "2025-09-12T23:24:18.474Z",
-      "updated": "2025-09-14T14:05:07.447Z",
+      "updated": "2025-09-14T16:11:27.003Z",
       "metadata": {
         "agent_id": "uninitialized-test",
         "tags": [
@@ -413,11 +413,11 @@
         "retention_policy": "long-term",
         "user_id": null,
         "session_id": null,
-        "interaction_count": 4,
+        "interaction_count": 5,
         "success_rate": 1,
         "knowledge_domains": 1
       }
     }
   },
-  "lastRebuild": "2025-09-14T14:30:56.140Z"
+  "lastRebuild": "2025-09-14T16:12:57.315Z"
 }
