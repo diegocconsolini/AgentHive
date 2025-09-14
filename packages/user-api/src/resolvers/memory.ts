@@ -140,8 +140,8 @@ export const memoryResolvers = {
           throw new Error(`Failed to fetch agent memories: ${response.statusText}`);
         }
         
-        const agentMemories = await response.json();
-        return agentMemories;
+        const searchResponse = await response.json();
+        return searchResponse.results || [];
       } catch (error) {
         console.error('Error fetching agent memories:', error);
         throw new GraphQLError('Failed to fetch agent memories');
