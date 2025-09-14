@@ -543,6 +543,12 @@ class SQLiteStorage extends IContextStorage {
   async search(query, options = {}) {
     await this.ensureInitialized();
     
+    // Validate query parameter
+    if (!query || typeof query !== 'string') {
+      console.warn('Invalid query parameter for search:', typeof query, query);
+      return [];
+    }
+    
     const { limit = 50, offset = 0 } = options;
     const searchTerm = `%${query.toLowerCase()}%`;
 

@@ -7946,6 +7946,35 @@
         "relationship_count": 0
       }
     },
+    "smart-memory-08bfd812-1352-4d7b-aad6-1c7196ca4341": {
+      "id": "smart-memory-08bfd812-1352-4d7b-aad6-1c7196ca4341",
+      "type": "agent",
+      "hierarchy": [
+        "smart-memories",
+        "test-agent-1",
+        "test-user-1",
+        "08bfd812-1352-4d7b-aad6-1c7196ca4341"
+      ],
+      "importance": 0.7,
+      "created": "2025-09-14T17:04:13.685Z",
+      "updated": "2025-09-14T17:04:13.685Z",
+      "metadata": {
+        "agent_id": "test-agent-1",
+        "tags": [
+          "smart-memory",
+          "test-agent-1",
+          "test-user-1"
+        ],
+        "dependencies": [],
+        "retention_policy": "default",
+        "memory_id": "08bfd812-1352-4d7b-aad6-1c7196ca4341",
+        "user_id": "test-user-1",
+        "category": "interaction",
+        "interaction_count": 1,
+        "has_semantic_vector": true,
+        "relationship_count": 5
+      }
+    },
     "smart-memory-1312ca59-3b4b-474d-a35e-a55eef862eae": {
       "id": "smart-memory-1312ca59-3b4b-474d-a35e-a55eef862eae",
       "type": "agent",
@@ -8641,36 +8670,7 @@
         "has_semantic_vector": true,
         "relationship_count": 5
       }
-    },
-    "smart-memory-08bfd812-1352-4d7b-aad6-1c7196ca4341": {
-      "id": "smart-memory-08bfd812-1352-4d7b-aad6-1c7196ca4341",
-      "type": "agent",
-      "hierarchy": [
-        "smart-memories",
-        "test-agent-1",
-        "test-user-1",
-        "08bfd812-1352-4d7b-aad6-1c7196ca4341"
-      ],
-      "importance": 0.7,
-      "created": "2025-09-14T17:04:13.685Z",
-      "updated": "2025-09-14T17:04:13.685Z",
-      "metadata": {
-        "agent_id": "test-agent-1",
-        "tags": [
-          "smart-memory",
-          "test-agent-1",
-          "test-user-1"
-        ],
-        "dependencies": [],
-        "retention_policy": "default",
-        "memory_id": "08bfd812-1352-4d7b-aad6-1c7196ca4341",
-        "user_id": "test-user-1",
-        "category": "interaction",
-        "interaction_count": 1,
-        "has_semantic_vector": true,
-        "relationship_count": 5
-      }
     }
   },
-  "lastRebuild": "2025-09-14T17:04:08.768Z"
+  "lastRebuild": "2025-09-14T17:12:55.823Z"
 }
