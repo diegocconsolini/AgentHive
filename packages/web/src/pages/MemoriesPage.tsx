@@ -97,7 +97,7 @@ export const MemoriesPage: React.FC = () => {
         },
         body: JSON.stringify({
           query: '*', // Get all memories
-          limit: 100, // Increase limit to get more memories
+          limit: 1000, // Set high limit to get all memories
           offset: 0
         }),
       });
