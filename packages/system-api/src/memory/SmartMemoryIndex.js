@@ -764,7 +764,7 @@ class SmartMemoryIndex {
       const contextData = {
         id: `smart-memory-${memoryId}`,
         type: 'agent',
-        hierarchy: ['smart-memories', memory.agentId, memory.userId || 'system'],
+        hierarchy: ['smart-memories', memory.agentId, memory.userId || 'system', memoryId],
         importance: this.calculateMemoryImportance(memory),
         content: JSON.stringify({
           ...memory,
