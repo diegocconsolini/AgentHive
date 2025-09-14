@@ -36,34 +36,78 @@ interface AgentMemory {
 
 // Transform AgentMemory to frontend Memory format
 const transformAgentMemoryToMemory = (agentMemory: AgentMemory): Memory => {
-  // Extract title from first interaction or knowledge
-  const title = agentMemory.interactions?.[0]?.summary || 
-               agentMemory.knowledge?.expertise || 
-               'Memory';
+  // Handle empty or malformed memory objects
+  if (!agentMemory || !agentMemory.id) {
+    console.warn('Invalid memory object:', agentMemory);
+    return null;
+  }
+
+  // Extract title with multiple fallback options
+  const title = 
+    agentMemory.interactions?.[0]?.summary ||
+    agentMemory.knowledge?.expertise ||
+    agentMemory.knowledgeGraph?.concepts ? Object.keys(agentMemory.knowledgeGraph.concepts)[0] : null ||
+    agentMemory.learning?.domainExpertise ? Object.keys(agentMemory.learning.domainExpertise)[0] : null ||
+    `Memory ${agentMemory.id.slice(-8)}` || // Last 8 chars of ID as fallback
+    'Untitled Memory';
   
-  // Safely get concepts array
-  const concepts = Array.isArray(agentMemory.knowledge?.concepts) ? agentMemory.knowledge.concepts : [];
+  // Safely get concepts from multiple sources
+  const knowledgeConcepts = Array.isArray(agentMemory.knowledge?.concepts) ? agentMemory.knowledge.concepts : [];
+  const graphConcepts = agentMemory.knowledgeGraph?.concepts ? Object.keys(agentMemory.knowledgeGraph.concepts) : [];
+  const domainConcepts = agentMemory.learning?.domainExpertise ? Object.keys(agentMemory.learning.domainExpertise) : [];
+  const concepts = [...knowledgeConcepts, ...graphConcepts, ...domainConcepts].filter(Boolean);
+  
   const userPreferences = Array.isArray(agentMemory.patterns?.userPreferences) ? agentMemory.patterns.userPreferences : [];
   
-  // Create content from knowledge and patterns
-  const content = [
-    `Expertise: ${agentMemory.knowledge?.expertise || 'N/A'}`,
-    `Concepts: ${concepts.join(', ') || 'None'}`,
-    ...(userPreferences.length > 0 ? 
-        [`Preferences: ${userPreferences.join(', ')}`] : [])
-  ].join('\n');
+  // Create meaningful content from all available data
+  const contentParts = [];
   
-  // Use concepts as tags
-  const tags = concepts;
+  // Add expertise info
+  if (agentMemory.knowledge?.expertise) {
+    contentParts.push(`Expertise: ${agentMemory.knowledge.expertise}`);
+  }
+  
+  // Add concepts
+  if (concepts.length > 0) {
+    contentParts.push(`Concepts: ${concepts.slice(0, 5).join(', ')}`);
+  }
+  
+  // Add performance data if meaningful
+  if (agentMemory.performance?.totalInteractions > 0) {
+    contentParts.push(`Interactions: ${agentMemory.performance.totalInteractions}, Success Rate: ${Math.round(agentMemory.performance.successRate * 100)}%`);
+  }
+  
+  // Add learning info
+  if (agentMemory.learning?.adaptationScore !== undefined && agentMemory.learning.adaptationScore !== 0.5) {
+    contentParts.push(`Adaptation Score: ${Math.round(agentMemory.learning.adaptationScore * 100)}%`);
+  }
+  
+  // Add preferences if available
+  if (userPreferences.length > 0) {
+    contentParts.push(`Preferences: ${userPreferences.join(', ')}`);
+  }
+  
+  // Add category info
+  if (agentMemory.category && agentMemory.category !== 'general') {
+    contentParts.push(`Category: ${agentMemory.category}`);
+  }
+  
+  // Fallback content if nothing meaningful found
+  const content = contentParts.length > 0 
+    ? contentParts.join('\n')
+    : `Memory from agent: ${agentMemory.agentId || 'Unknown'}\nCreated: ${new Date(agentMemory.created).toLocaleDateString()}`;
+  
+  // Use concepts as tags, with fallback to category
+  const tags = concepts.length > 0 ? concepts.slice(0, 10) : [agentMemory.category || 'memory'];
   
   return {
     id: agentMemory.id,
     title,
     content,
     tags,
-    createdAt: agentMemory.created,
-    updatedAt: agentMemory.updated,
-    userId: agentMemory.userId
+    createdAt: agentMemory.created || new Date().toISOString(),
+    updatedAt: agentMemory.updated || agentMemory.created || new Date().toISOString(),
+    userId: agentMemory.userId || 'unknown'
   };
 };
 
@@ -108,10 +152,10 @@ export const MemoriesPage: React.FC = () => {
         throw new Error('Failed to search memories');
       }
       
-      // Transform search results to Memory format
+      // Transform search results to Memory format, filtering out null/invalid memories
       const fetchedMemories = searchData.results?.map((result: any) => 
         transformAgentMemoryToMemory(result.memory)
-      ).filter(Boolean) as Memory[] || [];
+      ).filter((memory: Memory | null) => memory !== null) as Memory[] || [];
       
       // Apply filtering
       let filteredMemories = fetchedMemories;
