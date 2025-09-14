@@ -3,7 +3,7 @@
  * Tests core storage operations, caching, and error handling
  */
 
-const { StorageManager } = require('../../../src/storage/StorageManager.js');
+const StorageManager = require('../../../src/storage/StorageManager.js');
 const { TestDataFactory } = require('../../fixtures/testData.js');
 const { MockStorageManager, MemoryProfiler } = require('../../utils/testHelpers.js');
 

@@ -3,7 +3,7 @@
  * Tests context creation, validation, and transformation
  */
 
-const { Context } = require('../../../src/models/Context.js');
+const Context = require('../../../src/models/Context.js');
 const { TestDataFactory } = require('../../fixtures/testData.js');
 
 describe('Context Model', () => {

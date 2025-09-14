@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   testEnvironment: 'node',
   setupFiles: ['<rootDir>/tests/jest.setup.js'],
   roots: ['<rootDir>/tests', '<rootDir>/src'],
