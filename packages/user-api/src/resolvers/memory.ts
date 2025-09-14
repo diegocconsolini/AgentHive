@@ -105,7 +105,7 @@ export const memoryResolvers = {
       const user = requireAuth(context);
       
       try {
-        const response = await fetch(`${SYSTEM_API_URL}/api/memory/agent/${id}`);
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/${id}`);
         if (!response.ok) {
           if (response.status === 404) {
             return null;
@@ -125,7 +125,17 @@ export const memoryResolvers = {
       const user = requireAuth(context);
       
       try {
-        const response = await fetch(`${SYSTEM_API_URL}/api/memory/agent?agentId=${agentId}&userId=${userId}`);
+        const response = await fetch(`${SYSTEM_API_URL}/api/memory/search`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: '*',
+            agentId,
+            userId
+          })
+        });
         if (!response.ok) {
           throw new Error(`Failed to fetch agent memories: ${response.statusText}`);
         }
