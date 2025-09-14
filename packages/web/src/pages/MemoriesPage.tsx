@@ -37,20 +37,24 @@ interface AgentMemory {
 // Transform AgentMemory to frontend Memory format
 const transformAgentMemoryToMemory = (agentMemory: AgentMemory): Memory => {
   // Extract title from first interaction or knowledge
-  const title = agentMemory.interactions[0]?.summary || 
-               agentMemory.knowledge.expertise || 
+  const title = agentMemory.interactions?.[0]?.summary || 
+               agentMemory.knowledge?.expertise || 
                'Memory';
+  
+  // Safely get concepts array
+  const concepts = Array.isArray(agentMemory.knowledge?.concepts) ? agentMemory.knowledge.concepts : [];
+  const userPreferences = Array.isArray(agentMemory.patterns?.userPreferences) ? agentMemory.patterns.userPreferences : [];
   
   // Create content from knowledge and patterns
   const content = [
-    `Expertise: ${agentMemory.knowledge.expertise}`,
-    `Concepts: ${agentMemory.knowledge.concepts.join(', ')}`,
-    ...(agentMemory.patterns.userPreferences?.length > 0 ? 
-        [`Preferences: ${agentMemory.patterns.userPreferences.join(', ')}`] : [])
+    `Expertise: ${agentMemory.knowledge?.expertise || 'N/A'}`,
+    `Concepts: ${concepts.join(', ') || 'None'}`,
+    ...(userPreferences.length > 0 ? 
+        [`Preferences: ${userPreferences.join(', ')}`] : [])
   ].join('\n');
   
   // Use concepts as tags
-  const tags = agentMemory.knowledge.concepts || [];
+  const tags = concepts;
   
   return {
     id: agentMemory.id,
