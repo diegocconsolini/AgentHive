@@ -89,27 +89,29 @@ export const MemoriesPage: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      // Get analytics to find memory IDs
-      const analyticsResponse = await fetch(`${SMARTMEMORY_API_URL}/analytics`);
-      const analyticsData = await analyticsResponse.json();
-      
-      if (!analyticsData.success) {
-        throw new Error('Failed to fetch memory analytics');
-      }
-      
-      const memoryIds = analyticsData.analytics.topAccessedMemories.map((item: [string, number]) => item[0]);
-      
-      // Fetch individual memories
-      const memoryPromises = memoryIds.map(async (id: string) => {
-        const response = await fetch(`${SMARTMEMORY_API_URL}/${id}`);
-        const data = await response.json();
-        if (data.success) {
-          return transformAgentMemoryToMemory(data.memory);
-        }
-        return null;
+      // Use search API to get all memories
+      const searchResponse = await fetch(`${SMARTMEMORY_API_URL}/search`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: '*', // Get all memories
+          limit: 100, // Increase limit to get more memories
+          offset: 0
+        }),
       });
       
-      const fetchedMemories = (await Promise.all(memoryPromises)).filter(Boolean) as Memory[];
+      const searchData = await searchResponse.json();
+      
+      if (!searchData.success) {
+        throw new Error('Failed to search memories');
+      }
+      
+      // Transform search results to Memory format
+      const fetchedMemories = searchData.results?.map((result: any) => 
+        transformAgentMemoryToMemory(result.memory)
+      ).filter(Boolean) as Memory[] || [];
       
       // Apply filtering
       let filteredMemories = fetchedMemories;
