@@ -1,0 +1,35 @@
+{
+  "id": "smart-memory-b497693e-0b38-4221-86c2-09633586e409",
+  "type": "agent",
+  "hierarchy": [
+    "smart-memories",
+    "test-agent",
+    "test-user",
+    "b497693e-0b38-4221-86c2-09633586e409"
+  ],
+  "importance": 0.5,
+  "created": "2025-09-14T14:37:31.510Z",
+  "updated": "2025-09-14T14:37:31.510Z",
+  "content": "{\"id\":\"b497693e-0b38-4221-86c2-09633586e409\",\"agentId\":\"test-agent\",\"userId\":\"test-user\",\"sessionId\":null,\"created\":\"2025-09-14T14:37:28.412Z\",\"updated\":\"2025-09-14T14:37:28.412Z\",\"interactions\":[],\"patterns\":{},\"knowledge\":{},\"preferences\":{},\"performance\":{\"successRate\":0,\"averageResponseTime\":0,\"totalInteractions\":0,\"errorCount\":0,\"improvementTrend\":\"stable\"},\"contextAssociations\":[],\"knowledgeGraph\":{\"concepts\":{},\"relationships\":[],\"confidence\":{}},\"learning\":{\"adaptationScore\":0.5,\"domainExpertise\":{},\"weaknesses\":[],\"strengths\":[]},\"semanticVector\":[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],\"category\":\"general\",\"relationships\":[],\"accessCount\":0,\"accessHistory\":[]}",
+  "metadata": {
+    "agent_id": "test-agent",
+    "tags": [
+      "smart-memory",
+      "test-agent",
+      "test-user"
+    ],
+    "dependencies": [],
+    "retention_policy": "default",
+    "memory_id": "b497693e-0b38-4221-86c2-09633586e409",
+    "user_id": "test-user",
+    "category": "general",
+    "interaction_count": 0,
+    "has_semantic_vector": true,
+    "relationship_count": 0
+  },
+  "relationships": {
+    "parent": null,
+    "children": [],
+    "references": []
+  }
+}
