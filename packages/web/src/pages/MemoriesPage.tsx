@@ -133,27 +133,17 @@ export const MemoriesPage: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      // Use search API to get all memories
-      const searchResponse = await fetch(`${SMARTMEMORY_API_URL}/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: '*', // Get all memories
-          limit: 1000, // Set high limit to get all memories
-          offset: 0
-        }),
-      });
-      
-      const searchData = await searchResponse.json();
-      
-      if (!searchData.success) {
-        throw new Error('Failed to search memories');
+      // Use fast memories endpoint to get all memories
+      const response = await fetch(`${SMARTMEMORY_API_URL.replace('/memory', '/memories')}?limit=1000&offset=0`);
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error('Failed to fetch memories');
       }
       
-      // Transform search results to Memory format, filtering out null/invalid memories
-      const fetchedMemories = searchData.results?.map((result: any) => 
+      // Transform memories to Memory format, filtering out null/invalid memories
+      const fetchedMemories = data.memories?.map((result: any) =>
         transformAgentMemoryToMemory(result.memory)
       ).filter((memory: Memory | null) => memory !== null) as Memory[] || [];
       
