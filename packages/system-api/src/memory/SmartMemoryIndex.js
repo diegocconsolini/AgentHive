@@ -160,7 +160,27 @@ class SmartMemoryIndex {
         includeRelated = false
       } = options;
 
-      // Generate query embedding
+      // SHORT-CIRCUIT FOR WILDCARD - Return all memories without AI embedding
+      if (query === '*' || query === '' || !query) {
+        const allMemories = [];
+        for (const [memoryId, memory] of this.memoryIndex) {
+          // Apply filters
+          if (agentId && memory.agentId !== agentId) continue;
+          if (category && this.categories.get(memoryId) !== category) continue;
+
+          allMemories.push({
+            memory,
+            similarity: 1.0,  // Max similarity for "get all"
+            category: this.categories.get(memoryId),
+            relationships: this.memoryRelationships.get(memoryId)
+          });
+        }
+
+        // Apply limit and return
+        return allMemories.slice(0, limit);
+      }
+
+      // Only generate embeddings for actual search queries
       const queryEmbedding = await this.generateTextEmbedding(query);
 
       // Calculate similarities
