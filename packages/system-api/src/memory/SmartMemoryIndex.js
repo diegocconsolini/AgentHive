@@ -146,6 +146,38 @@ class SmartMemoryIndex {
   }
 
   /**
+   * Get all memories without semantic search (fast path)
+   */
+  async getAllMemories(limit = 1000, offset = 0) {
+    await this.ensureInitialized();
+
+    const memories = [];
+    let currentIndex = 0;
+
+    for (const [memoryId, memory] of this.memoryIndex) {
+      // Skip until offset
+      if (currentIndex < offset) {
+        currentIndex++;
+        continue;
+      }
+
+      // Apply limit
+      if (memories.length >= limit) break;
+
+      memories.push({
+        memory,
+        category: this.categories.get(memoryId),
+        similarity: 1.0,  // Max similarity for "get all"
+        relationships: this.memoryRelationships.get(memoryId)
+      });
+
+      currentIndex++;
+    }
+
+    return memories;
+  }
+
+  /**
    * Search memories using semantic similarity
    */
   async searchMemories(query, options = {}) {
@@ -368,23 +400,15 @@ class SmartMemoryIndex {
    * Generate text embedding using AI
    */
   async generateTextEmbedding(text) {
-    try {
-      const response = await this.aiProvider.generateResponse({
-        prompt: `Generate semantic embedding vector for: ${text.substring(0, 500)}`,
-        temperature: 0.1,
-        maxTokens: 1000
-      });
-
-      // For now, create a simple hash-based vector
-      // TODO: Use actual embedding API when available
-      const hash = this.simpleHash(text);
-      return this.hashToVector(hash);
-
-    } catch (error) {
-      console.warn('⚠️ Failed to generate AI embedding, using fallback:', error);
-      const hash = this.simpleHash(text);
-      return this.hashToVector(hash);
+    // SKIP AI FOR WILDCARDS AND EMPTY
+    if (!text || text === '*' || text === '') {
+      return this.hashToVector(0); // Return neutral vector
     }
+
+    // For now, just use hash-based vectors (AI call was useless anyway)
+    // TODO: Use actual embedding API when available (OpenAI embeddings, sentence-transformers)
+    const hash = this.simpleHash(text);
+    return this.hashToVector(hash);
   }
 
   /**

@@ -626,11 +626,11 @@ class AgentHiveSystemAPI {
       try {
         const { limit = 1000, offset = 0 } = req.query;
 
-        // Get all memories by searching with wildcard
-        const results = await this.orchestrator.smartMemoryIndex.searchMemories('*', {
-          limit: parseInt(limit),
-          offset: parseInt(offset)
-        });
+        // Get all memories using fast path (no AI embeddings)
+        const results = await this.orchestrator.smartMemoryIndex.getAllMemories(
+          parseInt(limit),
+          parseInt(offset)
+        );
 
         res.json({
           success: true,
