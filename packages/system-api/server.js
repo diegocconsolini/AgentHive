@@ -621,6 +621,35 @@ class AgentHiveSystemAPI {
       }
     });
 
+    // GET /api/memories - List all memories
+    this.app.get('/api/memories', async (req, res) => {
+      try {
+        const { limit = 1000, offset = 0 } = req.query;
+
+        // Get all memories by searching with wildcard
+        const results = await this.orchestrator.smartMemoryIndex.searchMemories('*', {
+          limit: parseInt(limit),
+          offset: parseInt(offset)
+        });
+
+        res.json({
+          success: true,
+          memories: results,
+          count: results.length,
+          limit: parseInt(limit),
+          offset: parseInt(offset),
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error('❌ Memory listing error:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to list memories',
+          message: error.message
+        });
+      }
+    });
+
     // 404 handler
     this.app.use('*', (req, res) => {
       res.status(404).json({
@@ -633,7 +662,7 @@ class AgentHiveSystemAPI {
           '/api/orchestration/route', '/api/providers',
           '/api/providers/test', '/api/test/openai',
           '/api/ssp/patterns/:agentId', '/api/ssp/predict', '/api/ssp/analytics/:agentId',
-          '/api/memory', '/api/memory/:id', '/api/memory/search', '/api/memory/analytics'
+          '/api/memory', '/api/memory/:id', '/api/memory/search', '/api/memory/analytics', '/api/memories'
         ]
       });
     });
