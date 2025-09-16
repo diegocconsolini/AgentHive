@@ -146,6 +146,8 @@ export const MemoriesPage: React.FC = () => {
       const fetchedMemories = data.memories?.map((result: any) =>
         transformAgentMemoryToMemory(result.memory)
       ).filter((memory: Memory | null) => memory !== null) as Memory[] || [];
+
+      console.log('Fetched memories:', fetchedMemories.length);
       
       // Apply filtering
       let filteredMemories = fetchedMemories;
