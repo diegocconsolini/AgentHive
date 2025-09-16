@@ -702,11 +702,11 @@ class SmartMemoryIndex {
     });
 
     // Add to category index
-    const category = this.categorizeMemory(memoryData);
+    const category = await this.categorizeMemory(memoryData);
     this.categories.set(memoryId, category);
 
     // Generate and store semantic embedding
-    const embedding = await this.generateSemanticEmbedding(memoryData);
+    const embedding = await this.generateEmbedding(memoryData);
     if (embedding) {
       this.semanticVectors.set(memoryId, embedding);
     }
